@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="15dp"
+    android:background="@drawable/bg_list_menu"
+    android:layout_marginBottom="10dp">
+
+    <TextView
+        android:id="@+id/tvSlipgaji"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Slip Gaji"
+        android:fontFamily="@font/inter"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <View
+        android:id="@+id/separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#CCCCCC"
+        android:layout_marginVertical="10dp"
+        app:layout_constraintTop_toBottomOf="@id/tvSlipgaji"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Data Kehadiran -->
+    <TextView
+        android:id="@+id/tvWaktuLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Waktu"
+        android:fontFamily="@font/inter"
+        android:textSize="14sp"
+        android:padding="2dp"
+        app:layout_constraintTop_toBottomOf="@id/separator"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tvWaktuValue"
+        app:layout_constraintHorizontalWeight="1"/>
+
+    <TextView
+        android:id="@+id/tvWaktuValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="-"
+        android:fontFamily="@font/inter"
+        android:textSize="14sp"
+        android:padding="2dp"
+        app:layout_constraintTop_toBottomOf="@id/separator"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/tvTotalHadirLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Jumlah Kehadiran"
+        android:fontFamily="@font/inter"
+        android:textSize="14sp"
+        android:padding="2dp"
+        app:layout_constraintTop_toBottomOf="@id/tvWaktuLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tvTotalHadirValue"
+        app:layout_constraintHorizontalWeight="1"/>
+
+    <TextView
+        android:id="@+id/tvTotalHadirValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="-"
+        android:fontFamily="@font/inter"
+        android:textSize="14sp"
+        android:padding="2dp"
+        app:layout_constraintTop_toBottomOf="@id/tvWaktuValue"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/tvTotalTidakHadirLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Jumlah Lembur"
+        android:fontFamily="@font/inter"
+        android:textSize="14sp"
+        android:padding="2dp"
+        app:layout_constraintTop_toBottomOf="@id/tvTotalHadirLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tvTotalTidakHadirValue"
+        app:layout_constraintHorizontalWeight="1"/>
+
+    <TextView
+        android:id="@+id/tvTotalTidakHadirValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="-"
+        android:fontFamily="@font/inter"
+        android:textSize="14sp"
+        android:padding="2dp"
+        app:layout_constraintTop_toBottomOf="@id/tvTotalHadirValue"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/tvSakitLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Gaji Pokok (1 hari)"
+        android:fontFamily="@font/inter"
+        android:textSize="14sp"
+        android:padding="2dp"
+
+        app:layout_constraintTop_toBottomOf="@id/tvTotalTidakHadirLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tvSakitValue"
+        app:layout_constraintHorizontalWeight="1"/>
+
+    <TextView
+        android:id="@+id/tvSakitValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rp. 80,000"
+        android:fontFamily="@font/inter"
+        android:textSize="14sp"
+        android:padding="2dp"
+        app:layout_constraintTop_toBottomOf="@id/tvTotalTidakHadirValue"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/tvIzinLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Gaji Lembur (1 jam)"
+        android:fontFamily="@font/inter"
+        android:textSize="14sp"
+        android:padding="2dp"
+        app:layout_constraintTop_toBottomOf="@id/tvSakitLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tvIzinValue"
+        app:layout_constraintHorizontalWeight="1"/>
+
+    <TextView
+        android:id="@+id/tvIzinValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rp. 10,000"
+        android:fontFamily="@font/inter"
+        android:textSize="14sp"
+        android:padding="2dp"
+        app:layout_constraintTop_toBottomOf="@id/tvSakitValue"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <View
+        android:id="@+id/separator2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginVertical="10dp"
+        android:layout_marginTop="36dp"
+        android:background="#CCCCCC"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvIzinValue" />
+
+    <TextView
+        android:id="@+id/tvTotalGaji"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Total Gaji"
+        android:fontFamily="@font/inter"
+        android:textSize="14sp"
+        android:padding="2dp"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/blue"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/separator2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tvGaji"
+        app:layout_constraintHorizontalWeight="1"/>
+
+    <TextView
+        android:id="@+id/tvGaji"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="-"
+        android:fontFamily="@font/inter"
+        android:textSize="14sp"
+        android:layout_marginTop="10dp"
+        android:padding="2dp"
+        app:layout_constraintTop_toBottomOf="@id/separator2"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
