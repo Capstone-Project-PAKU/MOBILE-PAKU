@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:background="@color/white">
 
     <!-- Header -->
     <LinearLayout
@@ -13,36 +13,28 @@
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:background="@drawable/bg_header_profile"
-        android:gravity="center_vertical"
         android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:padding="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginEnd="10dp"
-            android:contentDescription="Profile Picture"
+            android:id="@+id/back"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_arrow_back_24"
+            android:contentDescription="Back"
             android:elevation="3dp"
-            android:src="@drawable/icon_profile_picture" />
+            android:layout_marginEnd="10dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Halo, "
+            android:text="Detail Rekap Kehadiran"
             android:fontFamily="@font/inter"
-            android:textSize="16sp"
-            android:textColor="@color/white"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="User"
-            android:fontFamily="@font/inter"
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:textColor="@color/white"
             android:textStyle="bold" />
     </LinearLayout>
@@ -92,50 +84,37 @@
             android:textSize="14sp" />
     </LinearLayout>
 
-    <!-- Calendar -->
     <LinearLayout
-        android:id="@+id/calendarSection"
-        android:layout_width="wrap_content"
+        android:id="@+id/titleRekapPresensi"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_list_menu"
-        android:padding="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="15dp"
-        android:gravity="left"
+        android:paddingStart="20dp"
+        android:padding="15dp"
         app:layout_constraintTop_toBottomOf="@id/sideProfileLayout"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/rvRekapAbsensi">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/titleRekap"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:text="Rekap Kehadiran:"
+            android:textSize="16sp"
+            android:textColor="@color/darker_grey"
+            android:textStyle="bold"
+            android:fontFamily="@font/inter"
+            android:layout_marginEnd="5dp" />
 
-            <ImageView
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_marginEnd="12dp"
-                android:contentDescription="Calendar Icon"
-                android:src="@drawable/ic_calendar_month_24" />
-
-            <TextView
-                android:id="@+id/tvSelectMonth"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/inter"
-                android:gravity="start"
-                android:text="Select a month"
-                android:textColor="@color/darker_grey"
-                android:textSize="14sp" />
-
-            <ImageButton
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginStart="12dp"
-                android:background="null"
-                android:contentDescription="Arrow Icon"
-                android:src="@drawable/ic_arrow_down" />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/titleBulan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-"
+            android:textColor="@color/darker_grey"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/inter" />
     </LinearLayout>
 
     <!-- RecyclerView untuk Rekap Absensi -->
@@ -144,22 +123,12 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:nestedScrollingEnabled="true"
-        android:padding="20dp"
-        app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
+        android:paddingStart="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/calendarSection" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleRekapPresensi" />
 
     <!-- Navigasi Bawah -->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigationView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="70dp"
-        android:background="@drawable/bg_bottom_navbar"
-        app:menu="@menu/bottom_navbar"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

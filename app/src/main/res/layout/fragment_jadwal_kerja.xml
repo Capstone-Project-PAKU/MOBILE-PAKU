@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:background="@color/white">
 
     <!-- Header -->
     <LinearLayout
@@ -13,36 +13,28 @@
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:background="@drawable/bg_header_profile"
-        android:gravity="center_vertical"
         android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:padding="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginEnd="10dp"
-            android:contentDescription="Profile Picture"
+            android:id="@+id/back"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_arrow_back_24"
+            android:contentDescription="Back"
             android:elevation="3dp"
-            android:src="@drawable/icon_profile_picture" />
+            android:layout_marginEnd="10dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Halo, "
+            android:text="Jadwal Kerja"
             android:fontFamily="@font/inter"
-            android:textSize="16sp"
-            android:textColor="@color/white"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="User"
-            android:fontFamily="@font/inter"
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:textColor="@color/white"
             android:textStyle="bold" />
     </LinearLayout>
@@ -105,16 +97,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <TextView
-            android:id="@+id/tvTanggal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Jadwal Kerja"
-            android:fontFamily="@font/inter"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="4dp" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -124,6 +106,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="Hari"
+                android:textColor="@color/darker_grey"
                 android:fontFamily="@font/inter"
                 android:layout_marginTop="5dp"
                 android:textSize="14sp"
@@ -138,6 +121,7 @@
                 android:fontFamily="@font/inter"
                 android:gravity="right"
                 android:text="Senin - Sabtu"
+                android:textColor="@color/darker_grey"
                 android:textSize="14sp" />
         </LinearLayout>
 
@@ -151,6 +135,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="Waktu"
+                android:textColor="@color/darker_grey"
                 android:fontFamily="@font/inter"
                 android:layout_marginTop="5dp"
                 android:textSize="14sp"
@@ -165,6 +150,7 @@
                 android:fontFamily="@font/inter"
                 android:gravity="right"
                 android:text="09.00 - 13.00"
+                android:textColor="@color/darker_grey"
                 android:textSize="14sp" />
         </LinearLayout>
 
@@ -182,6 +168,7 @@
                 android:fontFamily="@font/inter"
                 android:gravity="right"
                 android:text="18.00 - 21.00"
+                android:textColor="@color/darker_grey"
                 android:textSize="14sp" />
         </LinearLayout>
 
@@ -243,10 +230,11 @@
                 android:textSize="14sp" />
 
             <ImageButton
+                android:id="@+id/btnArrowDown"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_marginStart="12dp"
-                android:background="null"
+                android:background="@color/white"
                 android:contentDescription="Arrow Icon"
                 android:src="@drawable/ic_arrow_down" />
         </LinearLayout>
@@ -259,21 +247,11 @@
         android:layout_height="0dp"
         android:nestedScrollingEnabled="true"
         android:padding="15dp"
-        app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/calendarSection" />
-
-    <!-- Navigasi Bawah -->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigationView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="70dp"
-        android:background="@drawable/bg_bottom_navbar"
-        app:menu="@menu/bottom_navbar"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/calendarSection"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

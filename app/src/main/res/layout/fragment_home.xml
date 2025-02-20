@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/white"
+    android:id="@+id/main">
+
+    <!-- Header -->
+    <LinearLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="@drawable/bg_header_profile"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/icon_profile_picture"
+            android:contentDescription="Profile Picture"
+            android:elevation="3dp"
+            android:layout_marginEnd="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Halo, "
+            android:fontFamily="@font/inter"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="User"
+            android:fontFamily="@font/inter"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Side Profile -->
+    <LinearLayout
+        android:id="@+id/sideProfile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/bg_side_profile"
+        android:elevation="3dp"
+        android:orientation="horizontal"
+        android:padding="4dp"
+        android:layout_marginTop="-10dp"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="5dp"
+            android:contentDescription="Profile Picture"
+            android:src="@drawable/icon_jabatan"
+            android:layout_marginStart="3dp"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Dokter Umum"
+            android:fontFamily="@font/inter"
+            android:textColor="@color/darker_grey"
+            android:textSize="14sp"
+            android:layout_gravity="center"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Poliklinik: Umum"
+            android:fontFamily="@font/inter"
+            android:textColor="@color/darker_grey"
+            android:textSize="14sp"
+            android:gravity="end"
+            android:layout_gravity="center"
+            android:layout_marginEnd="10dp"/>
+    </LinearLayout>
+
+    <!-- ScrollView untuk isi utama -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@+id/sideProfile"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <!-- Presensi Utama -->
+            <LinearLayout
+                android:id="@+id/menu_presensi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_list_menu"
+                android:orientation="horizontal"
+                android:padding="15dp"
+                android:layout_margin="10dp"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/icon_presensi"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Presensi Staf"
+                    android:textColor="@color/darker_grey"
+                    android:fontFamily="@font/inter"
+                    android:textSize="16sp"
+                    android:layout_marginStart="20dp"/>
+
+                <ImageButton
+                    android:id="@+id/btnDropdownPresensi"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_arrow_down"
+                    android:background="@color/white"
+                    android:contentDescription="Arrow Icon"
+                    android:layout_marginStart="12dp" />
+            </LinearLayout>
+
+            <!-- Dropdown Presensi -->
+            <LinearLayout
+                android:id="@+id/dropdownPresensi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="5dp"
+                android:visibility="gone">
+
+                <!-- Presensi Dalam -->
+                <LinearLayout
+                    android:id="@+id/presensiDalam"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="5dp"
+                    android:gravity="center_vertical"
+                    android:clickable="true"
+                    android:focusable="true">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Presensi Dalam Klinik"
+                        android:padding="10dp"
+                        android:textSize="14sp"
+                        android:background="@drawable/bg_data_edit_profile" />
+                </LinearLayout>
+
+                <!-- Presensi Luar -->
+                <LinearLayout
+                    android:id="@+id/presensiLuar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="5dp"
+                    android:gravity="center_vertical"
+                    android:clickable="true"
+                    android:focusable="true">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Presensi Luar Klinik"
+                        android:padding="10dp"
+                        android:textSize="14sp"
+                        android:background="@drawable/bg_data_edit_profile"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Pengajuan Cuti Utama -->
+            <LinearLayout
+                android:id="@+id/menu_cuti"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_list_menu"
+                android:orientation="horizontal"
+                android:padding="15dp"
+                android:layout_margin="10dp"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/icon_pengajuan_cuti"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Pengajuan Cuti"
+                    android:textColor="@color/darker_grey"
+                    android:fontFamily="@font/inter"
+                    android:textSize="16sp"
+                    android:layout_marginStart="20dp"/>
+
+                <ImageButton
+                    android:id="@+id/btnToggleDropdown"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_arrow_down"
+                    android:background="@color/white"
+
+                    android:contentDescription="Arrow Icon"
+                    android:layout_marginStart="12dp" />
+            </LinearLayout>
+
+            <!-- Dropdown Pengajuan Cuti -->
+            <LinearLayout
+                android:id="@+id/dropdownPengajuanCuti"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="5dp"
+                android:visibility="gone">
+
+                <!-- Daftar Pengajuan Cuti -->
+                <LinearLayout
+                    android:id="@+id/daftarPengajuanCuti"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="5dp"
+                    android:gravity="center_vertical"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Daftar Pengajuan Cuti"
+                        android:padding="10dp"
+                        android:textSize="14sp"
+                        android:background="@drawable/bg_data_edit_profile" />
+                </LinearLayout>
+
+                <!-- Pengajuan Sakit -->
+                <LinearLayout
+                    android:id="@+id/PengajuanCutiSakit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="5dp"
+                    android:gravity="center_vertical"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Pengajuan Sakit"
+                        android:padding="10dp"
+                        android:textSize="14sp"
+                        android:background="@drawable/bg_data_edit_profile" />
+                </LinearLayout>
+
+                <!-- Pengajuan Libur -->
+                <LinearLayout
+                    android:id="@+id/PengajuanCutiLibur"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="5dp"
+                    android:gravity="center_vertical"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Pengajuan Libur"
+                        android:padding="10dp"
+                        android:textSize="14sp"
+                        android:background="@drawable/bg_data_edit_profile" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Cek Rekap Kehadiran -->
+            <LinearLayout
+                android:id="@+id/menu_rekap_kehadiran"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_list_menu"
+                android:orientation="horizontal"
+                android:padding="15dp"
+                android:layout_margin="10dp"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/icon_jadwal_kerja"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cek Rekap Kehadiran"
+                    android:textColor="@color/darker_grey"
+                    android:fontFamily="@font/inter"
+                    android:textSize="16sp"
+                    android:layout_marginStart="20dp"/>
+            </LinearLayout>
+
+            <!-- Jadwal Kerja -->
+            <LinearLayout
+                android:id="@+id/menu_jadwal_kerja"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_list_menu"
+                android:orientation="horizontal"
+                android:padding="15dp"
+                android:layout_margin="10dp"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/icon_jadwal_kerja"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Jadwal Kerja"
+                    android:textColor="@color/darker_grey"
+                    android:fontFamily="@font/inter"
+                    android:textSize="16sp"
+                    android:layout_marginStart="20dp"/>
+            </LinearLayout>
+
+            <!-- Slip Gaji -->
+            <LinearLayout
+                android:id="@+id/menu_slip_gaji"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_list_menu"
+                android:orientation="horizontal"
+                android:padding="15dp"
+                android:layout_margin="10dp"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/icon_slip_gaji"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Slip Gaji"
+                    android:textColor="@color/darker_grey"
+                    android:fontFamily="@font/inter"
+                    android:textSize="16sp"
+                    android:layout_marginStart="20dp"/>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

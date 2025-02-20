@@ -42,7 +42,7 @@
         app:layout_constraintTop_toBottomOf="@id/separator"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/tvWaktuValue"
-        app:layout_constraintHorizontalWeight="1"/>
+        app:layout_constraintHorizontal_bias="0.5" />
 
     <TextView
         android:id="@+id/tvWaktuValue"
@@ -65,7 +65,7 @@
         app:layout_constraintTop_toBottomOf="@id/tvWaktuLabel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/tvTotalHadirValue"
-        app:layout_constraintHorizontalWeight="1"/>
+        app:layout_constraintHorizontal_weight="1"/>
 
     <TextView
         android:id="@+id/tvTotalHadirValue"
@@ -88,7 +88,7 @@
         app:layout_constraintTop_toBottomOf="@id/tvTotalHadirLabel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/tvTotalTidakHadirValue"
-        app:layout_constraintHorizontalWeight="1"/>
+        app:layout_constraintHorizontal_weight="1"/>
 
     <TextView
         android:id="@+id/tvTotalTidakHadirValue"
@@ -111,7 +111,7 @@
         app:layout_constraintTop_toBottomOf="@id/tvTotalTidakHadirLabel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/tvSakitValue"
-        app:layout_constraintHorizontalWeight="1"/>
+        app:layout_constraintHorizontal_weight="1"/>
 
     <TextView
         android:id="@+id/tvSakitValue"
@@ -134,7 +134,7 @@
         app:layout_constraintTop_toBottomOf="@id/tvSakitLabel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/tvIzinValue"
-        app:layout_constraintHorizontalWeight="1"/>
+        app:layout_constraintHorizontal_weight="1"/>
 
     <TextView
         android:id="@+id/tvIzinValue"
@@ -157,7 +157,7 @@
         app:layout_constraintTop_toBottomOf="@id/tvIzinLabel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/tvTanpaKeteranganValue"
-        app:layout_constraintHorizontalWeight="1"/>
+        app:layout_constraintHorizontal_weight="1"/>
 
     <TextView
         android:id="@+id/tvTanpaKeteranganValue"

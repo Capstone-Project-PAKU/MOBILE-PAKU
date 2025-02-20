@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@drawable/bg_landing">
 
@@ -10,7 +10,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.9">
+        android:layout_weight="0.89">
         <ImageView
             android:id="@+id/illustration"
             android:layout_width="match_parent"
@@ -48,48 +48,64 @@
         android:orientation="vertical"
         android:padding="80dp">
 
-        <TextView
-            android:id="@+id/info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:fontFamily="@font/inter"
-            android:text="Ingat Absen Ingat Gaji"
-            android:textColor="@color/darker_grey"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-
         <!-- Tombol Sign In -->
         <TextView
-            android:id="@+id/info_description"
+            android:id="@+id/desc_signIn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="30dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="2dp"
             android:fontFamily="@font/inter"
             android:gravity="center"
-            android:text="Silahkan sign in untuk mengakses aplikasi ini"
+            android:text="Sign in untuk mengakses aplikasi ini"
             android:textColor="@color/darker_grey"
-            android:textSize="13sp" />
+            android:textSize="11sp" />
 
         <Button
             android:id="@+id/btnSignIn"
-            android:layout_width="match_parent"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/green"
             android:fontFamily="@font/inter"
             android:textStyle="bold"
             android:text="Sign In"
-            android:textColor="@android:color/white"
-            android:textSize="18sp" />
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:cornerRadius="10dp"/>
+
+        <TextView
+            android:id="@+id/desc_Register"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/inter"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="2dp"
+            android:text="Belum memiliki akun? Silahkan register"
+            android:textColor="@color/darker_grey"
+            android:textSize="11sp" />
+
+        <Button
+            android:id="@+id/btnRegister"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/green"
+            android:fontFamily="@font/inter"
+            android:textStyle="bold"
+            android:text="Register"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:cornerRadius="10dp"/>
     </LinearLayout>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp"
+        android:gravity="center"
+        android:fontFamily="@font/inter"
         android:text="Copyright © 2024 Carade Inc. All right reserved"
         android:textColor="@color/gray"
-        android:gravity="center"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="20dp" />
+        android:textSize="13sp" />
 </LinearLayout>

@@ -3,4 +3,8 @@
     <string name="note_pengajuanCutiSakit"><b>Note:</b> Jika anda sakit namun belum sempat mencari surat keterangan sakit, isi pengajuan pada saat sudah kembali bekerja dan sudah memiliki surat keterangan sakit yang valid.</string>
     <string name="note_pengajuanCutiLibur"><b>Note:</b> Mohon tunggu untuk proses validasi, silahkan cek secara berkala pada aplikasi.</string>
     <string name="note_daftarPengajuan"><b>Note:</b> Jika pengajuan anda ditolak, mohon kembali dicek apa yang tidak valid, dan silahkan coba lagi.</string>
+    <string name="note_rubahPassword"><b>Note:</b> Karyawan wajib merubah password pada saat pertama kali mendapatkan akun.</string>
+    <string name="note_Register"><b>Note:</b> Gunakan kata sandi yang kuat dan unik. Direkomendasikan menggunakan kombinasi huruf, angka, dan simbol.</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

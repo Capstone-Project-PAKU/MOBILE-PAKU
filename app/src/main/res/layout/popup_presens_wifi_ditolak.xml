@@ -21,6 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Koneksi Wi-Fi tidak terdeteksi, silahkan coba lagi"
+        android:textColor="@color/darker_grey"
         android:fontFamily="@font/inter"
         android:textSize="14sp"
         android:gravity="center"
