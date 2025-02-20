@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.NumberPicker
@@ -17,6 +18,7 @@ class SlipGajiFragment : Fragment() {
 
     private lateinit var tvSelectMonth: TextView
     private lateinit var calendarSection: LinearLayout
+    private lateinit var btnArrowDown: ImageButton
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,9 +33,15 @@ class SlipGajiFragment : Fragment() {
         // Inisialisasi View Calendar
         tvSelectMonth = view.findViewById(R.id.tvSelectMonth)
         calendarSection = view.findViewById(R.id.calendarSection)
+        btnArrowDown = view.findViewById(R.id.btnArrowDown)
 
         // Set action ketika diklik untuk memilih bulan dan tahun
         calendarSection.setOnClickListener {
+            showMonthYearPicker()
+        }
+
+        // Set action ketika tombol arrow diklik
+        btnArrowDown.setOnClickListener {
             showMonthYearPicker()
         }
 
