@@ -266,9 +266,9 @@
                         android:background="@drawable/bg_data_edit_profile" />
                 </LinearLayout>
 
-                <!-- Pengajuan Sakit -->
+                <!-- Pengajuan Cuti -->
                 <LinearLayout
-                    android:id="@+id/PengajuanCutiSakit"
+                    android:id="@+id/PengajuanCuti"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -280,27 +280,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Pengajuan Sakit"
-                        android:padding="10dp"
-                        android:textSize="14sp"
-                        android:background="@drawable/bg_data_edit_profile" />
-                </LinearLayout>
-
-                <!-- Pengajuan Libur -->
-                <LinearLayout
-                    android:id="@+id/PengajuanCutiLibur"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="5dp"
-                    android:gravity="center_vertical"
-                    android:clickable="true"
-                    android:focusable="true">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Pengajuan Libur"
+                        android:text="Pengajuan Cuti"
                         android:padding="10dp"
                         android:textSize="14sp"
                         android:background="@drawable/bg_data_edit_profile" />

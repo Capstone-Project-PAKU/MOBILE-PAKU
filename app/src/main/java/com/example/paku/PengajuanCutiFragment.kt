@@ -9,46 +9,47 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.database.getStringOrNull
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import com.google.android.material.textfield.TextInputLayout
 import java.text.SimpleDateFormat
 import java.util.*
 
-class PengajuanCutiSakitFragment : Fragment() {
+class PengajuanCutiFragment : Fragment() {
 
     private lateinit var tvPdfName: TextView
     private lateinit var btnUploadPdf: LinearLayout
     private lateinit var etTanggalMulai: EditText
     private lateinit var etTanggalSelesai: EditText
+    private lateinit var editTextJenisIzin: AutoCompleteTextView
+    private lateinit var jenisIzinLayout: TextInputLayout
+
     private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     private val calendarMulai = Calendar.getInstance()
     private val calendarSelesai = Calendar.getInstance()
 
-    // ActivityResultLauncher untuk memilih file PDF
     private lateinit var selectPdfLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_pengajuan_cuti_sakit, container, false)
+        return inflater.inflate(R.layout.fragment_pengajuan_cuti, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Inisialisasi View
         tvPdfName = view.findViewById(R.id.tvPdfName)
         btnUploadPdf = view.findViewById(R.id.uploadPdf)
         etTanggalMulai = view.findViewById(R.id.TanggalMulai)
         etTanggalSelesai = view.findViewById(R.id.TanggalSelesai)
+        editTextJenisIzin = view.findViewById(R.id.JenisIzin)
+        jenisIzinLayout = view.findViewById(R.id.textInputLayout) // Pastikan ID di XML sesuai
 
         val imgBack = view.findViewById<ImageView>(R.id.back)
         imgBack.setOnClickListener { parentFragmentManager.popBackStack() }
@@ -56,7 +57,6 @@ class PengajuanCutiSakitFragment : Fragment() {
         val btnCancel = view.findViewById<Button>(R.id.btnCancel)
         btnCancel.setOnClickListener { parentFragmentManager.popBackStack() }
 
-        // Inisialisasi ActivityResultLauncher untuk memilih file PDF
         selectPdfLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 result.data?.data?.let { uri ->
@@ -66,19 +66,38 @@ class PengajuanCutiSakitFragment : Fragment() {
             }
         }
 
-        // Tombol untuk memilih file PDF
+        // Data dropdown (hanya 3 item)
+        val options = listOf("Sakit (surat ada)", "Sakit (surat menyusul)", "Libur")
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, options)
+        editTextJenisIzin.setAdapter(adapter)
+
+        // Hapus hint saat memilih jenis izin
+        editTextJenisIzin.setOnItemClickListener { _, _, position, _ ->
+            jenisIzinLayout.hint = ""
+
+            // Reset tanggal mulai & selesai hanya jika bukan "Sakit (surat menyusul)"
+            if (options[position] != "Sakit (surat menyusul)") {
+                etTanggalMulai.text.clear()
+                etTanggalSelesai.text.clear()
+            }
+        }
+
+        // Kembalikan hint jika input kosong
+        editTextJenisIzin.addTextChangedListener {
+            if (it.toString().isEmpty()) {
+                jenisIzinLayout.hint = "Pilih jenis izin"
+            }
+        }
+
         btnUploadPdf.setOnClickListener { openFilePicker() }
 
-        // Setup DatePicker untuk Tanggal Mulai
         setupTanggalMulai()
-
-        // Setup DatePicker untuk Tanggal Selesai
         setupTanggalSelesai()
     }
 
-    // Fungsi untuk menampilkan DatePickerDialog saat EditText diklik
     private fun setupTanggalMulai() {
         etTanggalMulai.setOnClickListener {
+            val jenisIzin = editTextJenisIzin.text.toString()
             val datePicker = DatePickerDialog(
                 requireContext(),
                 { _, year, month, dayOfMonth ->
@@ -92,7 +111,12 @@ class PengajuanCutiSakitFragment : Fragment() {
                 calendarMulai.get(Calendar.MONTH),
                 calendarMulai.get(Calendar.DAY_OF_MONTH)
             )
-            datePicker.datePicker.minDate = System.currentTimeMillis() // Tidak bisa pilih sebelum hari ini
+
+            // Jika "Sakit (surat menyusul)", biarkan user memilih tanggal bebas
+            if (jenisIzin != "Sakit (surat menyusul)") {
+                datePicker.datePicker.minDate = System.currentTimeMillis()
+            }
+
             datePicker.show()
         }
     }
@@ -109,6 +133,7 @@ class PengajuanCutiSakitFragment : Fragment() {
                 calendarSelesai.get(Calendar.MONTH),
                 calendarSelesai.get(Calendar.DAY_OF_MONTH)
             )
+
             // Pastikan tanggal selesai minimal sama dengan tanggal mulai
             if (etTanggalMulai.text.isNotEmpty()) {
                 datePicker.datePicker.minDate = calendarMulai.timeInMillis
@@ -119,7 +144,6 @@ class PengajuanCutiSakitFragment : Fragment() {
         }
     }
 
-    // Fungsi untuk memilih file PDF
     private fun openFilePicker() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "application/pdf"
@@ -127,7 +151,6 @@ class PengajuanCutiSakitFragment : Fragment() {
         selectPdfLauncher.launch(Intent.createChooser(intent, "Pilih file PDF"))
     }
 
-    // Fungsi untuk mendapatkan nama file dari URI
     private fun getFileName(uri: Uri): String? {
         var fileName: String? = null
         requireContext().contentResolver.query(uri, null, null, null, null)?.use { cursor ->

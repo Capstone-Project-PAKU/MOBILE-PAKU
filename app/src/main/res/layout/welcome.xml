@@ -10,13 +10,13 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.89">
+        android:layout_weight="1">
         <ImageView
             android:id="@+id/illustration"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="300dp"
             android:layout_centerInParent="true"
-            android:src="@drawable/icon_landingpage"
+            android:src="@drawable/icon_landing"
             android:scaleType="fitCenter"/>
     </RelativeLayout>
 
@@ -24,21 +24,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="WELCOME TO PAKU"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:text="Presensi Akurat Klinik Pratama Asih Usadha"
         android:fontFamily="@font/ubuntu_bold"
         android:textColor="@color/white"
-        android:textSize="25sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/subtitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/inter"
-        android:gravity="center"
-        android:text="Presensi Akurat Klinik Asih Usadha"
-        android:textColor="@color/white"
-        android:textSize="16sp" />
+        android:textSize="25sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -47,20 +38,6 @@
         android:gravity="center"
         android:orientation="vertical"
         android:padding="80dp">
-
-        <!-- Tombol Sign In -->
-        <TextView
-            android:id="@+id/desc_signIn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="2dp"
-            android:fontFamily="@font/inter"
-            android:gravity="center"
-            android:text="Sign in untuk mengakses aplikasi ini"
-            android:textColor="@color/darker_grey"
-            android:textSize="11sp" />
-
         <Button
             android:id="@+id/btnSignIn"
             android:layout_width="150dp"
@@ -84,18 +61,6 @@
             android:text="Belum memiliki akun? Silahkan register"
             android:textColor="@color/darker_grey"
             android:textSize="11sp" />
-
-        <Button
-            android:id="@+id/btnRegister"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/green"
-            android:fontFamily="@font/inter"
-            android:textStyle="bold"
-            android:text="Register"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            app:cornerRadius="10dp"/>
     </LinearLayout>
 
     <TextView

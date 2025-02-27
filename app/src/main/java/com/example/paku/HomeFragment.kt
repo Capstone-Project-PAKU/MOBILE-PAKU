@@ -1,7 +1,6 @@
 package com.example.paku
 
 import android.os.Bundle
-import android.text.TextUtils.replace
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -44,8 +43,7 @@ class HomeFragment : Fragment() {
         dropdownCuti = view.findViewById(R.id.dropdownPengajuanCuti)
         btnToggleDropdown = view.findViewById(R.id.btnToggleDropdown)
         val daftarCuti: LinearLayout = view.findViewById(R.id.daftarPengajuanCuti)
-        val cutiSakit: LinearLayout = view.findViewById(R.id.PengajuanCutiSakit)
-        val cutiLibur: LinearLayout = view.findViewById(R.id.PengajuanCutiLibur)
+        val cutiSakit: LinearLayout = view.findViewById(R.id.PengajuanCuti)
 
         // Inisialisasi View Cek Rekap Kehadiran, Jadwal Kerja, dan Slip Gaji
         val menuRekapKehadiran: LinearLayout = view.findViewById(R.id.menu_rekap_kehadiran)
@@ -87,12 +85,7 @@ class HomeFragment : Fragment() {
 
         // Aksi saat "Pengajuan Cuti Sakit" diklik
         cutiSakit.setOnClickListener {
-            navigateToFragment(PengajuanCutiSakitFragment())
-        }
-
-        // Aksi saat "Pengajuan Cuti Libur" diklik
-        cutiLibur.setOnClickListener {
-            navigateToFragment(PengajuanCutiLiburFragment())
+            navigateToFragment(PengajuanCutiFragment())
         }
 
         // Aksi saat "Cek Rekap Kehadiran" diklik

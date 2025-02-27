@@ -6,20 +6,8 @@
         <shape android:shape="rectangle">
             <padding android:right="50dp"/>
             <corners android:bottomLeftRadius="10dp" android:bottomRightRadius="10dp"/>
-            <solid android:color="#FF6666"/> <!-- Warna merah utama -->
+            <solid android:color="#009DFF"/> <!-- Warna merah utama -->
         </shape>
-    </item>
-
-    <!-- Layer tengah -->
-    <item android:top="15dp"
-        android:bottom="15dp"
-        android:right="-15dp">
-        <shape android:shape="rectangle">
-            <corners android:bottomRightRadius="15dp"
-                android:topRightRadius="10dp"/>
-            <solid android:color="#FF7777"/>
-        </shape>
-
     </item>
 
     <!-- Layer paling depan -->
@@ -29,7 +17,7 @@
             <corners
                 android:bottomRightRadius="15dp"
                 android:topRightRadius="15dp"/>
-            <solid android:color="#FF8888"/>
+            <solid android:color="#27ACFF"/>
         </shape>
     </item>
 

@@ -11,7 +11,7 @@
     <color name="superlight_gray">#DCDCDC</color>
     <color name="green">#009C2F</color>
     <color name="light_green">#A6FFC1</color>
-    <color name="red">#FF6767</color>
+    <color name="red">#FF0000</color>
     <color name="blue">#00BBFF</color>
     <color name="dark_blue">#007BFF</color>
 </resources>

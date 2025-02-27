@@ -53,12 +53,14 @@
 
         <!-- Password dengan Toggle Visibility -->
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/passwordLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:textColorHint="@color/gray"
             app:endIconMode="password_toggle"
-            app:endIconTint="@color/darker_grey">
+            app:endIconTint="@color/darker_grey"
+            app:hintEnabled="false">>
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/passwordEditText"
@@ -68,6 +70,8 @@
             android:inputType="textPassword"
             android:padding="15dp"
             android:textColor="@color/darker_grey"
+            android:fontFamily="@font/inter"
+            android:textColorHint="@color/gray"
             android:hint="Password" />
     </com.google.android.material.textfield.TextInputLayout>
 

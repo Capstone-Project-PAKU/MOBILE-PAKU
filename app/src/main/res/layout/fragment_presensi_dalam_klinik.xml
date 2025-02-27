@@ -179,7 +179,7 @@
                     android:fontFamily="@font/inter"
                     android:textStyle="bold"
                     app:cornerRadius="5dp"
-                    app:backgroundTint="@color/green"
+                    app:backgroundTint="@color/red"
                     android:textColor="@color/white"
                     android:layout_marginStart="8dp"/>
             </LinearLayout>

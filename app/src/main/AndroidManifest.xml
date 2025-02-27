@@ -36,13 +36,6 @@
         <activity android:name=".LoginActivity" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".MainActivity"/>
-        <activity android:name=".PresensiDalamActivity" />
-        <activity android:name=".PresensiLuarActivity" />
-        <activity android:name=".DaftarPengajuanCutiActivity" />
-        <activity android:name=".PengajuanCutiSakitActivity" />
-        <activity android:name=".PengajuanCutiLiburActivity" />
-        <activity android:name=".JadwalKerjaActivity" />
-        <activity android:name=".SlipGajiActivity" />
     </application>
 
 </manifest>

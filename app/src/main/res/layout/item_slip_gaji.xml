@@ -9,7 +9,7 @@
     android:layout_marginBottom="10dp">
 
     <TextView
-        android:id="@+id/tvSlipgaji"
+        android:id="@+id/tvSlipGajiTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Slip Gaji"
@@ -26,11 +26,11 @@
         android:layout_height="1dp"
         android:background="#CCCCCC"
         android:layout_marginVertical="10dp"
-        app:layout_constraintTop_toBottomOf="@id/tvSlipgaji"
+        app:layout_constraintTop_toBottomOf="@id/tvSlipGajiTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Data Kehadiran -->
+    <!-- Waktu -->
     <TextView
         android:id="@+id/tvWaktuLabel"
         android:layout_width="0dp"
@@ -55,21 +55,22 @@
         app:layout_constraintTop_toBottomOf="@id/separator"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <!-- Gaji Pokok -->
     <TextView
-        android:id="@+id/tvTotalHadirLabel"
+        android:id="@+id/tvGajiPokokLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Jumlah Kehadiran"
+        android:text="Gaji Pokok"
         android:fontFamily="@font/inter"
         android:textSize="14sp"
         android:padding="2dp"
         app:layout_constraintTop_toBottomOf="@id/tvWaktuLabel"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tvTotalHadirValue"
+        app:layout_constraintEnd_toStartOf="@id/tvGajiPokokValue"
         app:layout_constraintHorizontal_bias="0.5"/>
 
     <TextView
-        android:id="@+id/tvTotalHadirValue"
+        android:id="@+id/tvGajiPokokValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="-"
@@ -79,93 +80,71 @@
         app:layout_constraintTop_toBottomOf="@id/tvWaktuValue"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <!-- Jumlah Lembur -->
     <TextView
-        android:id="@+id/tvTotalTidakHadirLabel"
+        android:id="@+id/tvJumlahLemburLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Jumlah Lembur"
         android:fontFamily="@font/inter"
         android:textSize="14sp"
         android:padding="2dp"
-        app:layout_constraintTop_toBottomOf="@id/tvTotalHadirLabel"
+        app:layout_constraintTop_toBottomOf="@id/tvGajiPokokLabel"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tvTotalTidakHadirValue"
+        app:layout_constraintEnd_toStartOf="@id/tvJumlahLemburValue"
         app:layout_constraintHorizontal_bias="0.5"/>
 
     <TextView
-        android:id="@+id/tvTotalTidakHadirValue"
+        android:id="@+id/tvJumlahLemburValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="-"
         android:fontFamily="@font/inter"
         android:textSize="14sp"
         android:padding="2dp"
-        app:layout_constraintTop_toBottomOf="@id/tvTotalHadirValue"
+        app:layout_constraintTop_toBottomOf="@id/tvGajiPokokValue"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <!-- Tunjangan -->
     <TextView
-        android:id="@+id/tvSakitLabel"
+        android:id="@+id/tvTunjanganLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Gaji Pokok (1 hari)"
+        android:text="Tunjangan"
         android:fontFamily="@font/inter"
         android:textSize="14sp"
         android:padding="2dp"
-
-        app:layout_constraintTop_toBottomOf="@id/tvTotalTidakHadirLabel"
+        app:layout_constraintTop_toBottomOf="@id/tvJumlahLemburLabel"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tvSakitValue"
+        app:layout_constraintEnd_toStartOf="@id/tvTunjanganValue"
         app:layout_constraintHorizontal_bias="0.5"/>
 
     <TextView
-        android:id="@+id/tvSakitValue"
+        android:id="@+id/tvTunjanganValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Rp. 80,000"
+        android:text="-"
         android:fontFamily="@font/inter"
         android:textSize="14sp"
         android:padding="2dp"
-        app:layout_constraintTop_toBottomOf="@id/tvTotalTidakHadirValue"
+        app:layout_constraintTop_toBottomOf="@id/tvJumlahLemburValue"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <TextView
-        android:id="@+id/tvIzinLabel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Gaji Lembur (1 jam)"
-        android:fontFamily="@font/inter"
-        android:textSize="14sp"
-        android:padding="2dp"
-        app:layout_constraintTop_toBottomOf="@id/tvSakitLabel"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tvIzinValue"
-        app:layout_constraintHorizontal_bias="0.5"/>
-
-    <TextView
-        android:id="@+id/tvIzinValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Rp. 10,000"
-        android:fontFamily="@font/inter"
-        android:textSize="14sp"
-        android:padding="2dp"
-        app:layout_constraintTop_toBottomOf="@id/tvSakitValue"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
+    <!-- Total Gaji -->
     <View
         android:id="@+id/separator2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginVertical="10dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="8dp"
         android:background="#CCCCCC"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvIzinValue" />
+        app:layout_constraintTop_toBottomOf="@id/tvTunjanganValue" />
 
     <TextView
-        android:id="@+id/tvTotalGaji"
+        android:id="@+id/tvTotalGajiLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Total Gaji"
@@ -177,11 +156,11 @@
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/separator2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tvGaji"
+        app:layout_constraintEnd_toStartOf="@id/tvTotalGajiValue"
         app:layout_constraintHorizontal_bias="0.5"/>
 
     <TextView
-        android:id="@+id/tvGaji"
+        android:id="@+id/tvTotalGajiValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="-"
@@ -191,6 +170,5 @@
         android:padding="2dp"
         app:layout_constraintTop_toBottomOf="@id/separator2"
         app:layout_constraintEnd_toEndOf="parent"/>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
