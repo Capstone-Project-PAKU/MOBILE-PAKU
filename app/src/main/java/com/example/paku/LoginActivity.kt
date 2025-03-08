@@ -1,22 +1,45 @@
 package com.example.paku
 
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
+import android.text.Layout
 import android.text.TextWatcher
 import android.widget.Button
+import android.widget.CheckBox
+import android.widget.EditText
+import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.textfield.TextInputEditText
+import com.example.paku.ui.viewmodel.UserViewModel
+import com.example.paku.utils.DeviceUtils
 import com.google.android.material.textfield.TextInputLayout
 
 class LoginActivity : AppCompatActivity() {
-
+    private lateinit var usernameEditText: EditText
+    private lateinit var passwordEditText: EditText
+    private lateinit var rememberMeCheckBox: CheckBox
+    private lateinit var passwordLayout: TextInputLayout
+    private lateinit var loginBtn: Button
+    private lateinit var prefs: SharedPreferences
+    private lateinit var rememberUsername: String
+    private val userViewModel: UserViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login)
 
-        val passwordEditText = findViewById<TextInputEditText>(R.id.passwordEditText)
-        val passwordLayout = findViewById<TextInputLayout>(R.id.passwordLayout)
+        usernameEditText = findViewById(R.id.usernameLoginField)
+        passwordEditText = findViewById(R.id.passwordLoginField)
+        rememberMeCheckBox = findViewById(R.id.rememberMe)
+        passwordLayout = findViewById(R.id.passwordLayout)
+        loginBtn = findViewById(R.id.btnLogin)
+
+        prefs = getSharedPreferences("credential_pref", MODE_PRIVATE)
+
+        rememberUsername = prefs.getString("username", "").toString()
+        usernameEditText.setText(rememberUsername)
 
         passwordEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -29,9 +52,34 @@ class LoginActivity : AppCompatActivity() {
         })
 
         // Inisialisasi tombol Login
-        findViewById<Button>(R.id.btnLogin).setOnClickListener {
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
+        loginBtn.setOnClickListener {
+            val username = usernameEditText.text.toString()
+            val password = passwordEditText.text.toString()
+            val rememberMe = rememberMeCheckBox.isChecked
+            val imei = DeviceUtils.getAndroidID(this)
+
+            if (username.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this, "Data diri harus dilengkapi", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (rememberMe) {
+                prefs.edit().putString("username", username).apply()
+            }
+
+            userViewModel.login(username, password, imei) { success, message, loginData ->
+                runOnUiThread {
+                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                    if (success) {
+                        prefs.edit()
+                            .putString("accessToken", loginData?.accessToken)
+                            .putString("refreshToken", loginData?.refreshToken)
+                            .apply()
+                        startActivity(Intent(this, MainActivity::class.java))
+                        finish()
+                    }
+                }
+            }
         }
     }
 }

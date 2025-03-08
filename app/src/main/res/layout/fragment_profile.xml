@@ -68,7 +68,9 @@
                 android:inputType="none"
                 android:padding="10dp"
                 android:textColor="@color/darker_grey"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:id="@+id/usernameProfileField"
+                android:enabled="false"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -114,7 +116,9 @@
                 android:inputType="none"
                 android:padding="10dp"
                 android:textColor="@color/darker_grey"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:id="@+id/fullnameProfileField"
+                android:enabled="false"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -132,7 +136,9 @@
                 android:inputType="none"
                 android:padding="10dp"
                 android:textColor="@color/darker_grey"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:id="@+id/genderProfileField"
+                android:enabled="false"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -150,7 +156,9 @@
                 android:inputType="none"
                 android:padding="10dp"
                 android:textColor="@color/darker_grey"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:id="@+id/occupationProfileField"
+                android:enabled="false"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -165,10 +173,22 @@
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/bg_data_edit_profile"
                 android:fontFamily="@font/inter"
-                android:inputType="none"
+                android:inputType="phone|number"
                 android:padding="10dp"
                 android:textColor="@color/darker_grey"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:id="@+id/phoneProfileField"
+                android:enabled="false"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Logout"
+                android:id="@+id/logoutTv"
+                android:textSize="16sp"
+                android:layout_marginTop="15dp"
+                />
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
