@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -27,6 +28,13 @@ class LoginActivity : AppCompatActivity() {
 
             override fun afterTextChanged(s: Editable?) {}
         })
+
+        // Inisialisasi lupa password
+        val forgotPasswordTextView = findViewById<TextView>(R.id.tvForgotPassword)
+        forgotPasswordTextView.setOnClickListener {
+            val intent = Intent(this, ForgotPasswordActivity::class.java)
+            startActivity(intent)
+        }
 
         // Inisialisasi tombol Login
         findViewById<Button>(R.id.btnLogin).setOnClickListener {
