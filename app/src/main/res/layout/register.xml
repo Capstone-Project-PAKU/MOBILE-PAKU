@@ -69,6 +69,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:fontFamily="@font/inter"
+            android:textColor="@color/black"
             android:text="Selamat datang di halaman register!"
             android:textSize="14sp" />
 
@@ -117,7 +118,8 @@
                 android:fontFamily="@font/inter"
                 android:padding="10dp"
                 android:textColor="@color/darker_grey"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:id="@+id/EmployeeIdField"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -135,7 +137,8 @@
                 android:fontFamily="@font/inter"
                 android:padding="10dp"
                 android:textColor="@color/darker_grey"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:id="@+id/usernameField"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -153,7 +156,7 @@
                 android:layout_marginBottom="7dp">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/confirmPass"
+                    android:id="@+id/passwordField"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_data_edit_profile"
@@ -169,6 +172,8 @@
                 android:fontFamily="@font/inter"
                 android:text="ID Pegawai"
                 android:textColor="@color/darker_grey" />
+                android:text="Android ID"
+                android:textColor="@color/blue" />
 
             <EditText
                 android:layout_width="match_parent"
@@ -178,7 +183,9 @@
                 android:fontFamily="@font/inter"
                 android:padding="10dp"
                 android:textColor="@color/darker_grey"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:enabled="false"
+                android:id="@+id/AndroidIdField"/>
 
 
             <LinearLayout
@@ -202,7 +209,7 @@
                     app:cornerRadius="10dp"/>
 
                 <Button
-                    android:id="@+id/btnSave"
+                    android:id="@+id/btnRegister"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"

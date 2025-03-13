@@ -1,6 +1,7 @@
 package com.example.paku
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spannable
@@ -13,13 +14,24 @@ import android.text.style.StyleSpan
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.example.paku.ui.viewmodel.UserViewModel
 
 class WelcomeActivity : AppCompatActivity() {
+    private lateinit var prefs: SharedPreferences
+    private val userViewModel: UserViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.welcome)
+
+        prefs = getSharedPreferences("credential_pref", MODE_PRIVATE)
+        val accessToken = prefs.getString("accessToken", null)
+
+        if (!accessToken.isNullOrEmpty()) {
+            checkTokenValidity(accessToken)
+        }
 
         // Inisialisasi tombol Sign In
         findViewById<Button>(R.id.btnSignIn).setOnClickListener {
@@ -56,5 +68,16 @@ class WelcomeActivity : AppCompatActivity() {
 
         textViewRegister.text = spannableString
         textViewRegister.movementMethod = LinkMovementMethod.getInstance() // Agar teks bisa diklik
+    }
+
+    private fun checkTokenValidity(token: String) {
+        userViewModel.validateToken(token) { isValid ->
+            runOnUiThread {
+                if (isValid) {
+                    startActivity(Intent(this, MainActivity::class.java))
+                    finish()
+                }
+            }
+        }
     }
 }
