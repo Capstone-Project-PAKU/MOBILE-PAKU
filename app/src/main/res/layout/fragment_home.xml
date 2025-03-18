@@ -39,6 +39,7 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/userHeaderTv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="User"
@@ -73,6 +74,7 @@
             android:layout_marginStart="3dp"/>
 
         <TextView
+            android:id="@+id/userOccupationTv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

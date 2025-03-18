@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.paku.data.model.list.LoginData
 import com.example.paku.data.model.list.ProfileData
+import com.example.paku.data.model.list.RegisterData
 import com.example.paku.data.model.users.LoginResponse
 import com.example.paku.data.model.users.ProfileResponse
 import com.example.paku.data.model.users.RefreshResponse
@@ -25,27 +26,29 @@ class UserViewModel: ViewModel() {
         password: String,
         role: String,
         imei: String,
-        onResult: (Boolean, String) -> Unit
+        onResult: (Boolean, String, RegisterData?) -> Unit
     ) {
         viewModelScope.launch {
             try {
                 val response: Response<RegisterResponse> =
                     respository.register(id_pegawai, username, password, role, imei)
                 if (response.isSuccessful) {
-                    onResult(true, response.body()?.message ?: "Registrasi Berhasil!")
+                    val registerResponse = response.body()
+                    val registerData = registerResponse?.data
+                    onResult(true, response.body()?.message ?: "Registrasi Berhasil!", registerData)
                 } else {
                     val error = parseErrorMessage(response)
-                    onResult(false, error)
+                    onResult(false, error, null)
                 }
             } catch (e: HttpException) {
                 Log.e("UserViewModel", "Server error: ${e.message}")
-                onResult(false, "Server error. Mohon coba lagi nanti.")
+                onResult(false, "Server error. Mohon coba lagi nanti.", null)
             } catch (e: IOException) {
                 Log.e("UserViewModel", "Network error: ${e.message}")
-                onResult(false, "Jaringan error. Mohon periksa koneksi internet anda.")
+                onResult(false, "Jaringan error. Mohon periksa koneksi internet anda.", null)
             } catch (e: Exception) {
                 Log.e("UserViewModel", "Unexpected error: ${e.localizedMessage}")
-                onResult(false, "Unexpected error: ${e.localizedMessage}")
+                onResult(false, "Unexpected error: ${e.localizedMessage}", null)
             }
         }
     }
@@ -151,12 +154,47 @@ class UserViewModel: ViewModel() {
         }
     }
 
+    fun changePassword(
+        token: String,
+        userId: String,
+        currentPassword: String,
+        newPassword: String,
+        confirmPassword: String,
+        onResult: (Boolean, String) -> Unit
+    ) {
+        viewModelScope.launch {
+            try {
+                val response = respository.changePassword("Bearer $token", userId, currentPassword, newPassword, confirmPassword)
+
+                if (response.isSuccessful) {
+                    onResult(true, response.body()?.message ?: "Berhasil mengganti password")
+                } else {
+                    val error = parseErrorMessage(response)
+                    onResult(false, error ?: "Gagal mengganti password")
+                }
+            } catch (e: HttpException) {
+                Log.e("UserViewModel", "Server error: ${e.message}")
+                onResult(false, "Server error. Mohon coba lagi nanti.")
+            } catch (e: IOException) {
+                Log.e("UserViewModel", "Network error: ${e.message}")
+                onResult(false, "Jaringan error. Mohon periksa koneksi internet anda.")
+            } catch (e: Exception) {
+                Log.e("UserViewModel", "Unexpected error: ${e.localizedMessage}")
+                onResult(false, "Unexpected error: ${e.localizedMessage}")
+            }
+        }
+    }
+
+
     private fun parseErrorMessage(response: Response<*>): String {
         return try {
             val errorBody = response.errorBody()?.string()
             val json = JSONObject(errorBody ?: "")
             when (response.code()) {
                 400 -> json.getString("message")
+                401 -> json.getString("message")
+                403 -> json.getString("message")
+                404 -> json.getString("message")
                 409 -> json.getString("message")
                 500 -> json.getString("message")
                 else -> json.getString("message")

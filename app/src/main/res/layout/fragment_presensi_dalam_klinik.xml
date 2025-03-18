@@ -62,14 +62,16 @@
             android:text="Status Validasi: Silahkan absen"
             android:fontFamily="@font/inter"
             android:textSize="14sp"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:id="@+id/presenceValidationStatus"/>
         <ImageView
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginEnd="5dp"
             android:src="@drawable/icon_forbidden"
             android:layout_gravity="center"
-            android:layout_marginStart="3dp"/>
+            android:layout_marginStart="3dp"
+            android:id="@+id/presenceValidationIcon"/>
 
     </LinearLayout>
 
@@ -133,7 +135,8 @@
                     android:fontFamily="@font/inter"
                     android:padding="10dp"
                     android:textSize="20sp"
-                    android:gravity="center"/>
+                    android:gravity="center"
+                    android:id="@+id/clockInTimeTV"/>
 
                 <TextView
                     android:layout_width="0dp"
@@ -144,7 +147,8 @@
                     android:textColor="@color/darker_grey"
                     android:fontFamily="@font/inter"
                     android:textSize="20sp"
-                    android:gravity="center"/>
+                    android:gravity="center"
+                    android:id="@+id/clockOutTimeTV"/>
             </LinearLayout>
 
             <View
@@ -169,7 +173,8 @@
                     android:textStyle="bold"
                     app:cornerRadius="5dp"
                     app:backgroundTint="@color/green"
-                    android:textColor="@color/white"/>
+                    android:textColor="@color/white"
+                    android:id="@+id/clockInBtn"/>
 
                 <com.google.android.material.button.MaterialButton
                     android:layout_width="0dp"
@@ -181,14 +186,15 @@
                     app:cornerRadius="5dp"
                     app:backgroundTint="@color/red"
                     android:textColor="@color/white"
-                    android:layout_marginStart="8dp"/>
+                    android:layout_marginStart="8dp"
+                    android:id="@+id/clockOutBtn"/>
             </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
     <!-- Rekap Absensi -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvRekapAbsensi"
+        android:id="@+id/rvPresence"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:padding="20dp"

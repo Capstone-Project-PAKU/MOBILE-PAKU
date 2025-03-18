@@ -17,7 +17,7 @@
         android:layout_marginTop="10dp"/>
 
     <TextView
-        android:id="@+id/titleTextView"
+        android:id="@+id/failedPresencePopupTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Koneksi Wi-Fi tidak terdeteksi, silahkan coba lagi"
@@ -37,18 +37,20 @@
         android:layout_gravity="center"
         app:cornerRadius="10dp"
         app:backgroundTint="@color/superlight_gray"
-        android:textColor="@color/black" />
+        android:textColor="@color/black"
+        android:id="@+id/presenceAltBtn"/>
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/backBtn"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:text="Kembali"
-        android:textStyle="bold"
-        android:fontFamily="@font/inter"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        app:cornerRadius="10dp"
+        android:fontFamily="@font/inter"
+        android:text="Kembali"
+        android:textColor="@color/black"
+        android:textStyle="bold"
         app:backgroundTint="@color/superlight_gray"
-        android:textColor="@color/black" />
+        app:cornerRadius="10dp" />
 </LinearLayout>
 
 

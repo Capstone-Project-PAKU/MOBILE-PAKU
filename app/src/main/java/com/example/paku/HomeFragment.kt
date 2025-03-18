@@ -8,7 +8,13 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.animation.ValueAnimator
+import android.content.Context
+import android.content.SharedPreferences
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.widget.TextView
+import android.widget.Toast
+import androidx.fragment.app.viewModels
+import com.example.paku.ui.viewmodel.UserViewModel
 
 class HomeFragment : Fragment() {
 
@@ -20,6 +26,10 @@ class HomeFragment : Fragment() {
     private lateinit var btnToggleDropdown: ImageButton
     private var isDropdownCutiVisible = false
 
+    private lateinit var userHeaderTv: TextView
+    private lateinit var userOccupationTv: TextView
+    private lateinit var pref: SharedPreferences
+    private val userViewModel: UserViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,6 +40,18 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        userHeaderTv = view.findViewById(R.id.userHeaderTv)
+        userOccupationTv = view.findViewById(R.id.userOccupationTv)
+
+        pref = requireContext().getSharedPreferences("credential_pref", Context.MODE_PRIVATE)
+        val accessToken = pref.getString("accessToken", null)
+
+        if (!accessToken.isNullOrEmpty()) {
+            fetchUserProfile(accessToken)
+        } else {
+            Toast.makeText(requireContext(), "Sesi berakhir. Silahkan login kembali.", Toast.LENGTH_SHORT).show()
+        }
 
         // Inisialisasi View Presensi
         val menuPresensi: LinearLayout = view.findViewById(R.id.menu_presensi)
@@ -149,5 +171,20 @@ class HomeFragment : Fragment() {
                 }
             })
         }
+    }
+
+    private fun fetchUserProfile(token: String) {
+        userViewModel.getProfile(token) { success, userData ->
+            if (success) {
+                val userHeader = userData?.username
+                val userOccupation = userData?.jabatan?.let { capitalizeWords(it) }
+                userHeaderTv.text = userHeader
+                userOccupationTv.text = userOccupation
+            }
+        }
+    }
+
+    private fun capitalizeWords(input: String): String {
+        return input.split(" ").joinToString(" ") { it.lowercase().replaceFirstChar { c -> c.uppercaseChar() } }
     }
 }
