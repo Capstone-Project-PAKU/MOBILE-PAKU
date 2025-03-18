@@ -76,14 +76,39 @@
             android:hint="Password" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <CheckBox
-            android:id="@+id/rememberMe"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
             android:layout_marginTop="15dp"
-            android:fontFamily="@font/inter"
-            android:text="Remember me"
-            android:textColor="@color/darker_grey"/>
+            android:layout_marginBottom="15dp">
+
+            <CheckBox
+                android:id="@+id/rememberMe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/inter"
+                android:text="Remember me"
+                android:textColor="@color/darker_grey"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:id="@+id/tvForgotPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Forgot password?"
+                android:textSize="13sp"
+                android:clickable="true"
+                android:focusable="true"
+                android:fontFamily="@font/inter"
+                android:textColor="@color/darker_grey"/>
+        </LinearLayout>
+
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLogin"
@@ -95,7 +120,8 @@
             android:fontFamily="@font/inter"
             app:backgroundTint="@color/green"
             android:textSize="18sp"
-            app:cornerRadius="10dp" />
+            app:cornerRadius="25dp" />
+
     </LinearLayout>
 
     <!-- Copyright Text at the bottom -->

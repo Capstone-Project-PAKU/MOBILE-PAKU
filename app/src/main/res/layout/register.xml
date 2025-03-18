@@ -107,8 +107,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:fontFamily="@font/inter"
-                android:text="ID Pegawai"
-                android:textColor="@color/blue" />
+                android:text="Email"
+                android:textColor="@color/darker_grey" />
 
             <EditText
                 android:layout_width="match_parent"
@@ -127,7 +127,7 @@
                 android:fontFamily="@font/inter"
                 android:layout_marginBottom="5dp"
                 android:text="Username"
-                android:textColor="@color/blue" />
+                android:textColor="@color/darker_grey" />
 
             <EditText
                 android:layout_width="match_parent"
@@ -145,7 +145,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/inter"
                 android:text="Password"
-                android:textColor="@color/blue" />
+                android:textColor="@color/darker_grey" />
 
             <com.google.android.material.textfield.TextInputLayout
 
@@ -168,8 +168,10 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/inter"
                 android:layout_marginBottom="5dp"
+                android:fontFamily="@font/inter"
+                android:text="ID Pegawai"
+                android:textColor="@color/darker_grey" />
                 android:text="Android ID"
                 android:textColor="@color/blue" />
 
@@ -184,6 +186,7 @@
                 android:textSize="14sp"
                 android:enabled="false"
                 android:id="@+id/AndroidIdField"/>
+
 
             <LinearLayout
                 android:layout_width="match_parent"

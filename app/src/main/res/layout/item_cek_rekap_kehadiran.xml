@@ -56,16 +56,36 @@
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <TextView
+        android:id="@+id/tvKuotaCutiLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Sisa Kuota Cuti"
+        android:fontFamily="@font/inter"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/tvWaktuLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tvKuotaCutiValue" />
+
+    <TextView
+        android:id="@+id/tvKuotaCutiValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="12x"
+        android:fontFamily="@font/inter"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/tvWaktuValue"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
         android:id="@+id/tvTotalHadirLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Total Hadir"
         android:fontFamily="@font/inter"
         android:textSize="14sp"
-        app:layout_constraintTop_toBottomOf="@id/tvWaktuLabel"
+        app:layout_constraintTop_toBottomOf="@id/tvKuotaCutiLabel"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tvTotalHadirValue"
-        app:layout_constraintHorizontal_weight="1"/>
+        app:layout_constraintEnd_toStartOf="@id/tvTotalHadirValue" />
 
     <TextView
         android:id="@+id/tvTotalHadirValue"
@@ -74,8 +94,7 @@
         android:text="-"
         android:fontFamily="@font/inter"
         android:textSize="14sp"
-
-        app:layout_constraintTop_toBottomOf="@id/tvWaktuValue"
+        app:layout_constraintTop_toBottomOf="@id/tvKuotaCutiValue"
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <TextView
@@ -190,6 +209,7 @@
         android:layout_marginTop="10dp"
         android:fontFamily="@font/inter"
         app:layout_constraintTop_toBottomOf="@id/separator2"
+
         app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
