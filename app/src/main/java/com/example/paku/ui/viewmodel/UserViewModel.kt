@@ -23,15 +23,16 @@ class UserViewModel: ViewModel() {
     fun register(
         id_pegawai: String,
         username: String,
+        email: String,
         password: String,
         role: String,
-        imei: String,
+        id_android: String,
         onResult: (Boolean, String, RegisterData?) -> Unit
     ) {
         viewModelScope.launch {
             try {
                 val response: Response<RegisterResponse> =
-                    respository.register(id_pegawai, username, password, role, imei)
+                    respository.register(id_pegawai, username, email, password, role, id_android)
                 if (response.isSuccessful) {
                     val registerResponse = response.body()
                     val registerData = registerResponse?.data
@@ -56,12 +57,12 @@ class UserViewModel: ViewModel() {
     fun login(
         username: String,
         password: String,
-        imei: String,
+        id_android: String,
         onResult: (Boolean, String?, LoginData?) -> Unit
     ) {
         viewModelScope.launch {
             try {
-                val response: Response<LoginResponse> = respository.login(username, password, imei)
+                val response: Response<LoginResponse> = respository.login(username, password, id_android)
                 if (response.isSuccessful) {
                     val loginResponse = response.body()
                     val loginData = loginResponse?.data
@@ -185,6 +186,86 @@ class UserViewModel: ViewModel() {
         }
     }
 
+    fun changePasswordWithOTP(
+        email: String,
+        newPassword: String,
+        confirmPassword: String,
+        onResult: (Boolean, String) -> Unit
+    ) {
+        viewModelScope.launch {
+            try {
+                val response = respository.changePasswordWithOTP(email, newPassword, confirmPassword)
+                if (response.isSuccessful) {
+                    onResult(true, response.body()?.message ?: "Berhasil mengganti password")
+                } else {
+                    val error = parseErrorMessage(response)
+                    onResult(false, error)
+                }
+            } catch (e: HttpException) {
+                Log.e("UserViewModel", "Server error: ${e.message}")
+                onResult(false, "Server error. Mohon coba lagi nanti.")
+            } catch (e: IOException) {
+                Log.e("UserViewModel", "Network error: ${e.message}")
+                onResult(false, "Jaringan error. Mohon periksa koneksi internet anda.")
+            } catch (e: Exception) {
+                Log.e("UserViewModel", "Unexpected error: ${e.localizedMessage}")
+                onResult(false, "Unexpected error: ${e.localizedMessage}")
+            }
+        }
+    }
+
+    fun sendOTP(
+        email: String,
+        onResult: (Boolean, String) -> Unit
+    ) {
+        viewModelScope.launch {
+            try {
+                val response = respository.sendOTP(email)
+                if (response.isSuccessful) {
+                    onResult(true, response.body()?.message ?: "kode sudah terkirim")
+                } else {
+                    val error = parseErrorMessage(response)
+                    onResult(false, error)
+                }
+            } catch (e: HttpException) {
+                Log.e("UserViewModel", "Server error: ${e.message}")
+                onResult(false, "Server error. Mohon coba lagi nanti.")
+            } catch (e: IOException) {
+                Log.e("UserViewModel", "Network error: ${e.message}")
+                onResult(false, "Jaringan error. Mohon periksa koneksi internet anda.")
+            } catch (e: Exception) {
+                Log.e("UserViewModel", "Unexpected error: ${e.localizedMessage}")
+                onResult(false, "Unexpected error: ${e.localizedMessage}")
+            }
+        }
+    }
+
+    fun verifyOTP(
+        email: String,
+        otp: String,
+        onResult: (Boolean, String) -> Unit
+    ) {
+        viewModelScope.launch {
+            try {
+                val response = respository.verifyOTP(email, otp)
+                if (response.isSuccessful) {
+                    onResult(true, response.body()?.message ?: "Kode OTP Terverifikasi")
+                } else {
+                    val error = parseErrorMessage(response)
+                    onResult(false, error)
+                }
+            } catch (e: HttpException) {
+                Log.e("UserViewModel", "Server error: ${e.message}")
+                onResult(false, "Server error. Mohon coba lagi nanti.")
+            } catch (e: IOException) {
+                Log.e("UserViewModel", "Network error: ${e.message}")
+                onResult(false, "Jaringan error. Mohon periksa koneksi internet anda.")
+            } catch (e: Exception) {
+                Log.e("UserViewModel", "Unexpected error: ${e.localizedMessage}")
+                onResult(false, "Unexpected error: ${e.localizedMessage}")
+            }
+        }
+    }
 
     private fun parseErrorMessage(response: Response<*>): String {
         return try {

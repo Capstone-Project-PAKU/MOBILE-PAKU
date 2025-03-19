@@ -16,7 +16,7 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var employeeIdEditText: EditText
     private lateinit var usernameEditText: EditText
     private lateinit var passwordEditText: EditText
-    private lateinit var androidIdEditText: EditText
+    private lateinit var emailEditText: EditText
     private lateinit var registerBtn: Button
     private lateinit var prefs: SharedPreferences
     private val userViewModel: UserViewModel by viewModels()
@@ -27,24 +27,24 @@ class RegisterActivity : AppCompatActivity() {
         employeeIdEditText = findViewById(R.id.EmployeeIdField)
         usernameEditText = findViewById(R.id.usernameField)
         passwordEditText = findViewById(R.id.passwordField)
-        androidIdEditText = findViewById(R.id.AndroidIdField)
+        emailEditText = findViewById(R.id.emailField)
         registerBtn = findViewById(R.id.btnRegister)
-        showAndoridID()
 
         prefs = getSharedPreferences("credential_pref", MODE_PRIVATE)
         registerBtn.setOnClickListener {
             val employeeID = employeeIdEditText.text.toString()
             val username = usernameEditText.text.toString()
             val password = passwordEditText.text.toString()
-            val androidId = androidIdEditText.text.toString()
+            val email = emailEditText.text.toString()
+            val androidId = DeviceUtils.getAndroidID(this)
             val role = "user"
 
-            if (employeeID.isEmpty() || username.isEmpty() || password.isEmpty()) {
+            if (employeeID.isEmpty() || username.isEmpty() || password.isEmpty() || email.isEmpty()) {
                 Toast.makeText(this, "Data diri harus dilengkapi", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            userViewModel.register(employeeID, username, password, role, androidId) { success, message, registerData ->
+            userViewModel.register(employeeID, username, email, password, role, androidId) { success, message, registerData ->
                 runOnUiThread {
                     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
                     if (success) {
@@ -65,10 +65,5 @@ class RegisterActivity : AppCompatActivity() {
         btnCancel.setOnClickListener {
             finish()
         }
-    }
-
-    private fun showAndoridID() {
-        val androidID = DeviceUtils.getAndroidID(this)
-        androidIdEditText.setText(androidID)
     }
 }

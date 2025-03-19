@@ -117,9 +117,10 @@
                 android:background="@drawable/bg_data_edit_profile"
                 android:fontFamily="@font/inter"
                 android:padding="10dp"
+                android:inputType="textEmailAddress"
                 android:textColor="@color/darker_grey"
                 android:textSize="14sp"
-                android:id="@+id/EmployeeIdField"/>
+                android:id="@+id/emailField"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -171,9 +172,7 @@
                 android:layout_marginBottom="5dp"
                 android:fontFamily="@font/inter"
                 android:text="ID Pegawai"
-                android:textColor="@color/darker_grey" />
-                android:text="Android ID"
-                android:textColor="@color/blue" />
+                android:textColor="@color/darker_grey"/>
 
             <EditText
                 android:layout_width="match_parent"
@@ -184,8 +183,7 @@
                 android:padding="10dp"
                 android:textColor="@color/darker_grey"
                 android:textSize="14sp"
-                android:enabled="false"
-                android:id="@+id/AndroidIdField"/>
+                android:id="@+id/EmployeeIdField"/>
 
 
             <LinearLayout

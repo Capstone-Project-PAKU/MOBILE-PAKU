@@ -64,7 +64,7 @@ class LoginActivity : AppCompatActivity() {
             val username = usernameEditText.text.toString()
             val password = passwordEditText.text.toString()
             val rememberMe = rememberMeCheckBox.isChecked
-            val imei = DeviceUtils.getAndroidID(this)
+            val androidId = DeviceUtils.getAndroidID(this)
 
             if (username.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Data diri harus dilengkapi", Toast.LENGTH_SHORT).show()
@@ -75,7 +75,7 @@ class LoginActivity : AppCompatActivity() {
                 prefs.edit().putString("username", username).apply()
             }
 
-            userViewModel.login(username, password, imei) { success, message, loginData ->
+            userViewModel.login(username, password, androidId) { success, message, loginData ->
                 runOnUiThread {
                     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
                     if (success) {

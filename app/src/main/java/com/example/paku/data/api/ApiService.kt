@@ -1,5 +1,9 @@
 package com.example.paku.data.api
 
+import com.example.paku.data.model.otp.SendRequest
+import com.example.paku.data.model.otp.SendResponse
+import com.example.paku.data.model.otp.VerifyRequest
+import com.example.paku.data.model.otp.VerifyResponse
 import com.example.paku.data.model.presence.ClockIn_InsideRequest
 import com.example.paku.data.model.presence.ClockIn_InsideResponse
 import com.example.paku.data.model.presence.ClockOut_InsideRequest
@@ -7,6 +11,8 @@ import com.example.paku.data.model.presence.ClockOut_InsideResponse
 import com.example.paku.data.model.presence.GetCurrentPresenceResponse
 import com.example.paku.data.model.presence.GetUserPresenceResponse
 import com.example.paku.data.model.recycleview.PresenceItem
+import com.example.paku.data.model.users.CP_OTP_Request
+import com.example.paku.data.model.users.CP_OTP_Response
 import com.example.paku.data.model.users.CP_Request
 import com.example.paku.data.model.users.CP_Response
 import com.example.paku.data.model.users.LoginRequest
@@ -55,6 +61,11 @@ interface ApiService {
         @Body request: CP_Request
     ): Response<CP_Response>
 
+    @PUT("api/user/change-password-otp")
+    suspend fun changePasswordWithOTP(
+        @Body request: CP_OTP_Request
+    ): Response<CP_OTP_Response>
+
     @PUT("api/auth/refresh")
     suspend fun refresh(@Body request: RefreshRequest): Response<RefreshResponse>
 
@@ -81,4 +92,11 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("id") userId: String
     ): Response<GetUserPresenceResponse>
+
+    // OTP
+    @POST("api/otp/send")
+    suspend fun sendOTP(@Body request: SendRequest): Response<SendResponse>
+
+    @POST("api/otp/verify")
+    suspend fun verifyOTP(@Body request: VerifyRequest): Response<VerifyResponse>
 }

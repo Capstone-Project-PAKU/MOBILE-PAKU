@@ -4,7 +4,8 @@ data class RegisterData(
     val id_user: String,
     val id_pegawai: String,
     val username: String,
+    val email: String,
     val hashedPassword: String,
     val role: String,
-    val imei: String
+    val id_android: String
 )

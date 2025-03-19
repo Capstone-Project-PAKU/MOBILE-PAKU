@@ -1,8 +1,12 @@
 package com.example.paku.data.repository
 
 import com.example.paku.data.api.RetrofitClient
-import com.example.paku.data.model.presence.ClockIn_InsideRequest
-import com.example.paku.data.model.presence.ClockIn_InsideResponse
+import com.example.paku.data.model.otp.SendRequest
+import com.example.paku.data.model.otp.SendResponse
+import com.example.paku.data.model.otp.VerifyRequest
+import com.example.paku.data.model.otp.VerifyResponse
+import com.example.paku.data.model.users.CP_OTP_Request
+import com.example.paku.data.model.users.CP_OTP_Response
 import com.example.paku.data.model.users.CP_Request
 import com.example.paku.data.model.users.CP_Response
 import com.example.paku.data.model.users.LoginRequest
@@ -13,15 +17,21 @@ import com.example.paku.data.model.users.ProfileResponse
 import com.example.paku.data.model.users.RegisterRequest
 import com.example.paku.data.model.users.RegisterResponse
 import retrofit2.Response
-import retrofit2.http.Body
 
 class UserRepository {
-    suspend fun register(id_pegawai: String, username: String, password: String, role: String, imei: String): Response<RegisterResponse> {
-        return RetrofitClient.instance.register(RegisterRequest(id_pegawai, username, password, role, imei))
+    suspend fun register(
+        id_pegawai: String,
+        username: String,
+        email: String,
+        password: String,
+        role: String,
+        id_android: String
+    ): Response<RegisterResponse> {
+        return RetrofitClient.instance.register(RegisterRequest(id_pegawai, username, email, password, role, id_android))
     }
 
-    suspend fun login(username: String, password: String, imei: String): Response<LoginResponse> {
-        return RetrofitClient.instance.login(LoginRequest(username, password, imei))
+    suspend fun login(username: String, password: String, id_android: String): Response<LoginResponse> {
+        return RetrofitClient.instance.login(LoginRequest(username, password, id_android))
     }
 
     suspend fun getProfile(authHeader: String): Response<ProfileResponse> {
@@ -44,5 +54,26 @@ class UserRepository {
         confirmPassword: String
     ): Response<CP_Response> {
         return RetrofitClient.instance.changePassword(authHeader, userId, CP_Request(currentPassword, newPassword, confirmPassword))
+    }
+
+    suspend fun changePasswordWithOTP(
+        email: String,
+        newPassword: String,
+        confirmPassword: String
+    ): Response<CP_OTP_Response> {
+        return RetrofitClient.instance.changePasswordWithOTP(CP_OTP_Request(email, newPassword, confirmPassword))
+    }
+
+    suspend fun sendOTP(
+        email: String
+    ): Response<SendResponse> {
+        return RetrofitClient.instance.sendOTP(SendRequest(email))
+    }
+
+    suspend fun verifyOTP(
+        email: String,
+        otp: String
+    ): Response<VerifyResponse> {
+        return RetrofitClient.instance.verifyOTP(VerifyRequest(email, otp))
     }
 }

@@ -112,7 +112,11 @@ class ProfileFragment : Fragment() {
                     .remove("accessToken")
                     .remove("refreshToken")
                     .apply()
-                startActivity(Intent(requireContext(), LoginActivity::class.java))
+
+                val intent =Intent(requireContext(), LoginActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+                requireActivity().finish()
             } else {
                 Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
             }
