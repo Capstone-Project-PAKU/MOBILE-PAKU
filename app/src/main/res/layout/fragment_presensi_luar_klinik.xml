@@ -63,7 +63,8 @@
             android:text="Status Validasi: Silahkan absen"
             android:fontFamily="@font/inter"
             android:textSize="14sp"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:id="@+id/presenceOutValidationStatus"/>
 
         <ImageView
             android:layout_width="30dp"
@@ -71,7 +72,8 @@
             android:layout_marginEnd="5dp"
             android:src="@drawable/icon_forbidden"
             android:layout_gravity="center"
-            android:layout_marginStart="3dp"/>
+            android:layout_marginStart="3dp"
+            android:id="@+id/presenceOutValidationIcon"/>
     </LinearLayout>
 
     <!-- ScrollView -->
@@ -114,7 +116,7 @@
                         android:src="@drawable/icon_take_selfie" />
 
                     <Button
-                        android:id="@+id/btnCapture"
+                        android:id="@+id/btnCamera"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
@@ -188,7 +190,7 @@
                     app:cornerRadius="10dp"/>
 
                 <Button
-                    android:id="@+id/btnSave"
+                    android:id="@+id/btnClockOutside"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

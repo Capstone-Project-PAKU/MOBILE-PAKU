@@ -4,11 +4,13 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.paku.data.model.list.CurrentPresenceData
+import com.example.paku.data.model.list.PresenceAltData
 import com.example.paku.data.model.list.PresenceInData
 import com.example.paku.data.model.list.PresenceOutData
+import com.example.paku.data.model.list.PresenceOutsideData
 import com.example.paku.data.repository.PresenceRepository
-import com.example.paku.ui.adapter.PresenceItemAdapter
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
 import org.json.JSONObject
 import retrofit2.HttpException
 import retrofit2.Response
@@ -90,6 +92,138 @@ class PresenceViewModel: ViewModel() {
                 if (response.isSuccessful){
                     val currentPresenceResponse = response.body()
                     onResult(true, null, currentPresenceResponse?.data)
+                }
+            } catch (e: HttpException) {
+                Log.e("UserViewModel", "Server error: ${e.message}")
+                onResult(false, "Server error. Mohon coba lagi nanti.", null)
+            } catch (e: IOException) {
+                Log.e("UserViewModel", "Network error: ${e.message}")
+                onResult(false, "Jaringan error. Mohon periksa koneksi internet anda.", null)
+            } catch (e: Exception) {
+                Log.e("UserViewModel", "Unexpected error: ${e.localizedMessage}")
+                onResult(false, "Unexpected error: ${e.localizedMessage}", null)
+            }
+        }
+    }
+
+    fun clockIn_Alternate(
+        token: String,
+        file_selfie: MultipartBody.Part,
+        id_user: String,
+        tanggal_presensi: String,
+        waktu_masuk: String,
+        onResult: (Boolean, String, PresenceAltData?) -> Unit
+    ){
+        viewModelScope.launch {
+            try {
+                val response = repository.clockIn_Alternate("Bearer $token", file_selfie, id_user, tanggal_presensi, waktu_masuk)
+
+                if (response.isSuccessful) {
+                    val clockIn = response.body()
+                    onResult(true, clockIn?.message ?: "Berhasil melakukan presensi", clockIn?.data)
+                } else {
+                    val error = parseErrorMessage(response)
+                    onResult(false, error, null)
+                }
+            } catch (e: HttpException) {
+                Log.e("UserViewModel", "Server error: ${e.message}")
+                onResult(false, "Server error. Mohon coba lagi nanti.", null)
+            } catch (e: IOException) {
+                Log.e("UserViewModel", "Network error: ${e.message}")
+                onResult(false, "Jaringan error. Mohon periksa koneksi internet anda.", null)
+            } catch (e: Exception) {
+                Log.e("UserViewModel", "Unexpected error: ${e.localizedMessage}")
+                onResult(false, "Unexpected error: ${e.localizedMessage}", null)
+            }
+        }
+    }
+
+    fun clockOut_Alternate(
+        token: String,
+        file_selfie: MultipartBody.Part,
+        id_user: String,
+        tanggal_presensi: String,
+        waktu_keluar: String,
+        onResult: (Boolean, String, PresenceAltData?) -> Unit
+    ){
+        viewModelScope.launch {
+            try {
+                val response = repository.clockOut_Alternate("Bearer $token", file_selfie, id_user, tanggal_presensi, waktu_keluar)
+
+                if (response.isSuccessful) {
+                    val clockOut = response.body()
+                    onResult(true, clockOut?.message ?: "Berhasil melakukan presensi", clockOut?.data)
+                } else {
+                    val error = parseErrorMessage(response)
+                    onResult(false, error, null)
+                }
+            } catch (e: HttpException) {
+                Log.e("UserViewModel", "Server error: ${e.message}")
+                onResult(false, "Server error. Mohon coba lagi nanti.", null)
+            } catch (e: IOException) {
+                Log.e("UserViewModel", "Network error: ${e.message}")
+                onResult(false, "Jaringan error. Mohon periksa koneksi internet anda.", null)
+            } catch (e: Exception) {
+                Log.e("UserViewModel", "Unexpected error: ${e.localizedMessage}")
+                onResult(false, "Unexpected error: ${e.localizedMessage}", null)
+            }
+        }
+    }
+
+    fun clockIn_Outside(
+        token: String,
+        file_selfie: MultipartBody.Part,
+        file_dokumen: MultipartBody.Part,
+        id_user: String,
+        tanggal_presensi: String,
+        waktu_masuk: String,
+        lokasi: String,
+        onResult: (Boolean, String, PresenceOutsideData?) -> Unit
+    ) {
+        viewModelScope.launch {
+            try {
+                val response = repository.clockIn_Outside("Bearer $token", file_selfie, file_dokumen, id_user, tanggal_presensi, waktu_masuk, lokasi)
+
+                if (response.isSuccessful) {
+                    val clockIn = response.body()
+                    onResult(true, clockIn?.message ?: "Berhasil melakukan presensi", clockIn?.data)
+                } else {
+                    val error = parseErrorMessage(response)
+                    onResult(false, error, null)
+                }
+            } catch (e: HttpException) {
+                Log.e("UserViewModel", "Server error: ${e.message}")
+                onResult(false, "Server error. Mohon coba lagi nanti.", null)
+            } catch (e: IOException) {
+                Log.e("UserViewModel", "Network error: ${e.message}")
+                onResult(false, "Jaringan error. Mohon periksa koneksi internet anda.", null)
+            } catch (e: Exception) {
+                Log.e("UserViewModel", "Unexpected error: ${e.localizedMessage}")
+                onResult(false, "Unexpected error: ${e.localizedMessage}", null)
+            }
+        }
+    }
+
+    fun clockOut_Outside(
+        token: String,
+        file_selfie: MultipartBody.Part,
+        file_dokumen: MultipartBody.Part,
+        id_user: String,
+        tanggal_presensi: String,
+        waktu_keluar: String,
+        lokasi: String,
+        onResult: (Boolean, String, PresenceOutsideData?) -> Unit
+    ) {
+        viewModelScope.launch {
+            try {
+                val response = repository.clockOut_Outside("Bearer $token", file_selfie, file_dokumen, id_user, tanggal_presensi, waktu_keluar, lokasi)
+
+                if (response.isSuccessful) {
+                    val clockOut = response.body()
+                    onResult(true, clockOut?.message ?: "Berhasil melakukan presensi", clockOut?.data)
+                } else {
+                    val error = parseErrorMessage(response)
+                    onResult(false, error, null)
                 }
             } catch (e: HttpException) {
                 Log.e("UserViewModel", "Server error: ${e.message}")
