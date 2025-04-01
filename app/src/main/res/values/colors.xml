@@ -14,4 +14,6 @@
     <color name="red">#FF0000</color>
     <color name="blue">#00BBFF</color>
     <color name="dark_blue">#1E8AFF</color>
+    <color name="pending">#8B8000</color>
+    <color name="approve">#3F7D58</color>
 </resources>

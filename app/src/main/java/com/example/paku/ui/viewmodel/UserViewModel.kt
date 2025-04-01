@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.paku.data.model.list.LoginData
 import com.example.paku.data.model.list.ProfileData
+import com.example.paku.data.model.list.RefreshData
 import com.example.paku.data.model.list.RegisterData
 import com.example.paku.data.model.users.LoginResponse
 import com.example.paku.data.model.users.ProfileResponse
@@ -122,10 +123,21 @@ class UserViewModel: ViewModel() {
     }
 
     fun refresh(
-        accessToken: String,
-        onResult: (Boolean, RefreshResponse?) -> Unit
+        token: String,
+        onResult: (Boolean, RefreshData?) -> Unit
     ) {
+        viewModelScope.launch {
+            try {
+                val response = respository.refreshToken("Bearer $token")
 
+                if (response.isSuccessful) {
+                    val result = response.body()
+                    onResult(true, result?.data)
+                }
+            }catch (e: Exception) {
+                onResult(false, null)
+            }
+        }
     }
 
     fun logout(

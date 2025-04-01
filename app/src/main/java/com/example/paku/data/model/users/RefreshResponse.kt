@@ -1,6 +1,8 @@
 package com.example.paku.data.model.users
 
+import com.example.paku.data.model.list.RefreshData
+
 data class RefreshResponse(
-    val accessToken: String,
-    val refreshToken: String
+    val message: String,
+    val data: RefreshData
 )

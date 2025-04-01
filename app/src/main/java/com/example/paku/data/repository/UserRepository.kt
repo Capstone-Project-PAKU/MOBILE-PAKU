@@ -14,6 +14,8 @@ import com.example.paku.data.model.users.LoginResponse
 import com.example.paku.data.model.users.LogoutRequest
 import com.example.paku.data.model.users.LogoutResponse
 import com.example.paku.data.model.users.ProfileResponse
+import com.example.paku.data.model.users.RefreshRequest
+import com.example.paku.data.model.users.RefreshResponse
 import com.example.paku.data.model.users.RegisterRequest
 import com.example.paku.data.model.users.RegisterResponse
 import retrofit2.Response
@@ -40,6 +42,10 @@ class UserRepository {
 
     suspend fun validateToken(authHeader: String): Response<Void> {
         return RetrofitClient.instance.validateToken(authHeader)
+    }
+
+    suspend fun refreshToken(authHeader: String): Response<RefreshResponse> {
+        return RetrofitClient.instance.refresh(RefreshRequest(authHeader))
     }
 
     suspend fun logout(refreshToken: String): Response<LogoutResponse> {

@@ -14,7 +14,7 @@
 
         <!-- Teks Pengajuan -->
         <TextView
-            android:id="@+id/tvTitle"
+            android:id="@+id/tvLeaveTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Pengajuan sakit (surat ada)"
@@ -28,7 +28,7 @@
 
         <!-- Tanggal -->
         <TextView
-            android:id="@+id/tvDate"
+            android:id="@+id/tvLeaveDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="11/20/2024 - 11/25/2024"
@@ -37,7 +37,7 @@
             android:fontFamily="@font/inter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvTitle"
+            app:layout_constraintTop_toBottomOf="@id/tvLeaveTitle"
             app:layout_constraintVertical_bias="0.176" />
 
         <!-- Container Status -->
@@ -55,7 +55,7 @@
             app:layout_constraintEnd_toEndOf="parent">
 
             <TextView
-                android:id="@+id/tvStatus"
+                android:id="@+id/tvLeaveStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Approved"

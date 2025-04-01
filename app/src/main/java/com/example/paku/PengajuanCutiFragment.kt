@@ -2,22 +2,41 @@ package com.example.paku
 
 import android.app.Activity
 import android.app.DatePickerDialog
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
+import android.provider.OpenableColumns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.database.getStringOrNull
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.viewModelScope
+import com.example.paku.ui.popup.showPresenceFailedPopup
+import com.example.paku.ui.popup.showPresenceSuccessPopup
+import com.example.paku.ui.viewmodel.PermissionViewModel
+import com.example.paku.ui.viewmodel.UserViewModel
 import com.google.android.material.textfield.TextInputLayout
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
 
 class PengajuanCutiFragment : Fragment() {
 
@@ -27,10 +46,20 @@ class PengajuanCutiFragment : Fragment() {
     private lateinit var etTanggalSelesai: EditText
     private lateinit var editTextJenisIzin: AutoCompleteTextView
     private lateinit var jenisIzinLayout: TextInputLayout
+    private lateinit var etketeranganCuti: EditText
+    private lateinit var btnSave: Button
+    private lateinit var prefs: SharedPreferences
+    private lateinit var accessToken: String
+    private lateinit var userId: String
+    private lateinit var permissionHeader: TextView
 
-    private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     private val calendarMulai = Calendar.getInstance()
     private val calendarSelesai = Calendar.getInstance()
+    private var pdfFile: String? = null
+    private var pdfName: String? = null
+    private val permissionViewModel: PermissionViewModel by viewModels()
+    private val userViewModel: UserViewModel by viewModels()
 
     private lateinit var selectPdfLauncher: ActivityResultLauncher<Intent>
 
@@ -49,7 +78,14 @@ class PengajuanCutiFragment : Fragment() {
         etTanggalMulai = view.findViewById(R.id.TanggalMulai)
         etTanggalSelesai = view.findViewById(R.id.TanggalSelesai)
         editTextJenisIzin = view.findViewById(R.id.JenisIzin)
-        jenisIzinLayout = view.findViewById(R.id.textInputLayout) // Pastikan ID di XML sesuai
+        jenisIzinLayout = view.findViewById(R.id.textInputLayout)
+        btnSave = view.findViewById(R.id.btnSave)
+        permissionHeader = view.findViewById(R.id.permissionHeader)
+        etketeranganCuti = view.findViewById(R.id.etketeranganCuti)
+
+        prefs = requireContext().getSharedPreferences("credential_pref", Context.MODE_PRIVATE)
+        accessToken = prefs.getString("accessToken", null).toString()
+        userId = prefs.getString("userId", null).toString()
 
         val imgBack = view.findViewById<ImageView>(R.id.back)
         imgBack.setOnClickListener { parentFragmentManager.popBackStack() }
@@ -60,8 +96,10 @@ class PengajuanCutiFragment : Fragment() {
         selectPdfLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 result.data?.data?.let { uri ->
-                    val fileName = getFileName(uri)
-                    tvPdfName.text = fileName ?: "Dokumen terpilih"
+                    val res = getFilePathFromUri(uri)
+                    pdfFile = res.first
+                    pdfName = res.second
+                    tvPdfName.text = pdfName ?: "Dokumen terpilih"
                 }
             }
         }
@@ -91,6 +129,31 @@ class PengajuanCutiFragment : Fragment() {
 
         btnUploadPdf.setOnClickListener { openFilePicker() }
 
+        btnSave.setOnClickListener {
+            val jenis_cuti = editTextJenisIzin.text.toString()
+            val tgl_awal_cuti = etTanggalMulai.text.toString()
+            val tgl_akhir_cuti = etTanggalSelesai.text.toString()
+            val keterangan_cuti = etketeranganCuti.text.toString()
+
+            if (pdfFile == null) {
+                Toast.makeText(requireContext(), "Surat Cuti tidak boleh kosong", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            val document = getPdfPart(pdfFile!!)
+
+            if (
+                jenis_cuti.isEmpty() ||
+                tgl_akhir_cuti.isEmpty() ||
+                tgl_awal_cuti.isEmpty() ||
+                keterangan_cuti.isEmpty()
+            ) {
+                Toast.makeText(requireContext(), "Semua data wajib di isi", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            addWorkLeave(accessToken, document!!, userId, jenis_cuti, tgl_awal_cuti, tgl_akhir_cuti, keterangan_cuti, view)
+        }
+
+        fetchUserProfile(accessToken)
         setupTanggalMulai()
         setupTanggalSelesai()
     }
@@ -151,13 +214,75 @@ class PengajuanCutiFragment : Fragment() {
         selectPdfLauncher.launch(Intent.createChooser(intent, "Pilih file PDF"))
     }
 
-    private fun getFileName(uri: Uri): String? {
-        var fileName: String? = null
-        requireContext().contentResolver.query(uri, null, null, null, null)?.use { cursor ->
-            if (cursor.moveToFirst()) {
-                fileName = cursor.getStringOrNull(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DISPLAY_NAME))
+    private fun addWorkLeave(
+        token: String,
+        file_cuti: MultipartBody.Part,
+        id_user: String,
+        jenis_cuti: String,
+        tgl_awal_cuti: String,
+        tgl_akhir_cuti: String,
+        keteranngan_cuti: String,
+        view: View
+    ) {
+        permissionViewModel.AddWorkLeave(token, file_cuti, id_user, jenis_cuti, tgl_awal_cuti, tgl_akhir_cuti, keteranngan_cuti) { success, message, permissionData ->
+            if (success) {
+                showPresenceSuccessPopup(view, message)
+            } else {
+                showPresenceFailedPopup(view, message, false)
             }
         }
-        return fileName
+    }
+
+    private fun getPdfPart(filePath: String): MultipartBody.Part? {
+        val file = File(filePath)
+
+        if (!file.exists()) {
+            println("Error: File does not exist!")
+            return null
+        }
+
+        // Detect file type based on extension
+        val mimeType = when {
+            filePath.endsWith(".pdf", true) -> "application/pdf"
+            else -> {
+                println("Error: Invalid file type. Only JPEG, PNG, are allowed!")
+                return null
+            }
+        }
+
+        val requestFile = file.asRequestBody(mimeType.toMediaTypeOrNull()) // Convert file to RequestBody
+        return MultipartBody.Part.createFormData("file_cuti", file.name, requestFile) // Set part name
+    }
+
+    private fun getFilePathFromUri(uri: Uri): Pair<String?, String?> {
+        requireContext().contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+            val index = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+            if (index != -1) {
+                cursor.moveToFirst()
+                val filename = cursor.getString(index)
+                val file = File(requireContext().cacheDir, filename)
+
+                requireContext().contentResolver.openInputStream(uri)?.use { inputStream ->
+                    file.outputStream().use { outputStream ->
+                        inputStream.copyTo(outputStream)
+                    }
+                }
+                return file.absolutePath to file.name
+            }
+        }
+        return null to null
+    }
+
+    private fun fetchUserProfile(token: String) {
+        userViewModel.getProfile(token) { success, userData ->
+            if (success) {
+                val userOccupation = userData?.jabatan?.let { capitalizeWords(it) }
+                permissionHeader.text = userOccupation
+            }
+        }
+    }
+
+    private fun capitalizeWords(input: String): String {
+        return input.split(" ").joinToString(" ") { it.lowercase().replaceFirstChar { c -> c.uppercaseChar() } }
     }
 }

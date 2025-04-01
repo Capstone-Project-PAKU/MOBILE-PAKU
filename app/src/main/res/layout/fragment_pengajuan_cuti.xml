@@ -70,7 +70,8 @@
             android:text="Dokter Umum"
             android:fontFamily="@font/inter"
             android:textSize="14sp"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:id="@+id/permissionHeader"/>
 
         <TextView
             android:layout_width="0dp"
@@ -202,7 +203,8 @@
                 android:gravity="fill_horizontal"
                 android:fontFamily="@font/inter"
                 android:textColor="@color/darker_grey"
-                android:background="@drawable/bg_data_edit_profile" />
+                android:background="@drawable/bg_data_edit_profile"
+                android:id="@+id/etketeranganCuti"/>
 
             <TextView
                 android:layout_width="wrap_content"

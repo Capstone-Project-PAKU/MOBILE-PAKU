@@ -82,6 +82,7 @@ class LoginActivity : AppCompatActivity() {
                         prefs.edit()
                             .putString("accessToken", loginData?.accessToken)
                             .putString("refreshToken", loginData?.refreshToken)
+                            .putString("userId", loginData?.id_user)
                             .apply()
                         startActivity(Intent(this, MainActivity::class.java))
                         finish()

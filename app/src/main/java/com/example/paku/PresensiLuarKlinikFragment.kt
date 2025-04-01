@@ -7,23 +7,24 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
-import androidx.core.database.getStringOrNull
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.paku.ui.popup.showPresenceFailedPopup
@@ -43,13 +44,13 @@ class PresensiLuarKlinikFragment : Fragment() {
     private lateinit var tvPdfName: TextView
     private lateinit var btnUploadPdf: LinearLayout
     private lateinit var photoPreview: ImageView
-    private lateinit var imageUri: String
     private lateinit var prefs: SharedPreferences
     private lateinit var accessToken: String
     private lateinit var userId: String
     private lateinit var locationManager: LocationManager
     private lateinit var validationStatus: TextView
     private lateinit var validationIcon: ImageView
+    private var imageUri: String? = null
     private var pdfFile: String? = null
     private var pdfName: String? = null
     private var locationJSON = JSONObject()
@@ -68,7 +69,7 @@ class PresensiLuarKlinikFragment : Fragment() {
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            imageUri = result.data?.getStringExtra("imagePath") ?: return@registerForActivityResult
+            imageUri = result.data?.getStringExtra("imagePath")
             photoPreview.setImageURI(Uri.parse(imageUri))
         }
     }
@@ -114,8 +115,12 @@ class PresensiLuarKlinikFragment : Fragment() {
         }
 
         saveBtn.setOnClickListener {
+            if (imageUri == null || pdfFile == null) {
+                Toast.makeText(requireContext(), "Foto dan Surat Tugas tidak boleh kosong", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             val date = getCurrentDate()
-            val photo = getPhotoPart(imageUri)
+            val photo = getPhotoPart(imageUri!!)
             val document = getPdfPart(pdfFile!!)
             val lokasi = locationJSON.toString()
             val clockIn = prefs.getString("waktu_masuk_outside", null)

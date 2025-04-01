@@ -215,7 +215,7 @@ class PresensiDalamKlinikFragment : Fragment() {
     private fun fetchPresence(token: String, userId: String){
         lifecycleScope.launch {
             try {
-                val response = RetrofitClient.instance.getUserPresence(token, userId)
+                val response = RetrofitClient.instance.getUserPresence("Bearer $token", userId)
                 if (response.isSuccessful) {
                     response.body()?.let { presenceResponse ->
                         val presenceList = presenceResponse.data

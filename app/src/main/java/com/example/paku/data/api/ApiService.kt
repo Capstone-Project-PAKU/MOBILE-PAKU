@@ -4,6 +4,8 @@ import com.example.paku.data.model.otp.SendRequest
 import com.example.paku.data.model.otp.SendResponse
 import com.example.paku.data.model.otp.VerifyRequest
 import com.example.paku.data.model.otp.VerifyResponse
+import com.example.paku.data.model.permission.GetUserLeaveResponse
+import com.example.paku.data.model.permission.LeaveResponse
 import com.example.paku.data.model.presence.Clock_AlternateResponse
 import com.example.paku.data.model.presence.ClockIn_InsideRequest
 import com.example.paku.data.model.presence.ClockIn_InsideResponse
@@ -36,6 +38,7 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ApiService {
     // Users
@@ -140,6 +143,32 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("id") userId: String
     ): Response<GetUserPresenceResponse>
+
+    // Permission
+    @Multipart
+    @POST("api/permission/")
+    suspend fun addWorkLeave(
+        @Header("Authorization") token: String,
+        @Part file_cuti: MultipartBody.Part,
+        @Part("id_user") userId: RequestBody,
+        @Part("jenis_cuti") leaveType: RequestBody,
+        @Part("keterangan_cuti") leaveInformation: RequestBody,
+        @Part("tgl_awal_cuti") startDate: RequestBody,
+        @Part("tgl_akhir_cuti") endDate: RequestBody
+    ): Response<LeaveResponse>
+
+    @GET("api/permission/user/{id}")
+    suspend fun getUserLeave(
+        @Header("Authorization") token: String,
+        @Path("id") userId: String
+    ): Response<GetUserLeaveResponse>
+
+    @GET("api/permission/user/date/{id}")
+    suspend fun getUserLeaveByDate(
+        @Header("Authorization") token: String,
+        @Path("id") userId: String,
+        @Query("tgl_awal_cuti") tglAwalCuti: String
+    ): Response<GetUserLeaveResponse>
 
     // OTP
     @POST("api/otp/send")
