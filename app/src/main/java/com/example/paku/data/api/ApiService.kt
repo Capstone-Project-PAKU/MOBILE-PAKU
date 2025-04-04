@@ -14,6 +14,8 @@ import com.example.paku.data.model.presence.ClockOut_InsideRequest
 import com.example.paku.data.model.presence.ClockOut_InsideResponse
 import com.example.paku.data.model.presence.GetCurrentPresenceResponse
 import com.example.paku.data.model.presence.GetUserPresenceResponse
+import com.example.paku.data.model.shedule.GetUserScheduleDetail
+import com.example.paku.data.model.shedule.GetUserWorkingRecap
 import com.example.paku.data.model.users.CP_OTP_Request
 import com.example.paku.data.model.users.CP_OTP_Response
 import com.example.paku.data.model.users.CP_Request
@@ -169,6 +171,25 @@ interface ApiService {
         @Path("id") userId: String,
         @Query("tgl_awal_cuti") tglAwalCuti: String
     ): Response<GetUserLeaveResponse>
+
+    // Schedule
+    @GET("api/schedule/detail/{id}")
+    suspend fun getUserSchedule(
+        @Header("Authorization") token: String,
+        @Path("id") userId: String,
+        @Query("month") monthFilter: String?,
+        @Query("year") yearFilter: String?,
+        @Query("date") dateFilter: String?
+    ): Response<GetUserScheduleDetail>
+
+    // Working recap
+    @GET("api/schedule/recap/{id}")
+    suspend fun getUserWorkingRecap(
+        @Header("Authorization") token: String,
+        @Path("id") userId: String,
+        @Query("month") monthFilter: String?,
+        @Query("year") yearFilter: String?
+    ): Response<GetUserWorkingRecap>
 
     // OTP
     @POST("api/otp/send")
