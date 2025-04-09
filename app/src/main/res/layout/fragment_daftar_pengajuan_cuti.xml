@@ -73,17 +73,6 @@
             android:textSize="14sp"
             android:layout_gravity="center"
             android:id="@+id/userOccupationTv"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Poliklinik: Umum"
-            android:fontFamily="@font/inter"
-            android:textSize="14sp"
-            android:gravity="end"
-            android:layout_gravity="center"
-            android:layout_marginEnd="10dp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -108,9 +97,9 @@
 
     <!-- RecyclerView untuk Rekap Absensi -->
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/layoutCalendarButton"
-        android:layout_width="404dp"
-        android:layout_height="49dp"
         android:layout_marginHorizontal="15dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"

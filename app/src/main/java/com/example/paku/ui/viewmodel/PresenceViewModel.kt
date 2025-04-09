@@ -112,11 +112,12 @@ class PresenceViewModel: ViewModel() {
         id_user: String,
         tanggal_presensi: String,
         waktu_masuk: String,
+        lokasi: String,
         onResult: (Boolean, String, PresenceAltData?) -> Unit
     ){
         viewModelScope.launch {
             try {
-                val response = repository.clockIn_Alternate("Bearer $token", file_selfie, id_user, tanggal_presensi, waktu_masuk)
+                val response = repository.clockIn_Alternate("Bearer $token", file_selfie, id_user, tanggal_presensi, waktu_masuk, lokasi)
 
                 if (response.isSuccessful) {
                     val clockIn = response.body()
@@ -144,11 +145,12 @@ class PresenceViewModel: ViewModel() {
         id_user: String,
         tanggal_presensi: String,
         waktu_keluar: String,
+        lokasi: String,
         onResult: (Boolean, String, PresenceAltData?) -> Unit
     ){
         viewModelScope.launch {
             try {
-                val response = repository.clockOut_Alternate("Bearer $token", file_selfie, id_user, tanggal_presensi, waktu_keluar)
+                val response = repository.clockOut_Alternate("Bearer $token", file_selfie, id_user, tanggal_presensi, waktu_keluar, lokasi)
 
                 if (response.isSuccessful) {
                     val clockOut = response.body()

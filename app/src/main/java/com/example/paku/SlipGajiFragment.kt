@@ -1,6 +1,9 @@
 package com.example.paku
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,16 +12,35 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.NumberPicker
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.paku.data.api.RetrofitClient
+import com.example.paku.data.model.list.PayrollData
+import com.example.paku.ui.adapter.PayrollItemAdapter
+import com.example.paku.ui.viewmodel.UserViewModel
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
 
 class SlipGajiFragment : Fragment() {
 
     private lateinit var tvSelectMonth: TextView
     private lateinit var calendarSection: LinearLayout
     private lateinit var btnArrowDown: ImageButton
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var payrollItemAdapter: PayrollItemAdapter
+    private lateinit var prefs: SharedPreferences
+    private lateinit var accessToken: String
+    private lateinit var userId: String
+    private lateinit var userOccupationTv: TextView
+    private lateinit var notFoundTv: TextView
+    private val userViewModel: UserViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,6 +56,18 @@ class SlipGajiFragment : Fragment() {
         tvSelectMonth = view.findViewById(R.id.tvSelectMonth)
         calendarSection = view.findViewById(R.id.calendarSection)
         btnArrowDown = view.findViewById(R.id.btnArrowDown)
+        recyclerView = view.findViewById(R.id.rvSlipGaji)
+        notFoundTv = view.findViewById(R.id.tvNotFound)
+        userOccupationTv = view.findViewById(R.id.userOccupationTv)
+
+        prefs = requireContext().getSharedPreferences("credential_pref", Context.MODE_PRIVATE)
+        accessToken = prefs.getString("accessToken", null).toString()
+        userId = prefs.getString("userId", null).toString()
+
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        fetchUserProfile(accessToken)
+        fetchUserPayroll(accessToken, userId, null, null)
 
         // Set action ketika diklik untuk memilih bulan dan tahun
         calendarSection.setOnClickListener {
@@ -93,5 +127,88 @@ class SlipGajiFragment : Fragment() {
             }
             .setNegativeButton("Batal", null)
             .show()
+    }
+
+    private fun fetchUserPayroll(
+        token: String,
+        userId: String,
+        monthFilter: String?,
+        yearFilter: String?
+    ) {
+        lifecycleScope.launch {
+            try {
+                val response = RetrofitClient.instance.getUserPayroll("Bearer $token", userId, monthFilter, yearFilter)
+                if (response.isSuccessful) {
+                    val payrollList = response.body()?.data ?: emptyList()
+
+                    if (payrollList.isNotEmpty()) {
+                        showRecyclerView(payrollList)
+                    } else {
+                        showEmptyState()
+                    }
+                } else {
+                    showEmptyState()
+                }
+            } catch (e: Exception) {
+                Log.e("UserViewModel", "Unexpected error: ${e.message}")
+                Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun showRecyclerView(payrollList: List<PayrollData>) {
+        notFoundTv.visibility = View.GONE
+        recyclerView.visibility = View.VISIBLE
+
+        if (::payrollItemAdapter.isInitialized) {
+            payrollItemAdapter.updateData(payrollList)
+        } else {
+            payrollItemAdapter = PayrollItemAdapter(payrollList)
+            recyclerView.adapter = payrollItemAdapter
+        }
+    }
+
+    private fun resetRecyclerView() {
+        if (::payrollItemAdapter.isInitialized) {
+            payrollItemAdapter.updateData(emptyList())  // 🔹 Clear adapter to avoid stale data
+        }
+        recyclerView.visibility = View.GONE  // 🔹 Hide RecyclerView momentarily
+        notFoundTv.visibility = View.VISIBLE  // 🔹 Show loading state until data is available
+    }
+
+    private fun showEmptyState() {
+        recyclerView.visibility = View.GONE
+        notFoundTv.visibility = View.VISIBLE
+    }
+
+    private fun getMonthAndYear(tanggal:String): Pair<String, String>? {
+        val monthMap = mapOf(
+            "January" to "1", "February" to "2", "March" to "3",
+            "April" to "4", "May" to "5", "June" to "6",
+            "July" to "7", "August" to "8", "September" to "9",
+            "October" to "10", "November" to "11", "December" to "12"
+        )
+
+        val date = tanggal.split(" ")
+
+        if (date.size != 2) return null
+
+        val month = monthMap[date[0]] ?: return null
+        val year = date[1]
+
+        return month to year
+    }
+
+    private fun fetchUserProfile(token: String) {
+        userViewModel.getProfile(token) { success, userData ->
+            if (success) {
+                val userOccupation = userData?.jabatan?.let { capitalizeWords(it) }
+                userOccupationTv.text = userOccupation
+            }
+        }
+    }
+
+    private fun capitalizeWords(input: String): String {
+        return input.split(" ").joinToString(" ") { it.lowercase().replaceFirstChar { c -> c.uppercaseChar() } }
     }
 }

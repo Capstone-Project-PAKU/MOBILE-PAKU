@@ -14,6 +14,7 @@ import com.example.paku.data.model.presence.ClockOut_InsideRequest
 import com.example.paku.data.model.presence.ClockOut_InsideResponse
 import com.example.paku.data.model.presence.GetCurrentPresenceResponse
 import com.example.paku.data.model.presence.GetUserPresenceResponse
+import com.example.paku.data.model.salary.GetUserPayrollResponse
 import com.example.paku.data.model.shedule.GetUserScheduleDetail
 import com.example.paku.data.model.shedule.GetUserWorkingRecap
 import com.example.paku.data.model.users.CP_OTP_Request
@@ -98,7 +99,8 @@ interface ApiService {
         @Part foto_selfie: MultipartBody.Part,
         @Part("id_user") idUser: RequestBody,
         @Part("tanggal_presensi") tanggalPresensi: RequestBody,
-        @Part("waktu_masuk") waktuMasuk: RequestBody
+        @Part("waktu_masuk") waktuMasuk: RequestBody,
+        @Part("lokasi") lokasi: RequestBody
     ): Response<Clock_AlternateResponse>
 
     @Multipart
@@ -108,7 +110,8 @@ interface ApiService {
         @Part foto_selfie: MultipartBody.Part,
         @Part("id_user") idUser: RequestBody,
         @Part("tanggal_presensi") tanggalPresensi: RequestBody,
-        @Part("waktu_keluar") waktuKeluar: RequestBody
+        @Part("waktu_keluar") waktuKeluar: RequestBody,
+        @Part("lokasi") lokasi: RequestBody
     ): Response<Clock_AlternateResponse>
 
     @Multipart
@@ -190,6 +193,15 @@ interface ApiService {
         @Query("month") monthFilter: String?,
         @Query("year") yearFilter: String?
     ): Response<GetUserWorkingRecap>
+
+    // Payroll
+    @GET("api/salary/payroll/user/{id}")
+    suspend fun getUserPayroll(
+        @Header("Authorization") token: String,
+        @Path("id") userId: String,
+        @Query("month") monthFilter: String?,
+        @Query("year") yearFilter: String?
+    ): Response<GetUserPayrollResponse>
 
     // OTP
     @POST("api/otp/send")

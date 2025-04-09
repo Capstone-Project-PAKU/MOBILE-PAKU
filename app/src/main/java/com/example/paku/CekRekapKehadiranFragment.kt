@@ -23,15 +23,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.paku.data.api.RetrofitClient
-import com.example.paku.data.model.list.WorkLeaveData
 import com.example.paku.data.model.list.WorkingRecapData
-import com.example.paku.ui.adapter.LeaveItemAdapter
 import com.example.paku.ui.adapter.PresenceRecapItemAdapter
-import com.example.paku.ui.adapter.ScheduleItemAdapter
 import com.example.paku.ui.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
 
 class CekRekapKehadiranFragment : Fragment() {
 
@@ -72,6 +70,7 @@ class CekRekapKehadiranFragment : Fragment() {
         userId = prefs.getString("userId", null).toString()
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        Log.d("test", "running")
         fetchUserProfile(accessToken)
         fetchUserRecap(accessToken, userId, null, null)
 
@@ -186,7 +185,19 @@ class CekRekapKehadiranFragment : Fragment() {
         if (::presenceRecapItemAdapter.isInitialized) {
             presenceRecapItemAdapter.updateData(recapList)
         } else {
-            presenceRecapItemAdapter = PresenceRecapItemAdapter(recapList)
+            presenceRecapItemAdapter = PresenceRecapItemAdapter(recapList) { month, year ->
+                val fragment = DetailRekapKehadiranFragment()
+                val bundle = Bundle().apply {
+                    putString("month", month)
+                    putString("year", year)
+                }
+                fragment.arguments = bundle
+
+                parentFragmentManager.beginTransaction()
+                    .add(R.id.frame_layout, fragment)
+                    .addToBackStack(null)
+                    .commit()
+            }
             recyclerView.adapter = presenceRecapItemAdapter
         }
     }

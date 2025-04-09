@@ -30,7 +30,6 @@ import com.example.paku.ui.adapter.PresenceItemAdapter
 import com.example.paku.ui.popup.showPresenceFailedPopup
 import com.example.paku.ui.popup.showPresenceSuccessPopup
 import com.example.paku.ui.viewmodel.PresenceViewModel
-import com.example.paku.ui.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime

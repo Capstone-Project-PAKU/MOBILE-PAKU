@@ -10,6 +10,7 @@ import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -22,6 +23,9 @@ class ChangePasswordFragment : Fragment() {
     private lateinit var confirmPassEditText: EditText
     private lateinit var prefs: SharedPreferences
     private lateinit var saveBtn: Button
+    private lateinit var accessToken: String
+    private lateinit var userId: String
+    private lateinit var userOccupationTv: TextView
     private val userViewModel: UserViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,10 +38,13 @@ class ChangePasswordFragment : Fragment() {
         newPassEditText = view.findViewById(R.id.newPass)
         confirmPassEditText = view.findViewById(R.id.confirmPass)
         saveBtn = view.findViewById(R.id.btnChangePassSave)
+        userOccupationTv = view.findViewById(R.id.userOccupationTv)
 
         prefs = requireContext().getSharedPreferences("credential_pref", Context.MODE_PRIVATE)
-        val accessToken = prefs.getString("accessToken", null)
-        val userId = prefs.getString("userId", null)
+        accessToken = prefs.getString("accessToken", null).toString()
+        userId = prefs.getString("userId", null).toString()
+
+        fetchUserProfile(accessToken)
 
         saveBtn.setOnClickListener {
 
@@ -50,18 +57,16 @@ class ChangePasswordFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            if (accessToken != null && userId != null) {
-                userViewModel.changePassword(accessToken, userId, currentPass, newPass, confirmPass) { success, message ->
-                    if (success) {
-                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-                        val activity = view.context as FragmentActivity
-                        val transaction = activity.supportFragmentManager.beginTransaction()
-                        transaction.replace(R.id.frame_layout, ProfileFragment())
-                        transaction.addToBackStack(null)
-                        transaction.commit()
-                    } else {
-                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-                    }
+            userViewModel.changePassword(accessToken, userId, currentPass, newPass, confirmPass) { success, message ->
+                if (success) {
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                    val activity = view.context as FragmentActivity
+                    val transaction = activity.supportFragmentManager.beginTransaction()
+                    transaction.replace(R.id.frame_layout, ProfileFragment())
+                    transaction.addToBackStack(null)
+                    transaction.commit()
+                } else {
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -79,5 +84,18 @@ class ChangePasswordFragment : Fragment() {
         }
 
         return view
+    }
+
+    private fun fetchUserProfile(token: String) {
+        userViewModel.getProfile(token) { success, userData ->
+            if (success) {
+                val userOccupation = userData?.jabatan?.let { capitalizeWords(it) }
+                userOccupationTv.text = userOccupation
+            }
+        }
+    }
+
+    private fun capitalizeWords(input: String): String {
+        return input.split(" ").joinToString(" ") { it.lowercase().replaceFirstChar { c -> c.uppercaseChar() } }
     }
 }

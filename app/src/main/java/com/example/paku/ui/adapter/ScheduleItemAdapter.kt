@@ -27,11 +27,16 @@ class ScheduleItemAdapter(private var itemList: List<ScheduleDetailData>):
     override fun onBindViewHolder(holder: ScheduleViewHolder, position: Int) {
         val item = itemList[position]
         holder.dateText.text = item.tanggal
-        holder.shiftKerjaText.text = item.shift_kerja
+        holder.shiftKerjaText.text = convertJadwal(item.shift_kerja)
     }
 
     override fun getItemCount(): Int {
         return itemList.size
+    }
+
+    private fun convertJadwal(s: String): String? {
+        val jadwal = mapOf("P" to "Pagi", "S" to "Siang", "F" to "Full", "L" to "Libur")
+        return jadwal[s]
     }
 
     fun updateData(newList: List<ScheduleDetailData>) {

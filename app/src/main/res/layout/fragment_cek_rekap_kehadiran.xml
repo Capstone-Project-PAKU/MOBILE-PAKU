@@ -72,17 +72,6 @@
             android:text="Dokter Umum"
             android:textSize="14sp"
             android:id="@+id/userOccupationTv"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginEnd="10dp"
-            android:layout_weight="1"
-            android:fontFamily="@font/inter"
-            android:gravity="end"
-            android:text="Poliklinik: Umum"
-            android:textSize="14sp" />
     </LinearLayout>
 
     <!-- Calendar -->

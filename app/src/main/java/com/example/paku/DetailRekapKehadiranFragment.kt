@@ -1,27 +1,106 @@
 package com.example.paku
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.paku.data.api.RetrofitClient
+import com.example.paku.ui.adapter.PresenceItemAdapter
+import com.example.paku.ui.viewmodel.UserViewModel
+import kotlinx.coroutines.launch
 
 class DetailRekapKehadiranFragment : Fragment() {
+
+    private lateinit var prefs: SharedPreferences
+    private lateinit var accessToken: String
+    private lateinit var userId: String
+    private lateinit var userOccupationTv: TextView
+    private lateinit var title: TextView
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var presenceItemAdapter: PresenceItemAdapter
+    private val userViewModel: UserViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_cek_rekap_kehadiran, container, false)
+        return inflater.inflate(R.layout.fragment_detail_rekap_kehadiran, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        title = view.findViewById(R.id.titleBulan)
+        recyclerView = view.findViewById(R.id.rvDetailAbsensi)
+
+        prefs = requireContext().getSharedPreferences("credential_pref", Context.MODE_PRIVATE)
+        accessToken = prefs.getString("accessToken", null).toString()
+        userId = prefs.getString("userId", null).toString()
+
+        title.text = "${convertToMonth(arguments?.getString("month")!!)} ${arguments?.getString("year")!!}"
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        fetchUserProfile(accessToken)
+        fetchPresence(accessToken, userId)
+
         val imgBack = view.findViewById<ImageView>(R.id.back)
         imgBack.setOnClickListener {
-            parentFragmentManager.popBackStack()
+//            parentFragmentManager.popBackStack()
+            requireActivity().onBackPressedDispatcher.onBackPressed()
         }
+    }
+
+    private fun convertToMonth(num: String): String? {
+        val monthMap = mapOf(
+            "1" to "Januari", "2" to "Februari", "3" to "Maret",
+            "4" to "April", "5" to "Mei", "6" to "Juni",
+            "7" to "Juli", "8" to "Agustus", "9" to "September",
+            "10" to "Oktober", "11" to "November", "12" to "Desember"
+        )
+
+        return monthMap[num]
+    }
+
+    private fun fetchPresence(token: String, userId: String){
+        lifecycleScope.launch {
+            try {
+                val response = RetrofitClient.instance.getUserPresence("Bearer $token", userId)
+                if (response.isSuccessful) {
+                    response.body()?.let { presenceResponse ->
+                        val presenceList = presenceResponse.data
+                        presenceItemAdapter = PresenceItemAdapter(presenceList)
+                        recyclerView.adapter = presenceItemAdapter
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("UserViewModel", "Unexpected error: ${e.message}")
+                Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun fetchUserProfile(token: String) {
+        userViewModel.getProfile(token) { success, userData ->
+            if (success) {
+                val userOccupation = userData?.jabatan?.let { capitalizeWords(it) }
+                userOccupationTv.text = userOccupation
+            }
+        }
+    }
+
+    private fun capitalizeWords(input: String): String {
+        return input.split(" ").joinToString(" ") { it.lowercase().replaceFirstChar { c -> c.uppercaseChar() } }
     }
 }

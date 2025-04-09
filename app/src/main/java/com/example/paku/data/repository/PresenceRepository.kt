@@ -38,18 +38,21 @@ class PresenceRepository {
         file_selfie: Part,
         id_user: String,
         tanggal_presensi: String,
-        waktu_masuk: String
+        waktu_masuk: String,
+        lokasi: String
     ): Response<Clock_AlternateResponse> {
         val idUserPart = id_user.toRequestBody("text/plain".toMediaType())
         val tanggalPresensiPart = tanggal_presensi.toRequestBody("text/plain".toMediaType())
         val waktuMasukPart = waktu_masuk.toRequestBody("text/plain".toMediaType())
+        val lokasiPart = lokasi.toRequestBody("text/plain".toMediaType())
 
         return RetrofitClient.instance.clockIn_Alternate(
             authHeader,
             file_selfie,
             idUserPart,
             tanggalPresensiPart,
-            waktuMasukPart
+            waktuMasukPart,
+            lokasiPart
         )
     }
 
@@ -58,13 +61,22 @@ class PresenceRepository {
         file_selfie: Part,
         id_user: String,
         tanggal_presensi: String,
-        waktu_keluar: String
+        waktu_keluar: String,
+        lokasi: String
     ): Response<Clock_AlternateResponse> {
         val idUserPart = id_user.toRequestBody("text/plain".toMediaType())
         val tanggalPresensiPart = tanggal_presensi.toRequestBody("text/plain".toMediaType())
         val waktu_keluarPart = waktu_keluar.toRequestBody("text/plain".toMediaType())
+        val lokasiPart = lokasi.toRequestBody("text/plain".toMediaType())
 
-        return RetrofitClient.instance.clockOut_Alternate(authHeader, file_selfie, idUserPart, tanggalPresensiPart, waktu_keluarPart)
+        return RetrofitClient.instance.clockOut_Alternate(
+            authHeader,
+            file_selfie,
+            idUserPart,
+            tanggalPresensiPart,
+            waktu_keluarPart,
+            lokasiPart
+        )
     }
 
     suspend fun clockIn_Outside(

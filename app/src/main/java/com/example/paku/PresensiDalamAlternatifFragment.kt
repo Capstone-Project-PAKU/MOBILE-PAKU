@@ -1,10 +1,14 @@
 package com.example.paku
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.location.LocationListener
+import android.location.LocationManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -14,8 +18,10 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.paku.ui.popup.showPresenceFailedPopup
@@ -24,6 +30,7 @@ import com.example.paku.ui.viewmodel.PresenceViewModel
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import org.json.JSONObject
 import java.io.File
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -38,7 +45,18 @@ class PresensiDalamAlternatifFragment : Fragment() {
     private lateinit var userId: String
     private lateinit var validationStatus: TextView
     private lateinit var validationIcon: ImageView
+    private lateinit var locationManager: LocationManager
+    private var locationJSON = JSONObject()
     private val presenceViewModel: PresenceViewModel by viewModels()
+    private var latitude = 0.0
+    private var longitude = 0.0
+
+    private val locationListener = LocationListener { location ->
+        latitude = location.latitude
+        longitude = location.longitude
+        locationJSON.put("latitude", latitude)
+        locationJSON.put("longitude", longitude)
+    }
 
     private val cameraResultLaucher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -70,6 +88,12 @@ class PresensiDalamAlternatifFragment : Fragment() {
         accessToken = prefs.getString("accessToken", null).toString()
         userId = prefs.getString("userId", null).toString()
 
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
+        }
+
+        getCurrentLocation()
         getCurrentPresence(accessToken)
 
         cameraBtn.setOnClickListener {
@@ -81,12 +105,13 @@ class PresensiDalamAlternatifFragment : Fragment() {
             val date = getCurrentDate()
             val photo = getFilePart(imageUri)
             val clockIn = prefs.getString("waktu_masuk_alt", null)
+            val lokasi = locationJSON.toString()
             if (clockIn == null) {
                 val time = "07:10:00"
-                clockInAlt(accessToken, photo!!, userId, date, time, view)
+                clockInAlt(accessToken, photo!!, userId, date, time, lokasi, view)
             } else {
                 val time = "14:10:00"
-                clockOutAlt(accessToken, photo!!, userId, date,time, view)
+                clockOutAlt(accessToken, photo!!, userId, date, time, lokasi, view)
             }
         }
 
@@ -103,9 +128,10 @@ class PresensiDalamAlternatifFragment : Fragment() {
         id_user: String,
         date: String,
         time: String,
+        lokasi: String,
         view: View
     ) {
-        presenceViewModel.clockIn_Alternate(token, photo, id_user, date, time) { success, message, presenceData ->
+        presenceViewModel.clockIn_Alternate(token, photo, id_user, date, time, lokasi) { success, message, presenceData ->
             if (success) {
                 prefs.edit().putString("waktu_masuk_alt", presenceData?.waktu_masuk).apply()
                 showPresenceSuccessPopup(view, message)
@@ -122,9 +148,10 @@ class PresensiDalamAlternatifFragment : Fragment() {
         id_user: String,
         date: String,
         time: String,
+        lokasi: String,
         view: View
     ) {
-        presenceViewModel.clockOut_Alternate(token, photo, id_user, date, time) { success, message, presenceData ->
+        presenceViewModel.clockOut_Alternate(token, photo, id_user, date, time, lokasi) { success, message, presenceData ->
             if (success) {
                 prefs.edit().remove("waktu_masuk_alt").apply()
                 showPresenceSuccessPopup(view, message)
@@ -154,6 +181,39 @@ class PresensiDalamAlternatifFragment : Fragment() {
                 }
             }
         }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE && grantResults.isNotEmpty()
+            && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            getCurrentLocation()
+        } else {
+            Toast.makeText(requireContext(), "Location permission is required", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun getCurrentLocation() {
+        locationManager = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED) {
+
+            locationManager.requestLocationUpdates(
+                LocationManager.GPS_PROVIDER,
+                5000L, // Update every 5 seconds
+                10f,   // Update every 10 meters
+                locationListener
+            )
+        }
+    }
+
+    companion object {
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 1
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
