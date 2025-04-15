@@ -27,6 +27,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.paku.data.api.RetrofitClient
 import com.example.paku.ui.adapter.PresenceItemAdapter
+import com.example.paku.ui.popup.MapPopupFragment
+import com.example.paku.ui.popup.showPhotoViewer
 import com.example.paku.ui.popup.showPresenceFailedPopup
 import com.example.paku.ui.popup.showPresenceSuccessPopup
 import com.example.paku.ui.viewmodel.PresenceViewModel
@@ -103,7 +105,7 @@ class PresensiDalamKlinikFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
 
-        fetchPresence(accessToken, userId)
+        fetchPresence(accessToken, userId, null, null, 31)
 
         val imgBack = view.findViewById<ImageView>(R.id.back)
         imgBack.setOnClickListener {
@@ -211,14 +213,26 @@ class PresensiDalamKlinikFragment : Fragment() {
         }
     }
 
-    private fun fetchPresence(token: String, userId: String){
+    private fun fetchPresence(token: String, userId: String, month: String?, year: String?, limit: Int?){
         lifecycleScope.launch {
             try {
-                val response = RetrofitClient.instance.getUserPresence("Bearer $token", userId)
+                val response = RetrofitClient.instance.getUserPresence("Bearer $token", userId,month, year, limit)
                 if (response.isSuccessful) {
                     response.body()?.let { presenceResponse ->
                         val presenceList = presenceResponse.data
-                        presenceItemAdapter = PresenceItemAdapter(presenceList)
+                        presenceItemAdapter = PresenceItemAdapter(
+                            presenceList,
+                            onShowClockInPhoto = { anchorView, urlPath -> showPhotoViewer(anchorView, urlPath) },
+                            onShowClockOutPhoto = { anchorView, urlPath -> showPhotoViewer(anchorView, urlPath) },
+                            onShowClockInLocation = { location ->
+                                val dialog = MapPopupFragment.newInstance(location)
+                                dialog.show(requireActivity().supportFragmentManager, "Map Popup")
+                            },
+                            onShowClockOutLocation = { location ->
+                                val dialog = MapPopupFragment.newInstance(location)
+                                dialog.show(requireActivity().supportFragmentManager, "Map Popup")
+                            }
+                        )
                         recyclerView.adapter = presenceItemAdapter
                     }
                 }

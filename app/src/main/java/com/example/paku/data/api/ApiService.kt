@@ -146,8 +146,13 @@ interface ApiService {
     @GET("api/presence/user/{id}")
     suspend fun getUserPresence(
         @Header("Authorization") token: String,
-        @Path("id") userId: String
+        @Path("id") userId: String,
+        @Query("month") monthFilter: String?,
+        @Query("year") yearFilter: String?,
+        @Query("limit") limitFilter: Int?
     ): Response<GetUserPresenceResponse>
+
+    @GET("api/presence/")
 
     // Permission
     @Multipart

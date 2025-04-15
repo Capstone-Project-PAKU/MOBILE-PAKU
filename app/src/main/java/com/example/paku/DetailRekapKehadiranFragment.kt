@@ -18,6 +18,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.paku.data.api.RetrofitClient
 import com.example.paku.ui.adapter.PresenceItemAdapter
+import com.example.paku.ui.popup.MapPopupFragment
+import com.example.paku.ui.popup.showPhotoViewer
 import com.example.paku.ui.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 
@@ -26,6 +28,8 @@ class DetailRekapKehadiranFragment : Fragment() {
     private lateinit var prefs: SharedPreferences
     private lateinit var accessToken: String
     private lateinit var userId: String
+    private var month: String? = null
+    private var year: String? = null
     private lateinit var userOccupationTv: TextView
     private lateinit var title: TextView
     private lateinit var recyclerView: RecyclerView
@@ -44,20 +48,23 @@ class DetailRekapKehadiranFragment : Fragment() {
 
         title = view.findViewById(R.id.titleBulan)
         recyclerView = view.findViewById(R.id.rvDetailAbsensi)
+        userOccupationTv = view.findViewById(R.id.userOccupationTv)
 
         prefs = requireContext().getSharedPreferences("credential_pref", Context.MODE_PRIVATE)
         accessToken = prefs.getString("accessToken", null).toString()
         userId = prefs.getString("userId", null).toString()
 
-        title.text = "${convertToMonth(arguments?.getString("month")!!)} ${arguments?.getString("year")!!}"
+        month = arguments?.getString("month")
+        year = arguments?.getString("year")
+
+        title.text = "${month?.let { convertToMonth(it) }} ${year}"
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         fetchUserProfile(accessToken)
-        fetchPresence(accessToken, userId)
+        fetchPresence(accessToken, userId, month, year, 31)
 
         val imgBack = view.findViewById<ImageView>(R.id.back)
         imgBack.setOnClickListener {
-//            parentFragmentManager.popBackStack()
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
     }
@@ -73,14 +80,26 @@ class DetailRekapKehadiranFragment : Fragment() {
         return monthMap[num]
     }
 
-    private fun fetchPresence(token: String, userId: String){
+    private fun fetchPresence(token: String, userId: String, month: String?, year: String?, limit: Int?){
         lifecycleScope.launch {
             try {
-                val response = RetrofitClient.instance.getUserPresence("Bearer $token", userId)
+                val response = RetrofitClient.instance.getUserPresence("Bearer $token", userId, month, year, limit)
                 if (response.isSuccessful) {
                     response.body()?.let { presenceResponse ->
                         val presenceList = presenceResponse.data
-                        presenceItemAdapter = PresenceItemAdapter(presenceList)
+                        presenceItemAdapter = PresenceItemAdapter(
+                            presenceList,
+                            onShowClockInPhoto = { anchorView, urlPath -> showPhotoViewer(anchorView, urlPath) },
+                            onShowClockOutPhoto = { anchorView, urlPath -> showPhotoViewer(anchorView, urlPath) },
+                            onShowClockInLocation = { location ->
+                                val dialog = MapPopupFragment.newInstance(location)
+                                dialog.show(requireActivity().supportFragmentManager, "Map Popup")
+                            },
+                            onShowClockOutLocation = { location ->
+                                val dialog = MapPopupFragment.newInstance(location)
+                                dialog.show(requireActivity().supportFragmentManager, "Map Popup")
+                            }
+                        )
                         recyclerView.adapter = presenceItemAdapter
                     }
                 }

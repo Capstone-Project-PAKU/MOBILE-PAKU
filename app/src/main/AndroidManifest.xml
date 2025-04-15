@@ -31,6 +31,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PAKU"
         tools:targetApi="31">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAGnJuJ2FY-yUMY0vzdQ9mV0eM_8BaDTqU"/>
         <activity
             android:name=".CameraActivity"
             android:exported="false" />

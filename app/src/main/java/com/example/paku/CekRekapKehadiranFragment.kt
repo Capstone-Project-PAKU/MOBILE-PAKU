@@ -70,7 +70,6 @@ class CekRekapKehadiranFragment : Fragment() {
         userId = prefs.getString("userId", null).toString()
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        Log.d("test", "running")
         fetchUserProfile(accessToken)
         fetchUserRecap(accessToken, userId, null, null)
 

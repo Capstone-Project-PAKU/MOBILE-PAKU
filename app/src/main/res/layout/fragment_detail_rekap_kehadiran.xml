@@ -83,7 +83,7 @@
         app:layout_constraintTop_toBottomOf="@id/sideProfileLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/rvRekapAbsensi">
+        app:layout_constraintBottom_toTopOf="@id/rvDetailAbsensi">
 
         <TextView
             android:id="@+id/titleRekap"

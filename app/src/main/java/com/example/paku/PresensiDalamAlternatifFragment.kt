@@ -88,6 +88,8 @@ class PresensiDalamAlternatifFragment : Fragment() {
         accessToken = prefs.getString("accessToken", null).toString()
         userId = prefs.getString("userId", null).toString()
 
+        resetClockInIdentifier()
+
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
             != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
@@ -122,6 +124,7 @@ class PresensiDalamAlternatifFragment : Fragment() {
         btnCancel.setOnClickListener { parentFragmentManager.popBackStack() }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun clockInAlt(
         token: String,
         photo: MultipartBody.Part,
@@ -133,7 +136,10 @@ class PresensiDalamAlternatifFragment : Fragment() {
     ) {
         presenceViewModel.clockIn_Alternate(token, photo, id_user, date, time, lokasi) { success, message, presenceData ->
             if (success) {
-                prefs.edit().putString("waktu_masuk_alt", presenceData?.waktu_masuk).apply()
+                prefs.edit()
+                    .putString("waktu_masuk_alt", presenceData?.waktu_masuk)
+                    .putString("last_reset_day", LocalDate.now().toString())
+                    .apply()
                 showPresenceSuccessPopup(view, message)
                 getCurrentPresence(token)
             } else {
@@ -222,6 +228,18 @@ class PresensiDalamAlternatifFragment : Fragment() {
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         val formattedDate = currentDate.format(formatter)
         return  formattedDate
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun resetClockInIdentifier() {
+        val lastReset =prefs.getString("last_reset_day", null)
+        val today = LocalDate.now().toString()
+        if (lastReset != today) {
+            prefs.edit()
+                .remove("waktu_masuk_alt")
+                .putString("last_reset_date", today)
+                .apply()
+        }
     }
 
     fun getFilePart(filePath: String): MultipartBody.Part? {

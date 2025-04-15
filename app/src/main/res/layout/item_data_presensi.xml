@@ -81,29 +81,112 @@
         app:layout_constraintTop_toBottomOf="@id/tvClockedInValue"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Lokasi -->
+    <!-- Lokasi Masuk -->
     <TextView
-        android:id="@+id/tvLokasiLabel"
+        android:id="@+id/tvLokasiMasukLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Lokasi"
+        android:text="Lokasi Masuk"
         android:fontFamily="@font/inter"
         android:textSize="14sp"
         android:padding="2dp"
         app:layout_constraintTop_toBottomOf="@id/tvClockedOutLabel"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tvLokasiValue"
+        app:layout_constraintEnd_toStartOf="@id/tvLokasiMasukValue"
         app:layout_constraintHorizontal_weight="1"/>
 
     <TextView
-        android:id="@+id/tvLokasiValue"
+        android:id="@+id/tvLokasiMasukValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="-"
         android:padding="2dp"
         android:fontFamily="@font/inter"
         android:textSize="14sp"
+        android:clickable="true"
+        android:focusable="true"
         app:layout_constraintTop_toBottomOf="@id/tvClockedOutValue"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Lokasi keluar -->
+    <TextView
+        android:id="@+id/tvLokasiKeluarLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Lokasi Keluar"
+        android:fontFamily="@font/inter"
+        android:textSize="14sp"
+        android:padding="2dp"
+        app:layout_constraintTop_toBottomOf="@id/tvLokasiMasukLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tvLokasiKeluarValue"
+        app:layout_constraintHorizontal_weight="1"/>
+
+    <TextView
+        android:id="@+id/tvLokasiKeluarValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="-"
+        android:padding="2dp"
+        android:fontFamily="@font/inter"
+        android:textSize="14sp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintTop_toBottomOf="@id/tvLokasiMasukValue"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Foto Masuk -->
+    <TextView
+        android:id="@+id/tvFotoMasukLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Foto Masuk"
+        android:fontFamily="@font/inter"
+        android:textSize="14sp"
+        android:padding="2dp"
+        app:layout_constraintTop_toBottomOf="@id/tvLokasiKeluarLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tvFotoMasukValue"
+        app:layout_constraintHorizontal_weight="1"/>
+
+    <TextView
+        android:id="@+id/tvFotoMasukValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="-"
+        android:padding="2dp"
+        android:fontFamily="@font/inter"
+        android:textSize="14sp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintTop_toBottomOf="@id/tvLokasiKeluarValue"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Foto Keluar -->
+    <TextView
+        android:id="@+id/tvFotoKeluarLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Foto Keluar"
+        android:fontFamily="@font/inter"
+        android:textSize="14sp"
+        android:padding="2dp"
+        app:layout_constraintTop_toBottomOf="@id/tvFotoMasukLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tvFotoKeluarValue"
+        app:layout_constraintHorizontal_weight="1"/>
+
+    <TextView
+        android:id="@+id/tvFotoKeluarValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="-"
+        android:padding="2dp"
+        android:fontFamily="@font/inter"
+        android:textSize="14sp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintTop_toBottomOf="@id/tvFotoMasukValue"
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <!-- Status -->
@@ -115,7 +198,7 @@
         android:fontFamily="@font/inter"
         android:textSize="14sp"
         android:padding="2dp"
-        app:layout_constraintTop_toBottomOf="@id/tvLokasiLabel"
+        app:layout_constraintTop_toBottomOf="@id/tvFotoKeluarLabel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/tvStatusValue"
         app:layout_constraintHorizontal_weight="1"/>
@@ -130,7 +213,7 @@
         android:padding="2dp"
         android:textStyle="bold"
         android:textSize="14sp"
-        app:layout_constraintTop_toBottomOf="@id/tvLokasiValue"
+        app:layout_constraintTop_toBottomOf="@id/tvFotoKeluarValue"
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <View
