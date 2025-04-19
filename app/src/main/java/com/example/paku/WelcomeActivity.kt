@@ -71,20 +71,23 @@ class WelcomeActivity : AppCompatActivity() {
         textViewRegister.movementMethod = LinkMovementMethod.getInstance() // Agar teks bisa diklik
     }
 
-    private fun refreshAccessToken(token: String) {
-        userViewModel.refresh(token) { success, newToken ->
-            if (success) {
-                prefs.edit()
-                    .putString("accessToken", newToken?.accessToken)
-                    .putString("refreshToken", newToken?.refreshToken)
-                    .apply()
-                val refreshToken = prefs.getString("refreshToken", null)
-                val accessToken = prefs.getString("accessToken", null)
-                checkTokenValidity(accessToken!!, refreshToken!!)
-            } else {
-                Toast.makeText(this, "Sesi sudah berakhir, silahkan login kembali", Toast.LENGTH_SHORT).show()
-                startActivity(Intent(this, LoginActivity::class.java))
-                finish()
+    private fun refreshAccessToken(refreshToken: String) {
+        userViewModel.refresh(refreshToken) { success, newToken ->
+            runOnUiThread {
+                if (success) {
+                    prefs.edit()
+                        .putString("accessToken", newToken?.accessToken)
+                        .putString("refreshToken", newToken?.refreshToken)
+                        .apply()
+
+                    newToken?.let {
+                        checkTokenValidity(newToken.accessToken, newToken.refreshToken)
+                    }
+                } else {
+                    Toast.makeText(this, "Sesi sudah berakhir, silahkan login kembali", Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(this, LoginActivity::class.java))
+                    finish()
+                }
             }
         }
     }

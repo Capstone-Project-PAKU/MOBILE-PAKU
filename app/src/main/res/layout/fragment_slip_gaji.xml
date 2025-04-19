@@ -76,50 +76,72 @@
 
     <!-- Calendar -->
     <LinearLayout
-        android:id="@+id/calendarSection"
-        android:layout_width="wrap_content"
+        android:id="@+id/layoutPayrollButton"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_list_menu"
-        android:padding="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="15dp"
-        android:gravity="left"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="15dp"
         app:layout_constraintTop_toBottomOf="@id/sideProfileLayout"
-        app:layout_constraintStart_toStartOf="parent">
-
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:id="@+id/calendarSection"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:background="@drawable/bg_list_menu"
+            android:padding="10dp"
+            android:layout_weight="1"
+            android:gravity="left">
 
-            <ImageView
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_marginEnd="12dp"
-                android:contentDescription="Calendar Icon"
-                android:src="@drawable/ic_calendar_month_24" />
-
-            <TextView
-                android:id="@+id/tvSelectMonth"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/inter"
-                android:gravity="start"
-                android:text="Select a month"
-                android:textColor="@color/darker_grey"
-                android:textSize="14sp" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-            <ImageButton
-                android:id="@+id/btnArrowDown"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginStart="12dp"
-                android:background="@color/white"
-                android:contentDescription="Arrow Icon"
-                android:src="@drawable/ic_arrow_down" />
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_marginEnd="12dp"
+                    android:contentDescription="Calendar Icon"
+                    android:src="@drawable/ic_calendar_month_24" />
+
+                <TextView
+                    android:id="@+id/tvSelectMonth"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter"
+                    android:gravity="start"
+                    android:text="Select a month"
+                    android:textColor="@color/darker_grey"
+                    android:textSize="14sp" />
+
+                <ImageButton
+                    android:id="@+id/btnArrowDown"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="12dp"
+                    android:background="@color/white"
+                    android:contentDescription="Arrow Icon"
+                    android:src="@drawable/ic_arrow_down" />
+            </LinearLayout>
         </LinearLayout>
+        <Button
+            android:id="@+id/getPayrollBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gaji Keseluruhan"
+            android:backgroundTint="@color/dark_blue"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:layout_marginStart="10dp"
+            app:cornerRadius="10dp"
+            android:fontFamily="@font/inter" />
     </LinearLayout>
+
 
     <!-- RecyclerView untuk Rekap Absensi -->
     <androidx.recyclerview.widget.RecyclerView
@@ -131,7 +153,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/calendarSection" />
+        app:layout_constraintTop_toBottomOf="@id/layoutPayrollButton" />
 
     <TextView
         android:id="@+id/tvNotFound"

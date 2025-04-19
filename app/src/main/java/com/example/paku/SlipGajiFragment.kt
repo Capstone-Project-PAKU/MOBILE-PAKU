@@ -3,10 +3,13 @@ package com.example.paku
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -14,6 +17,7 @@ import android.widget.NumberPicker
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -40,6 +44,7 @@ class SlipGajiFragment : Fragment() {
     private lateinit var userId: String
     private lateinit var userOccupationTv: TextView
     private lateinit var notFoundTv: TextView
+    private lateinit var getPayrollBtn: Button
     private val userViewModel: UserViewModel by viewModels()
 
     override fun onCreateView(
@@ -59,6 +64,7 @@ class SlipGajiFragment : Fragment() {
         recyclerView = view.findViewById(R.id.rvSlipGaji)
         notFoundTv = view.findViewById(R.id.tvNotFound)
         userOccupationTv = view.findViewById(R.id.userOccupationTv)
+        getPayrollBtn = view.findViewById(R.id.getPayrollBtn)
 
         prefs = requireContext().getSharedPreferences("credential_pref", Context.MODE_PRIVATE)
         accessToken = prefs.getString("accessToken", null).toString()
@@ -82,6 +88,25 @@ class SlipGajiFragment : Fragment() {
         val imgBack = view.findViewById<ImageView>(R.id.back)
         imgBack.setOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
+
+        tvSelectMonth.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                val res = getMonthAndYear(tvSelectMonth.text.toString())
+                val month = res?.first
+                val year = res?.second
+                fetchUserPayroll(accessToken, userId, month, year)
+            }
+        })
+
+        getPayrollBtn.setOnClickListener {
+            resetRecyclerView()
+            fetchUserPayroll(accessToken, userId, null, null)
+            tvSelectMonth.text = "Select a month"
         }
     }
 

@@ -152,8 +152,6 @@ interface ApiService {
         @Query("limit") limitFilter: Int?
     ): Response<GetUserPresenceResponse>
 
-    @GET("api/presence/")
-
     // Permission
     @Multipart
     @POST("api/permission/")

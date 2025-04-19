@@ -123,12 +123,12 @@ class UserViewModel: ViewModel() {
     }
 
     fun refresh(
-        token: String,
+        refreshToken: String,
         onResult: (Boolean, RefreshData?) -> Unit
     ) {
         viewModelScope.launch {
             try {
-                val response = respository.refreshToken("Bearer $token")
+                val response = respository.refreshToken(refreshToken)
 
                 if (response.isSuccessful) {
                     val result = response.body()
