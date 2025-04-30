@@ -89,8 +89,8 @@ class DetailRekapKehadiranFragment : Fragment() {
                         val presenceList = presenceResponse.data
                         presenceItemAdapter = PresenceItemAdapter(
                             presenceList,
-                            onShowClockInPhoto = { anchorView, urlPath -> showPhotoViewer(anchorView, urlPath) },
-                            onShowClockOutPhoto = { anchorView, urlPath -> showPhotoViewer(anchorView, urlPath) },
+                            onShowClockInPhoto = { anchorView, urlPath -> showPhotoViewer(anchorView, "Foto Selfie Masuk", urlPath) },
+                            onShowClockOutPhoto = { anchorView, urlPath -> showPhotoViewer(anchorView, "Foto Selfie Keluar", urlPath) },
                             onShowClockInLocation = { location ->
                                 val dialog = MapPopupFragment.newInstance(location)
                                 dialog.show(requireActivity().supportFragmentManager, "Map Popup")

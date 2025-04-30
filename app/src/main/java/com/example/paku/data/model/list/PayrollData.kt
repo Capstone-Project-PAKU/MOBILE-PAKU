@@ -10,5 +10,7 @@ data class PayrollData(
     val jam_lembur: Int,
     val uang_lembur: Double,
     val total_gaji: Double,
-    val status_pembayaran: String
+    val status_pembayaran: String,
+    val bukti_pembayaran: String?,
+    val metode_pembayaran: String?
 )

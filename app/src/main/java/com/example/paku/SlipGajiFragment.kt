@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.paku.data.api.RetrofitClient
 import com.example.paku.data.model.list.PayrollData
 import com.example.paku.ui.adapter.PayrollItemAdapter
+import com.example.paku.ui.popup.showPhotoViewer
 import com.example.paku.ui.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -188,7 +189,12 @@ class SlipGajiFragment : Fragment() {
         if (::payrollItemAdapter.isInitialized) {
             payrollItemAdapter.updateData(payrollList)
         } else {
-            payrollItemAdapter = PayrollItemAdapter(payrollList)
+            payrollItemAdapter = PayrollItemAdapter(
+                payrollList,
+                onShowInvoicePhoto = { anchorView, urlPath ->
+                    showPhotoViewer(anchorView, "Bukti Pembayaran", urlPath)
+                }
+            )
             recyclerView.adapter = payrollItemAdapter
         }
     }

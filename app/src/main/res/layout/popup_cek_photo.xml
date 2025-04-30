@@ -16,14 +16,15 @@
         android:textAlignment="center"
         android:fontFamily="@font/inter"
         android:textSize="16sp"
-        android:textColor="@color/blue"/>
+        android:textColor="@color/blue"
+        android:id="@+id/photoHeader"/>
 
     <ImageView
         android:layout_width="350dp"
-        android:layout_height="350dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:layout_marginTop="10dp"
-        android:id="@+id/selfiePreview"/>
+        android:id="@+id/photoPreview"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/backBtn"

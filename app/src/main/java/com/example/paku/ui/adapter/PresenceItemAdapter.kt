@@ -88,22 +88,14 @@ class PresenceItemAdapter(
         holder.showClockInLocation(item.lokasi_masuk)
         holder.showClockOutLocation(item.lokasi_keluar)
 
-        holder.showClockInPhoto(item.foto_selfie_masuk?.let {
-            transformCloudinaryUrl(it)
-        })
-        holder.showClockOutPhoto(item.foto_selfie_keluar?.let {
-            transformCloudinaryUrl(it)
-        })
+        holder.showClockInPhoto(item.foto_selfie_masuk)
+        holder.showClockOutPhoto(item.foto_selfie_keluar)
         holder.statusText.text = setStatus(item.validasi_masuk, item.validasi_keluar)
         changeStatusColor(context, holder.statusText)
     }
 
     override fun getItemCount(): Int {
         return itemList.size
-    }
-
-    private fun transformCloudinaryUrl(url: String, width: Int = 350, height: Int = 350): String {
-        return url.replace("/upload/", "/upload/w_${width},h_${height},c_fill/")
     }
 
     private fun changeStatusColor(context: Context, textView: TextView) {

@@ -59,10 +59,18 @@ class PresensiLuarKlinikFragment : Fragment() {
     private var longitude = 0.0
 
     private val locationListener = LocationListener { location ->
-        latitude = location.latitude
-        longitude = location.longitude
-        locationJSON.put("latitude", latitude)
-        locationJSON.put("longitude", longitude)
+        if (location.isFromMockProvider) {
+            Toast.makeText(requireContext(), "Anda menggunakan FakeGPS", Toast.LENGTH_SHORT).show()
+            saveBtn.isEnabled = false
+            saveBtn.isClickable = false
+            cameraBtn.isEnabled = false
+            cameraBtn.isClickable = false
+        } else {
+            latitude = location.latitude
+            longitude = location.longitude
+            locationJSON.put("latitude", latitude)
+            locationJSON.put("longitude", longitude)
+        }
     }
 
     private val cameraResultLaucher = registerForActivityResult(
