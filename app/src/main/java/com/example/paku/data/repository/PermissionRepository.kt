@@ -9,7 +9,6 @@ import retrofit2.Response
 
 class PermissionRepository {
     suspend fun addWorkLeave(
-        authHeader: String,
         file_cuti: Part,
         id_user: String,
         jenis_cuti: String,
@@ -23,8 +22,7 @@ class PermissionRepository {
         val endLeave = tgl_akhir_cuti.toRequestBody("text/plain".toMediaType())
         val leaveInformation = keterangan_cuti.toRequestBody("text/plain".toMediaType())
 
-        return RetrofitClient.instance.addWorkLeave(
-            authHeader,
+        return RetrofitClient.getInstance().addWorkLeave(
             file_cuti,
             userIdPart,
             leaveType,

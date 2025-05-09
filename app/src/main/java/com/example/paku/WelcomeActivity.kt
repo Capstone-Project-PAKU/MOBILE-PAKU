@@ -21,18 +21,9 @@ import androidx.core.content.ContextCompat
 import com.example.paku.ui.viewmodel.UserViewModel
 
 class WelcomeActivity : AppCompatActivity() {
-    private lateinit var prefs: SharedPreferences
-    private val userViewModel: UserViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.welcome)
-
-        prefs = getSharedPreferences("credential_pref", MODE_PRIVATE)
-        val accessToken = prefs.getString("accessToken", null)
-        val refreshToken = prefs.getString("refreshToken", null)
-        if (!accessToken.isNullOrEmpty() && !refreshToken.isNullOrEmpty()) {
-            checkTokenValidity(accessToken, refreshToken)
-        }
 
         // Inisialisasi tombol Sign In
         findViewById<Button>(R.id.btnSignIn).setOnClickListener {
@@ -69,39 +60,5 @@ class WelcomeActivity : AppCompatActivity() {
 
         textViewRegister.text = spannableString
         textViewRegister.movementMethod = LinkMovementMethod.getInstance() // Agar teks bisa diklik
-    }
-
-    private fun refreshAccessToken(refreshToken: String) {
-        userViewModel.refresh(refreshToken) { success, newToken ->
-            runOnUiThread {
-                if (success) {
-                    prefs.edit()
-                        .putString("accessToken", newToken?.accessToken)
-                        .putString("refreshToken", newToken?.refreshToken)
-                        .apply()
-
-                    newToken?.let {
-                        checkTokenValidity(newToken.accessToken, newToken.refreshToken)
-                    }
-                } else {
-                    Toast.makeText(this, "Sesi sudah berakhir, silahkan login kembali", Toast.LENGTH_SHORT).show()
-                    startActivity(Intent(this, LoginActivity::class.java))
-                    finish()
-                }
-            }
-        }
-    }
-
-    private fun checkTokenValidity(accessToken: String, refreshToken: String) {
-        userViewModel.validateToken(accessToken) { isValid ->
-            runOnUiThread {
-                if (isValid) {
-                    startActivity(Intent(this, MainActivity::class.java))
-                    finish()
-                } else {
-                    refreshAccessToken(refreshToken)
-                }
-            }
-        }
     }
 }

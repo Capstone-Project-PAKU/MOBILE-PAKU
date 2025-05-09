@@ -81,7 +81,7 @@ class ProfileFragment : Fragment() {
         logoutTv.movementMethod = LinkMovementMethod.getInstance()
 
         if (!accessToken.isNullOrEmpty()) {
-            fetchUserProfile(accessToken)
+            fetchUserProfile()
         } else {
             Toast.makeText(requireContext(), "Sesi berakhir. Silahkan login kembali.", Toast.LENGTH_SHORT).show()
         }
@@ -123,8 +123,8 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun fetchUserProfile(token: String) {
-        userViewModel.getProfile(token) { success, userData ->
+    private fun fetchUserProfile() {
+        userViewModel.getProfile() { success, userData ->
             if (success) {
                 usernameEditText.setText(userData?.username)
                 fullnameEditText.setText(userData?.nama_pegawai)

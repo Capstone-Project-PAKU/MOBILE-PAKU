@@ -44,7 +44,7 @@ class ChangePasswordFragment : Fragment() {
         accessToken = prefs.getString("accessToken", null).toString()
         userId = prefs.getString("userId", null).toString()
 
-        fetchUserProfile(accessToken)
+        fetchUserProfile()
 
         saveBtn.setOnClickListener {
 
@@ -57,7 +57,7 @@ class ChangePasswordFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            userViewModel.changePassword(accessToken, userId, currentPass, newPass, confirmPass) { success, message ->
+            userViewModel.changePassword(userId, currentPass, newPass, confirmPass) { success, message ->
                 if (success) {
                     Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                     val activity = view.context as FragmentActivity
@@ -86,8 +86,8 @@ class ChangePasswordFragment : Fragment() {
         return view
     }
 
-    private fun fetchUserProfile(token: String) {
-        userViewModel.getProfile(token) { success, userData ->
+    private fun fetchUserProfile() {
+        userViewModel.getProfile() { success, userData ->
             if (success) {
                 val userOccupation = userData?.jabatan?.let { capitalizeWords(it) }
                 userOccupationTv.text = userOccupation

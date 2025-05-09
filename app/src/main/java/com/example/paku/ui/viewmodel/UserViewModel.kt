@@ -86,12 +86,11 @@ class UserViewModel: ViewModel() {
     }
 
     fun getProfile(
-        token: String,
         onResult: (Boolean, ProfileData?) -> Unit
     ) {
         viewModelScope.launch {
             try {
-                val response: Response<ProfileResponse> = respository.getProfile("Bearer $token")
+                val response: Response<ProfileResponse> = respository.getProfile()
                 if (response.isSuccessful) {
                     onResult(true, response.body()?.data)
                 } else {
@@ -104,12 +103,11 @@ class UserViewModel: ViewModel() {
     }
 
     fun validateToken(
-        token: String,
         onResult: (Boolean) -> Unit
     ) {
         viewModelScope.launch {
             try {
-                val response = respository.validateToken(token)
+                val response = respository.validateToken()
 
                 if (response.isSuccessful){
                     onResult(true)
@@ -133,6 +131,8 @@ class UserViewModel: ViewModel() {
                 if (response.isSuccessful) {
                     val result = response.body()
                     onResult(true, result?.data)
+                } else {
+                    onResult(false, null)
                 }
             }catch (e: Exception) {
                 onResult(false, null)
@@ -168,7 +168,6 @@ class UserViewModel: ViewModel() {
     }
 
     fun changePassword(
-        token: String,
         userId: String,
         currentPassword: String,
         newPassword: String,
@@ -177,13 +176,13 @@ class UserViewModel: ViewModel() {
     ) {
         viewModelScope.launch {
             try {
-                val response = respository.changePassword("Bearer $token", userId, currentPassword, newPassword, confirmPassword)
+                val response = respository.changePassword(userId, currentPassword, newPassword, confirmPassword)
 
                 if (response.isSuccessful) {
                     onResult(true, response.body()?.message ?: "Berhasil mengganti password")
                 } else {
                     val error = parseErrorMessage(response)
-                    onResult(false, error ?: "Gagal mengganti password")
+                    onResult(false, error)
                 }
             } catch (e: HttpException) {
                 Log.e("UserViewModel", "Server error: ${e.message}")

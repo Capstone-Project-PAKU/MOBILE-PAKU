@@ -24,6 +24,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.example.paku.data.api.RetrofitClient
 import com.example.paku.ui.popup.showPresenceFailedPopup
 import com.example.paku.ui.popup.showPresenceSuccessPopup
 import com.example.paku.ui.viewmodel.PermissionViewModel
@@ -149,10 +150,10 @@ class PengajuanCutiFragment : Fragment() {
                 Toast.makeText(requireContext(), "Semua data wajib di isi", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            addWorkLeave(accessToken, document!!, userId, jenis_cuti, tgl_awal_cuti, tgl_akhir_cuti, keterangan_cuti, view)
+            addWorkLeave(document!!, userId, jenis_cuti, tgl_awal_cuti, tgl_akhir_cuti, keterangan_cuti, view)
         }
 
-        fetchUserProfile(accessToken)
+        fetchUserProfile()
         setupTanggalMulai()
         setupTanggalSelesai()
     }
@@ -214,7 +215,6 @@ class PengajuanCutiFragment : Fragment() {
     }
 
     private fun addWorkLeave(
-        token: String,
         file_cuti: MultipartBody.Part,
         id_user: String,
         jenis_cuti: String,
@@ -223,7 +223,7 @@ class PengajuanCutiFragment : Fragment() {
         keteranngan_cuti: String,
         view: View
     ) {
-        permissionViewModel.AddWorkLeave(token, file_cuti, id_user, jenis_cuti, tgl_awal_cuti, tgl_akhir_cuti, keteranngan_cuti) { success, message, permissionData ->
+        permissionViewModel.AddWorkLeave(file_cuti, id_user, jenis_cuti, tgl_awal_cuti, tgl_akhir_cuti, keteranngan_cuti) { success, message, permissionData ->
             if (success) {
                 showPresenceSuccessPopup(view, message)
             } else {
@@ -272,8 +272,8 @@ class PengajuanCutiFragment : Fragment() {
         return null to null
     }
 
-    private fun fetchUserProfile(token: String) {
-        userViewModel.getProfile(token) { success, userData ->
+    private fun fetchUserProfile() {
+        userViewModel.getProfile() { success, userData ->
             if (success) {
                 val userOccupation = userData?.jabatan?.let { capitalizeWords(it) }
                 permissionHeader.text = userOccupation

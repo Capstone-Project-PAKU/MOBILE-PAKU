@@ -180,6 +180,31 @@
         app:layout_constraintTop_toBottomOf="@id/tvJumlahLemburValue"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <!-- denda -->
+    <TextView
+        android:id="@+id/tvDendaLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Denda"
+        android:fontFamily="@font/inter"
+        android:textSize="14sp"
+        android:padding="2dp"
+        app:layout_constraintTop_toBottomOf="@id/tvTunjanganLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tvDendaValue"
+        app:layout_constraintHorizontal_bias="0.5"/>
+
+    <TextView
+        android:id="@+id/tvDendaValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="-"
+        android:fontFamily="@font/inter"
+        android:textSize="14sp"
+        android:padding="2dp"
+        app:layout_constraintTop_toBottomOf="@id/tvTunjanganValue"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <!-- Total Gaji -->
     <View
         android:id="@+id/separator2"
@@ -191,7 +216,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvTunjanganValue" />
+        app:layout_constraintTop_toBottomOf="@id/tvDendaValue" />
 
     <TextView
         android:id="@+id/tvTotalGajiLabel"

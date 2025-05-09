@@ -29,37 +29,36 @@ class UserRepository {
         role: String,
         id_android: String
     ): Response<RegisterResponse> {
-        return RetrofitClient.instance.register(RegisterRequest(id_pegawai, username, email, password, role, id_android))
+        return RetrofitClient.getInstance().register(RegisterRequest(id_pegawai, username, email, password, role, id_android))
     }
 
     suspend fun login(username: String, password: String, id_android: String): Response<LoginResponse> {
-        return RetrofitClient.instance.login(LoginRequest(username, password, id_android))
+        return RetrofitClient.getInstance().login(LoginRequest(username, password, id_android))
     }
 
-    suspend fun getProfile(authHeader: String): Response<ProfileResponse> {
-        return RetrofitClient.instance.getProfile(authHeader)
+    suspend fun getProfile(): Response<ProfileResponse> {
+        return RetrofitClient.getInstance().getProfile()
     }
 
-    suspend fun validateToken(authHeader: String): Response<Void> {
-        return RetrofitClient.instance.validateToken(authHeader)
+    suspend fun validateToken(): Response<Void> {
+        return RetrofitClient.getInstance().validateToken()
     }
 
     suspend fun refreshToken(authHeader: String): Response<RefreshResponse> {
-        return RetrofitClient.instance.refresh(RefreshRequest(authHeader))
+        return RetrofitClient.getInstance().refresh(RefreshRequest(authHeader))
     }
 
     suspend fun logout(refreshToken: String): Response<LogoutResponse> {
-        return RetrofitClient.instance.logout(LogoutRequest(refreshToken))
+        return RetrofitClient.getInstance().logout(LogoutRequest(refreshToken))
     }
 
     suspend fun changePassword(
-        authHeader: String,
         userId: String,
         currentPassword: String,
         newPassword: String,
         confirmPassword: String
     ): Response<CP_Response> {
-        return RetrofitClient.instance.changePassword(authHeader, userId, CP_Request(currentPassword, newPassword, confirmPassword))
+        return RetrofitClient.getInstance().changePassword(userId, CP_Request(currentPassword, newPassword, confirmPassword))
     }
 
     suspend fun changePasswordWithOTP(
@@ -67,19 +66,19 @@ class UserRepository {
         newPassword: String,
         confirmPassword: String
     ): Response<CP_OTP_Response> {
-        return RetrofitClient.instance.changePasswordWithOTP(CP_OTP_Request(email, newPassword, confirmPassword))
+        return RetrofitClient.getInstance().changePasswordWithOTP(CP_OTP_Request(email, newPassword, confirmPassword))
     }
 
     suspend fun sendOTP(
         email: String
     ): Response<SendResponse> {
-        return RetrofitClient.instance.sendOTP(SendRequest(email))
+        return RetrofitClient.getInstance().sendOTP(SendRequest(email))
     }
 
     suspend fun verifyOTP(
         email: String,
         otp: String
     ): Response<VerifyResponse> {
-        return RetrofitClient.instance.verifyOTP(VerifyRequest(email, otp))
+        return RetrofitClient.getInstance().verifyOTP(VerifyRequest(email, otp))
     }
 }

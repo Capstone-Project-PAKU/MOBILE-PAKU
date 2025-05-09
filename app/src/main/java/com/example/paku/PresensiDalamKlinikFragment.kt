@@ -48,6 +48,7 @@ class PresensiDalamKlinikFragment : Fragment() {
     private lateinit var accessToken: String
     private lateinit var userId: String
     private lateinit var presenceIn: String
+    private lateinit var clinicBSSID: String
     private lateinit var validationStatus: TextView
     private lateinit var validationIcon: ImageView
     private lateinit var recyclerView: RecyclerView
@@ -77,6 +78,8 @@ class PresensiDalamKlinikFragment : Fragment() {
         accessToken = prefs.getString("accessToken", null).toString()
         userId = prefs.getString("userId", null).toString()
 
+        getDetailInfo()
+
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
@@ -91,21 +94,21 @@ class PresensiDalamKlinikFragment : Fragment() {
         clockInBtn.setOnClickListener {
             val bssid = getWifiBSSID()
             val date = getCurrentDate()
-            val time = "07:10:00"
+            val time = "14:10:00"
             presenceIn(accessToken, userId, bssid, date, time, view)
         }
 
         clockOutBtn.setOnClickListener {
             val bssid = getWifiBSSID()
             val date = getCurrentDate()
-            val time = "14:10:00"
+            val time = "21:10:00"
             presenceOut(accessToken, userId, bssid, date, time, view)
         }
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
 
-        fetchPresence(accessToken, userId, null, null, 31)
+        fetchPresence(userId, null, null, 31)
 
         val imgBack = view.findViewById<ImageView>(R.id.back)
         imgBack.setOnClickListener {
@@ -115,7 +118,7 @@ class PresensiDalamKlinikFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        getCurrentPresence(accessToken)
+        getCurrentPresence()
     }
 
     private fun presenceIn(
@@ -130,11 +133,16 @@ class PresensiDalamKlinikFragment : Fragment() {
             showPresenceFailedPopup(view, null)
             return
         }
-        presenceViewModel.clockIn_Inside(token, id_user, date, time) { success, message, data ->
+
+//        if (bssid != clinicBSSID) {
+//            showPresenceFailedPopup(view, "BSSID tidak sesuai, pastikan anda terhubung dengan Wifi yang benar!")
+//            return
+//        }
+        presenceViewModel.clockIn_Inside(id_user, date, time) { success, message, data ->
             if (success) {
                 prefs.edit().putString("presenceIn", data?.waktu_masuk).apply()
                 showPresenceSuccessPopup(view, message)
-                getCurrentPresence(token)
+                getCurrentPresence()
             } else {
                 showPresenceFailedPopup(view, message)
             }
@@ -153,10 +161,15 @@ class PresensiDalamKlinikFragment : Fragment() {
             showPresenceFailedPopup(view, null)
             return
         }
-        presenceViewModel.clockOut_Inside(token, id_user, date, time) { success, message, data ->
+
+//        if (bssid != clinicBSSID) {
+//            showPresenceFailedPopup(view, "BSSID tidak sesuai, pastikan anda terhubung dengan Wifi yang benar!")
+//            return
+//        }
+        presenceViewModel.clockOut_Inside(id_user, date, time) { success, message, data ->
             if (success){
                 showPresenceSuccessPopup(view, message)
-                getCurrentPresence(token)
+                getCurrentPresence()
             } else {
                 showPresenceFailedPopup(view, message)
             }
@@ -196,8 +209,8 @@ class PresensiDalamKlinikFragment : Fragment() {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun getCurrentPresence(token: String) {
-        presenceViewModel.getCurrentPresence(token) { success, message, data ->
+    private fun getCurrentPresence() {
+        presenceViewModel.getCurrentPresence() { success, message, data ->
             if (success) {
                 if (data != null) {
                     prefs.edit().remove("presenceIn").apply()
@@ -213,10 +226,10 @@ class PresensiDalamKlinikFragment : Fragment() {
         }
     }
 
-    private fun fetchPresence(token: String, userId: String, month: String?, year: String?, limit: Int?){
+    private fun fetchPresence(userId: String, month: String?, year: String?, limit: Int?){
         lifecycleScope.launch {
             try {
-                val response = RetrofitClient.instance.getUserPresence("Bearer $token", userId,month, year, limit)
+                val response = RetrofitClient.getInstance().getUserPresence(userId, month, year, limit)
                 if (response.isSuccessful) {
                     response.body()?.let { presenceResponse ->
                         val presenceList = presenceResponse.data
@@ -243,17 +256,16 @@ class PresensiDalamKlinikFragment : Fragment() {
         }
     }
 
-    private fun navigateToFragment(fragment: Fragment) {
-        parentFragmentManager.beginTransaction()
-            .setCustomAnimations(
-                R.anim.slide_in_right,  // animasi masuk
-                R.anim.slide_out_left,  // animasi keluar
-                R.anim.slide_in_left,   // animasi kembali masuk
-                R.anim.slide_out_right  // animasi kembali keluar
-            )
-            .replace(R.id.frame_layout, fragment)
-            .addToBackStack(null)
-            .commit()
+    private fun getDetailInfo() {
+        presenceViewModel.getDetailInfo() { success, data, error ->
+            if (success) {
+               data?.let {
+                   clinicBSSID = data.bssid
+               }
+            } else {
+                Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
 }

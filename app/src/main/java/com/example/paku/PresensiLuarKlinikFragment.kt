@@ -115,7 +115,7 @@ class PresensiLuarKlinikFragment : Fragment() {
         }
 
         getCurrentLocation()
-        getCurrentPresence(accessToken)
+        getCurrentPresence()
 
         cameraBtn.setOnClickListener {
             val intent = Intent(requireContext(), CameraActivity::class.java)
@@ -134,10 +134,10 @@ class PresensiLuarKlinikFragment : Fragment() {
             val clockIn = prefs.getString("waktu_masuk_outside", null)
             if (clockIn == null) {
                 val time = "07:10:00"
-                clockInOutside(accessToken, photo!!, document!!, userId, date, time, lokasi, view)
+                clockInOutside(photo!!, document!!, userId, date, time, lokasi, view)
             } else {
                 val time = "14:10:00"
-                clockOutOutside(accessToken, photo!!, document!!, userId, date, time, lokasi, view)
+                clockOutOutside(photo!!, document!!, userId, date, time, lokasi, view)
             }
         }
 
@@ -184,7 +184,6 @@ class PresensiLuarKlinikFragment : Fragment() {
     }
 
     private fun clockInOutside(
-        token: String,
         photo: MultipartBody.Part,
         document: MultipartBody.Part,
         id_user: String,
@@ -193,11 +192,11 @@ class PresensiLuarKlinikFragment : Fragment() {
         lokasi: String,
         view: View
     ) {
-        presenceViewModel.clockIn_Outside(token, photo, document, id_user, date, time, lokasi) { success, message, presenceData ->
+        presenceViewModel.clockIn_Outside(photo, document, id_user, date, time, lokasi) { success, message, presenceData ->
             if (success) {
                 prefs.edit().putString("waktu_masuk_outside", presenceData?.waktu_masuk).apply()
                 showPresenceSuccessPopup(view, message)
-                getCurrentPresence(token)
+                getCurrentPresence()
             } else {
                 showPresenceFailedPopup(view, message, false)
             }
@@ -205,7 +204,6 @@ class PresensiLuarKlinikFragment : Fragment() {
     }
 
     private fun clockOutOutside(
-        token: String,
         photo: MultipartBody.Part,
         document: MultipartBody.Part,
         id_user: String,
@@ -214,11 +212,11 @@ class PresensiLuarKlinikFragment : Fragment() {
         lokasi: String,
         view: View
     ) {
-        presenceViewModel.clockOut_Outside(token, photo, document, id_user, date, time, lokasi) { success, message, presenceData ->
+        presenceViewModel.clockOut_Outside(photo, document, id_user, date, time, lokasi) { success, message, presenceData ->
             if (success) {
                 prefs.edit().remove("waktu_masuk_outside").apply()
                 showPresenceSuccessPopup(view, message)
-                getCurrentPresence(token)
+                getCurrentPresence()
             } else {
                 showPresenceFailedPopup(view, message, false)
             }
@@ -226,8 +224,8 @@ class PresensiLuarKlinikFragment : Fragment() {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun getCurrentPresence(token: String) {
-        presenceViewModel.getCurrentPresence(token) { success, message, data ->
+    private fun getCurrentPresence() {
+        presenceViewModel.getCurrentPresence() { success, message, data ->
             if (success) {
                 if (data == null) {
                     return@getCurrentPresence

@@ -16,7 +16,7 @@ class PermissionViewModel: ViewModel() {
     private val repository = PermissionRepository()
 
     fun AddWorkLeave(
-        token: String,
+//        token: String,
         file_cuti: MultipartBody.Part,
         id_user: String,
         jenis_cuti: String,
@@ -27,7 +27,7 @@ class PermissionViewModel: ViewModel() {
     ) {
         viewModelScope.launch {
             try {
-                val response = repository.addWorkLeave("Bearer $token", file_cuti, id_user, jenis_cuti, tgl_awal_cuti, tgl_akhir_cuti, keterangan_cuti)
+                val response = repository.addWorkLeave(file_cuti, id_user, jenis_cuti, tgl_awal_cuti, tgl_akhir_cuti, keterangan_cuti)
 
                 if (response.isSuccessful) {
                     val leave = response.body()

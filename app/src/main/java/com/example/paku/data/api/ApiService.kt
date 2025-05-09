@@ -1,5 +1,6 @@
 package com.example.paku.data.api
 
+import com.example.paku.data.model.detail.GetDetailInfoResponse
 import com.example.paku.data.model.otp.SendRequest
 import com.example.paku.data.model.otp.SendResponse
 import com.example.paku.data.model.otp.VerifyRequest
@@ -55,18 +56,13 @@ interface ApiService {
     suspend fun logout(@Body request: LogoutRequest): Response<LogoutResponse>
 
     @GET("api/auth/profile")
-    suspend fun getProfile(
-        @Header("Authorization") token: String
-    ): Response<ProfileResponse>
+    suspend fun getProfile(): Response<ProfileResponse>
 
     @GET("api/auth/validate")
-    suspend fun validateToken(
-        @Header("Authorization") token: String
-    ): Response<Void>
+    suspend fun validateToken(): Response<Void>
 
     @PUT("api/user/change-password/{id}")
     suspend fun changePassword(
-        @Header("Authorization") token: String,
         @Path("id") userId: String,
         @Body request: CP_Request
     ): Response<CP_Response>
@@ -82,20 +78,17 @@ interface ApiService {
     // presence
     @POST("api/presence/clockin-inside")
     suspend fun clockIn_Inside(
-        @Header("Authorization") token: String,
         @Body request: ClockIn_InsideRequest
     ): Response<ClockIn_InsideResponse>
 
     @POST("api/presence/clockout-inside")
     suspend fun clockOut_Inside(
-        @Header("Authorization") token: String,
         @Body request: ClockOut_InsideRequest
     ): Response<ClockOut_InsideResponse>
 
     @Multipart
     @POST("api/presence/clockin-alternate")
     suspend fun clockIn_Alternate(
-        @Header("Authorization") token: String,
         @Part foto_selfie: MultipartBody.Part,
         @Part("id_user") idUser: RequestBody,
         @Part("tanggal_presensi") tanggalPresensi: RequestBody,
@@ -106,7 +99,6 @@ interface ApiService {
     @Multipart
     @POST("api/presence/clockout-alternate")
     suspend fun clockOut_Alternate(
-        @Header("Authorization") token: String,
         @Part foto_selfie: MultipartBody.Part,
         @Part("id_user") idUser: RequestBody,
         @Part("tanggal_presensi") tanggalPresensi: RequestBody,
@@ -117,7 +109,6 @@ interface ApiService {
     @Multipart
     @POST("api/presence/clockin-outside")
     suspend fun clockIn_Outside(
-        @Header("Authorization") token: String,
         @Part foto_selfie: MultipartBody.Part,
         @Part foto_dokumen: MultipartBody.Part,
         @Part("id_user") idUser: RequestBody,
@@ -129,7 +120,6 @@ interface ApiService {
     @Multipart
     @POST("api/presence/clockout-outside")
     suspend fun clockOut_Outside(
-        @Header("Authorization") token: String,
         @Part foto_selfie: MultipartBody.Part,
         @Part foto_dokumen: MultipartBody.Part,
         @Part("id_user") idUser: RequestBody,
@@ -139,13 +129,10 @@ interface ApiService {
     ): Response<ClockIn_OutsideResponse>
 
     @GET("api/presence/current")
-    suspend fun getCurrentPresence(
-        @Header("Authorization") token: String
-    ): Response<GetCurrentPresenceResponse>
+    suspend fun getCurrentPresence(): Response<GetCurrentPresenceResponse>
 
     @GET("api/presence/user/{id}")
     suspend fun getUserPresence(
-        @Header("Authorization") token: String,
         @Path("id") userId: String,
         @Query("month") monthFilter: String?,
         @Query("year") yearFilter: String?,
@@ -156,7 +143,6 @@ interface ApiService {
     @Multipart
     @POST("api/permission/")
     suspend fun addWorkLeave(
-        @Header("Authorization") token: String,
         @Part file_cuti: MultipartBody.Part,
         @Part("id_user") userId: RequestBody,
         @Part("jenis_cuti") leaveType: RequestBody,
@@ -167,13 +153,11 @@ interface ApiService {
 
     @GET("api/permission/user/{id}")
     suspend fun getUserLeave(
-        @Header("Authorization") token: String,
         @Path("id") userId: String
     ): Response<GetUserLeaveResponse>
 
     @GET("api/permission/user/date/{id}")
     suspend fun getUserLeaveByDate(
-        @Header("Authorization") token: String,
         @Path("id") userId: String,
         @Query("tgl_awal_cuti") tglAwalCuti: String
     ): Response<GetUserLeaveResponse>
@@ -181,7 +165,6 @@ interface ApiService {
     // Schedule
     @GET("api/schedule/detail/{id}")
     suspend fun getUserSchedule(
-        @Header("Authorization") token: String,
         @Path("id") userId: String,
         @Query("month") monthFilter: String?,
         @Query("year") yearFilter: String?,
@@ -191,7 +174,6 @@ interface ApiService {
     // Working recap
     @GET("api/schedule/recap/{id}")
     suspend fun getUserWorkingRecap(
-        @Header("Authorization") token: String,
         @Path("id") userId: String,
         @Query("month") monthFilter: String?,
         @Query("year") yearFilter: String?
@@ -200,7 +182,6 @@ interface ApiService {
     // Payroll
     @GET("api/salary/payroll/user/{id}")
     suspend fun getUserPayroll(
-        @Header("Authorization") token: String,
         @Path("id") userId: String,
         @Query("month") monthFilter: String?,
         @Query("year") yearFilter: String?
@@ -212,4 +193,8 @@ interface ApiService {
 
     @POST("api/otp/verify")
     suspend fun verifyOTP(@Body request: VerifyRequest): Response<VerifyResponse>
+
+    // details
+    @GET("api/detail")
+    suspend fun getDetailInfo(): Response<GetDetailInfoResponse>
 }

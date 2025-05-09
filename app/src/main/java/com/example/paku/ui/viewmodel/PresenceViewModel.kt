@@ -3,6 +3,7 @@ package com.example.paku.ui.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.paku.data.model.detail.DetailData
 import com.example.paku.data.model.list.CurrentPresenceData
 import com.example.paku.data.model.list.PresenceAltData
 import com.example.paku.data.model.list.PresenceInData
@@ -20,7 +21,6 @@ class PresenceViewModel: ViewModel() {
     private val repository = PresenceRepository()
 
     fun clockIn_Inside(
-        token: String,
         id_user: String,
         tanggal_presensi: String,
         waktu_masuk: String,
@@ -28,7 +28,7 @@ class PresenceViewModel: ViewModel() {
     ) {
         viewModelScope.launch {
             try {
-                val response = repository.clockIn_Inside("Bearer $token", id_user, tanggal_presensi, waktu_masuk)
+                val response = repository.clockIn_Inside(id_user, tanggal_presensi, waktu_masuk)
 
                 if (response.isSuccessful) {
                     val clockInInsideResponse = response.body()
@@ -51,7 +51,6 @@ class PresenceViewModel: ViewModel() {
     }
 
     fun clockOut_Inside(
-        token: String,
         id_user: String,
         tanggal_presensi: String,
         waktu_keluar: String,
@@ -59,7 +58,7 @@ class PresenceViewModel: ViewModel() {
     ) {
         viewModelScope.launch {
             try {
-                val response = repository.clockOut_Inside("Bearer $token", id_user, tanggal_presensi, waktu_keluar)
+                val response = repository.clockOut_Inside(id_user, tanggal_presensi, waktu_keluar)
 
                 if (response.isSuccessful){
                     val clockOutInsideResponse = response.body()
@@ -82,12 +81,11 @@ class PresenceViewModel: ViewModel() {
     }
 
     fun getCurrentPresence(
-        token: String,
         onResult: (Boolean, String?, CurrentPresenceData?) -> Unit
     ) {
         viewModelScope.launch {
             try {
-                val response = repository.getCurrentPresence("Bearer $token")
+                val response = repository.getCurrentPresence()
 
                 if (response.isSuccessful){
                     val currentPresenceResponse = response.body()
@@ -107,7 +105,6 @@ class PresenceViewModel: ViewModel() {
     }
 
     fun clockIn_Alternate(
-        token: String,
         file_selfie: MultipartBody.Part,
         id_user: String,
         tanggal_presensi: String,
@@ -117,7 +114,7 @@ class PresenceViewModel: ViewModel() {
     ){
         viewModelScope.launch {
             try {
-                val response = repository.clockIn_Alternate("Bearer $token", file_selfie, id_user, tanggal_presensi, waktu_masuk, lokasi)
+                val response = repository.clockIn_Alternate(file_selfie, id_user, tanggal_presensi, waktu_masuk, lokasi)
 
                 if (response.isSuccessful) {
                     val clockIn = response.body()
@@ -140,7 +137,6 @@ class PresenceViewModel: ViewModel() {
     }
 
     fun clockOut_Alternate(
-        token: String,
         file_selfie: MultipartBody.Part,
         id_user: String,
         tanggal_presensi: String,
@@ -150,7 +146,7 @@ class PresenceViewModel: ViewModel() {
     ){
         viewModelScope.launch {
             try {
-                val response = repository.clockOut_Alternate("Bearer $token", file_selfie, id_user, tanggal_presensi, waktu_keluar, lokasi)
+                val response = repository.clockOut_Alternate(file_selfie, id_user, tanggal_presensi, waktu_keluar, lokasi)
 
                 if (response.isSuccessful) {
                     val clockOut = response.body()
@@ -173,7 +169,6 @@ class PresenceViewModel: ViewModel() {
     }
 
     fun clockIn_Outside(
-        token: String,
         file_selfie: MultipartBody.Part,
         file_dokumen: MultipartBody.Part,
         id_user: String,
@@ -184,7 +179,7 @@ class PresenceViewModel: ViewModel() {
     ) {
         viewModelScope.launch {
             try {
-                val response = repository.clockIn_Outside("Bearer $token", file_selfie, file_dokumen, id_user, tanggal_presensi, waktu_masuk, lokasi)
+                val response = repository.clockIn_Outside(file_selfie, file_dokumen, id_user, tanggal_presensi, waktu_masuk, lokasi)
 
                 if (response.isSuccessful) {
                     val clockIn = response.body()
@@ -207,7 +202,6 @@ class PresenceViewModel: ViewModel() {
     }
 
     fun clockOut_Outside(
-        token: String,
         file_selfie: MultipartBody.Part,
         file_dokumen: MultipartBody.Part,
         id_user: String,
@@ -218,7 +212,7 @@ class PresenceViewModel: ViewModel() {
     ) {
         viewModelScope.launch {
             try {
-                val response = repository.clockOut_Outside("Bearer $token", file_selfie, file_dokumen, id_user, tanggal_presensi, waktu_keluar, lokasi)
+                val response = repository.clockOut_Outside(file_selfie, file_dokumen, id_user, tanggal_presensi, waktu_keluar, lokasi)
 
                 if (response.isSuccessful) {
                     val clockOut = response.body()
@@ -236,6 +230,25 @@ class PresenceViewModel: ViewModel() {
             } catch (e: Exception) {
                 Log.e("UserViewModel", "Unexpected error: ${e.localizedMessage}")
                 onResult(false, "Unexpected error: ${e.localizedMessage}", null)
+            }
+        }
+    }
+
+    fun getDetailInfo(
+        onResult: (Boolean, DetailData?, String?) -> Unit
+    ) {
+        viewModelScope.launch {
+            try {
+                val response = repository.getDetailInfo()
+                if (response.isSuccessful) {
+                    onResult(true, response.body()?.data, null)
+                } else {
+                    val error = parseErrorMessage(response)
+                    onResult(false, null, error)
+                }
+            } catch (e: HttpException) {
+                Log.e("UserViewModel", "Server error: ${e.message}")
+                onResult(false, null, "Server error. Mohon coba lagi nanti.")
             }
         }
     }

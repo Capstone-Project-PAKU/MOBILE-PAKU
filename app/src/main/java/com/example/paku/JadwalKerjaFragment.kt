@@ -63,8 +63,8 @@ class JadwalKerjaFragment : Fragment() {
         userId = prefs.getString("userId", null).toString()
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        fetchUserProfile(accessToken)
-        fetchUserSchedule(accessToken, userId, null, null, getCurrentDate())
+        fetchUserProfile()
+        fetchUserSchedule(userId, null, null, getCurrentDate())
 
         val imgBack = view.findViewById<ImageView>(R.id.back)
         imgBack.setOnClickListener {
@@ -76,12 +76,11 @@ class JadwalKerjaFragment : Fragment() {
             selectedCalendar.set(year, month, dayOfMonth)
             val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
             val result = dateFormat.format(selectedCalendar.time)
-            fetchUserSchedule(accessToken, userId, null, null, result)
+            fetchUserSchedule(userId, null, null, result)
         }
     }
 
     private fun fetchUserSchedule(
-        token: String,
         userId: String,
         monthFilter: String?,
         yearFilter: String?,
@@ -89,7 +88,7 @@ class JadwalKerjaFragment : Fragment() {
     ) {
         lifecycleScope.launch {
             try {
-                val response = RetrofitClient.instance.getUserSchedule("Bearer $token", userId, monthFilter, yearFilter, dateFilter)
+                val response = RetrofitClient.getInstance().getUserSchedule(userId, monthFilter, yearFilter, dateFilter)
                 if (response.isSuccessful) {
                     val scheduleList = response.body()?.data ?: emptyList()
                     
@@ -125,8 +124,8 @@ class JadwalKerjaFragment : Fragment() {
         notFoundTv.visibility = View.VISIBLE
     }
 
-    private fun fetchUserProfile(token: String) {
-        userViewModel.getProfile(token) { success, userData ->
+    private fun fetchUserProfile() {
+        userViewModel.getProfile() { success, userData ->
             if (success) {
                 val userOccupation = userData?.jabatan?.let { capitalizeWords(it) }
                 userOccupationTv.text = userOccupation

@@ -48,7 +48,7 @@ class HomeFragment : Fragment() {
         val accessToken = pref.getString("accessToken", null)
 
         if (!accessToken.isNullOrEmpty()) {
-            fetchUserProfile(accessToken)
+            fetchUserProfile()
         } else {
             Toast.makeText(requireContext(), "Sesi berakhir. Silahkan login kembali.", Toast.LENGTH_SHORT).show()
         }
@@ -173,8 +173,8 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun fetchUserProfile(token: String) {
-        userViewModel.getProfile(token) { success, userData ->
+    private fun fetchUserProfile() {
+        userViewModel.getProfile() { success, userData ->
             if (success) {
                 val userHeader = userData?.username
                 val userOccupation = userData?.jabatan?.let { capitalizeWords(it) }

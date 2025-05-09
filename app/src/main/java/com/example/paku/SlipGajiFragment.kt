@@ -17,7 +17,6 @@ import android.widget.NumberPicker
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -73,8 +72,8 @@ class SlipGajiFragment : Fragment() {
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        fetchUserProfile(accessToken)
-        fetchUserPayroll(accessToken, userId, null, null)
+        fetchUserProfile()
+        fetchUserPayroll(userId, null, null)
 
         // Set action ketika diklik untuk memilih bulan dan tahun
         calendarSection.setOnClickListener {
@@ -100,13 +99,13 @@ class SlipGajiFragment : Fragment() {
                 val res = getMonthAndYear(tvSelectMonth.text.toString())
                 val month = res?.first
                 val year = res?.second
-                fetchUserPayroll(accessToken, userId, month, year)
+                fetchUserPayroll(userId, month, year)
             }
         })
 
         getPayrollBtn.setOnClickListener {
             resetRecyclerView()
-            fetchUserPayroll(accessToken, userId, null, null)
+            fetchUserPayroll(userId, null, null)
             tvSelectMonth.text = "Select a month"
         }
     }
@@ -156,14 +155,13 @@ class SlipGajiFragment : Fragment() {
     }
 
     private fun fetchUserPayroll(
-        token: String,
         userId: String,
         monthFilter: String?,
         yearFilter: String?
     ) {
         lifecycleScope.launch {
             try {
-                val response = RetrofitClient.instance.getUserPayroll("Bearer $token", userId, monthFilter, yearFilter)
+                val response = RetrofitClient.getInstance().getUserPayroll(userId, monthFilter, yearFilter)
                 if (response.isSuccessful) {
                     val payrollList = response.body()?.data ?: emptyList()
 
@@ -230,8 +228,8 @@ class SlipGajiFragment : Fragment() {
         return month to year
     }
 
-    private fun fetchUserProfile(token: String) {
-        userViewModel.getProfile(token) { success, userData ->
+    private fun fetchUserProfile() {
+        userViewModel.getProfile() { success, userData ->
             if (success) {
                 val userOccupation = userData?.jabatan?.let { capitalizeWords(it) }
                 userOccupationTv.text = userOccupation

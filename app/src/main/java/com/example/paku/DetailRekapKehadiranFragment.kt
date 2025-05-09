@@ -60,8 +60,8 @@ class DetailRekapKehadiranFragment : Fragment() {
         title.text = "${month?.let { convertToMonth(it) }} ${year}"
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        fetchUserProfile(accessToken)
-        fetchPresence(accessToken, userId, month, year, 31)
+        fetchUserProfile()
+        fetchPresence(userId, month, year, 31)
 
         val imgBack = view.findViewById<ImageView>(R.id.back)
         imgBack.setOnClickListener {
@@ -80,10 +80,10 @@ class DetailRekapKehadiranFragment : Fragment() {
         return monthMap[num]
     }
 
-    private fun fetchPresence(token: String, userId: String, month: String?, year: String?, limit: Int?){
+    private fun fetchPresence(userId: String, month: String?, year: String?, limit: Int?){
         lifecycleScope.launch {
             try {
-                val response = RetrofitClient.instance.getUserPresence("Bearer $token", userId, month, year, limit)
+                val response = RetrofitClient.getInstance().getUserPresence(userId, month, year, limit)
                 if (response.isSuccessful) {
                     response.body()?.let { presenceResponse ->
                         val presenceList = presenceResponse.data
@@ -110,8 +110,8 @@ class DetailRekapKehadiranFragment : Fragment() {
         }
     }
 
-    private fun fetchUserProfile(token: String) {
-        userViewModel.getProfile(token) { success, userData ->
+    private fun fetchUserProfile() {
+        userViewModel.getProfile() { success, userData ->
             if (success) {
                 val userOccupation = userData?.jabatan?.let { capitalizeWords(it) }
                 userOccupationTv.text = userOccupation

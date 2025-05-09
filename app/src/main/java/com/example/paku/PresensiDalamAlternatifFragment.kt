@@ -104,7 +104,7 @@ class PresensiDalamAlternatifFragment : Fragment() {
         }
 
         getCurrentLocation()
-        getCurrentPresence(accessToken)
+        getCurrentPresence()
 
         cameraBtn.setOnClickListener {
             val intent = Intent(requireContext(), CameraActivity::class.java)
@@ -118,10 +118,10 @@ class PresensiDalamAlternatifFragment : Fragment() {
             val lokasi = locationJSON.toString()
             if (clockIn == null) {
                 val time = "07:10:00"
-                clockInAlt(accessToken, photo!!, userId, date, time, lokasi, view)
+                clockInAlt(photo!!, userId, date, time, lokasi, view)
             } else {
                 val time = "14:10:00"
-                clockOutAlt(accessToken, photo!!, userId, date, time, lokasi, view)
+                clockOutAlt(photo!!, userId, date, time, lokasi, view)
             }
         }
 
@@ -134,7 +134,6 @@ class PresensiDalamAlternatifFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun clockInAlt(
-        token: String,
         photo: MultipartBody.Part,
         id_user: String,
         date: String,
@@ -142,14 +141,14 @@ class PresensiDalamAlternatifFragment : Fragment() {
         lokasi: String,
         view: View
     ) {
-        presenceViewModel.clockIn_Alternate(token, photo, id_user, date, time, lokasi) { success, message, presenceData ->
+        presenceViewModel.clockIn_Alternate(photo, id_user, date, time, lokasi) { success, message, presenceData ->
             if (success) {
                 prefs.edit()
                     .putString("waktu_masuk_alt", presenceData?.waktu_masuk)
                     .putString("last_reset_day", LocalDate.now().toString())
                     .apply()
                 showPresenceSuccessPopup(view, message)
-                getCurrentPresence(token)
+                getCurrentPresence()
             } else {
                 showPresenceFailedPopup(view, message, false)
             }
@@ -157,7 +156,6 @@ class PresensiDalamAlternatifFragment : Fragment() {
     }
 
     private fun clockOutAlt(
-        token: String,
         photo: MultipartBody.Part,
         id_user: String,
         date: String,
@@ -165,11 +163,11 @@ class PresensiDalamAlternatifFragment : Fragment() {
         lokasi: String,
         view: View
     ) {
-        presenceViewModel.clockOut_Alternate(token, photo, id_user, date, time, lokasi) { success, message, presenceData ->
+        presenceViewModel.clockOut_Alternate(photo, id_user, date, time, lokasi) { success, message, presenceData ->
             if (success) {
                 prefs.edit().remove("waktu_masuk_alt").apply()
                 showPresenceSuccessPopup(view, message)
-                getCurrentPresence(token)
+                getCurrentPresence()
             } else {
                 showPresenceFailedPopup(view, message, false)
             }
@@ -177,16 +175,16 @@ class PresensiDalamAlternatifFragment : Fragment() {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun getCurrentPresence(token: String) {
-        presenceViewModel.getCurrentPresence(token) { success, message, data ->
+    private fun getCurrentPresence() {
+        presenceViewModel.getCurrentPresence() { success, message, data ->
             if (success) {
                 if (data == null) {
                     return@getCurrentPresence
                 }
-                if (data.validasi_masuk == "setuju" && data.waktu_keluar == "setuju") {
+                if (data.validasi_masuk == "setuju" && data.validasi_keluar == "setuju") {
                     validationStatus.text = "Status Validasi: " + data.validasi_masuk
                     validationIcon.setImageResource(R.drawable.icon_accept)
-                } else if (data.waktu_masuk == "ditolak" && data.waktu_keluar == "ditolak") {
+                } else if (data.validasi_masuk == "ditolak" && data.validasi_keluar == "ditolak") {
                     validationStatus.text = "Status Validasi: " + data.validasi_masuk
                     validationIcon.setImageResource(R.drawable.icon_decline)
                 } else {

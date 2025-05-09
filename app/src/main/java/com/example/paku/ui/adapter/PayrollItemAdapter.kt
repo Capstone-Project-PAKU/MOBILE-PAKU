@@ -24,6 +24,7 @@ class PayrollItemAdapter(
         val totalGajiText: TextView = view.findViewById(R.id.tvTotalGajiValue)
         val metodePembayaranText: TextView = view.findViewById(R.id.tvMetodePembayaranValue)
         val buktiPembayaranText: TextView = view.findViewById(R.id.tvBuktiPembayaranValue)
+        val dendaText: TextView = view.findViewById(R.id.tvDendaValue)
 
         fun ShowInvoicePhoto(urlPath: String?) {
             if (urlPath != null) {
@@ -53,6 +54,7 @@ class PayrollItemAdapter(
         holder.tunjanganText.text = "Rp.${rupiah(item.tunjangan)}"
         holder.totalGajiText.text = "RP.${rupiah(item.total_gaji)}"
         holder.metodePembayaranText.text = item.metode_pembayaran ?: "-"
+        holder.dendaText.text = "Rp.${rupiah((item.jumlah_ketidakhadiran * 100000).toDouble())}"
         holder.ShowInvoicePhoto(item.bukti_pembayaran)
     }
 

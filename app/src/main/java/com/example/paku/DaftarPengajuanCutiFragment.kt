@@ -69,7 +69,7 @@ class DaftarPengajuanCutiFragment : Fragment() {
         userId = prefs.getString("userId", null).toString()
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        fetchLeavePermission(accessToken, userId)
+        fetchLeavePermission(userId)
 
         // Set action ketika LinearLayout diklik
         calendarSection.setOnClickListener {
@@ -93,17 +93,17 @@ class DaftarPengajuanCutiFragment : Fragment() {
 
             override fun afterTextChanged(s: Editable?) {
                 val tanggal = tvSelectMonth.text.toString()
-                fetchLeavePermissionByDate(accessToken, userId, tanggal)
+                fetchLeavePermissionByDate(userId, tanggal)
             }
         })
 
         leaveBtn.setOnClickListener {
             resetRecyclerView()
-            fetchLeavePermission(accessToken, userId)
+            fetchLeavePermission(userId)
             tvSelectMonth.text = "Select a date"
         }
 
-        fetchUserProfile(accessToken)
+        fetchUserProfile()
     }
 
     private fun showDatePickerDialog() {
@@ -129,10 +129,10 @@ class DaftarPengajuanCutiFragment : Fragment() {
         datePickerDialog.show()
     }
 
-    private fun fetchLeavePermission(token: String, userId: String) {
+    private fun fetchLeavePermission(userId: String) {
         lifecycleScope.launch {
             try {
-                val response = RetrofitClient.instance.getUserLeave("Bearer $token", userId)
+                val response = RetrofitClient.getInstance().getUserLeave(userId)
                 if (response.isSuccessful) {
                     val permissionList = response.body()?.data ?: emptyList()
 
@@ -151,10 +151,10 @@ class DaftarPengajuanCutiFragment : Fragment() {
         }
     }
 
-    private fun fetchLeavePermissionByDate(token: String, userId: String, date: String) {
+    private fun fetchLeavePermissionByDate(userId: String, date: String) {
         lifecycleScope.launch {
             try {
-                val response = RetrofitClient.instance.getUserLeaveByDate("Bearer $token", userId, date)
+                val response = RetrofitClient.getInstance().getUserLeaveByDate(userId, date)
                 if (response.isSuccessful) {
                     val permissionList = response.body()?.data ?: emptyList()
 
@@ -198,8 +198,8 @@ class DaftarPengajuanCutiFragment : Fragment() {
         notFoundTv.visibility = View.VISIBLE
     }
 
-    private fun fetchUserProfile(token: String) {
-        userViewModel.getProfile(token) { success, userData ->
+    private fun fetchUserProfile() {
+        userViewModel.getProfile() { success, userData ->
             if (success) {
                 val userOccupation = userData?.jabatan?.let { capitalizeWords(it) }
                 userOccupationTv.text = userOccupation

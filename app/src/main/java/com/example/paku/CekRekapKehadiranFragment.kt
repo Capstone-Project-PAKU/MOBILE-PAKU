@@ -70,8 +70,8 @@ class CekRekapKehadiranFragment : Fragment() {
         userId = prefs.getString("userId", null).toString()
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        fetchUserProfile(accessToken)
-        fetchUserRecap(accessToken, userId, null, null)
+        fetchUserProfile()
+        fetchUserRecap(userId, null, null)
 
         // Set action ketika LinearLayout diklik
         calendarSection.setOnClickListener {
@@ -97,13 +97,13 @@ class CekRekapKehadiranFragment : Fragment() {
                 val res = getMonthAndYear(tvSelectMonth.text.toString())
                 val month = res?.first
                 val year = res?.second
-                fetchUserRecap(accessToken, userId, month, year)
+                fetchUserRecap(userId, month, year)
             }
         })
 
         recapBtn.setOnClickListener {
             resetRecyclerView()
-            fetchUserRecap(accessToken, userId, null, null)
+            fetchUserRecap(userId, null, null)
             tvSelectMonth.text = "Select a month"
         }
     }
@@ -151,14 +151,13 @@ class CekRekapKehadiranFragment : Fragment() {
     }
 
     private fun fetchUserRecap(
-        token: String,
         userId: String,
         monthFilter: String?,
         yearFilter: String?
     ) {
         lifecycleScope.launch {
             try {
-                val response = RetrofitClient.instance.getUserWorkingRecap("Bearer $token", userId, monthFilter, yearFilter)
+                val response = RetrofitClient.getInstance().getUserWorkingRecap(userId, monthFilter, yearFilter)
                 if (response.isSuccessful) {
                     val recapList = response.body()?.data ?: emptyList()
 
@@ -232,8 +231,8 @@ class CekRekapKehadiranFragment : Fragment() {
         return month to year
     }
 
-    private fun fetchUserProfile(token: String) {
-        userViewModel.getProfile(token) { success, userData ->
+    private fun fetchUserProfile() {
+        userViewModel.getProfile() { success, userData ->
             if (success) {
                 val userOccupation = userData?.jabatan?.let { capitalizeWords(it) }
                 userOccupationTv.text = userOccupation
