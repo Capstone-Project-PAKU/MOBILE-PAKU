@@ -1,86 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_sign_in">
+    android:background="@drawable/bg_sign_in"
+    android:padding="20dp">
 
+    <!-- Welcome Text -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:id="@+id/welcomeText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:text="Welcome Back!"
-        android:textSize="35sp"
+        android:textSize="40sp"
         android:fontFamily="@font/ubuntu_bold"
-        android:layout_marginTop="20dp"
         android:textColor="@color/white"
         android:textStyle="bold"
-        android:gravity="center"/>
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="40dp" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/linearLayout2">
+    <!-- Icon Image -->
+    <ImageView
+        android:id="@+id/profile_image"
+        android:layout_width="200dp"
+        android:layout_height="130dp"
+        android:layout_marginTop="50dp"
+        android:src="@drawable/icon_examination"
+        app:layout_constraintTop_toBottomOf="@id/welcomeText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-        <ImageView
-            android:id="@+id/profile_image"
-            android:layout_width="match_parent"
-            android:layout_height="130dp"
-            android:layout_centerInParent="true"
-            android:src="@drawable/icon_examination" />
-    </RelativeLayout>
-
-    <!-- Card View untuk Form Login -->
+    <!-- Form Card -->
     <LinearLayout
         android:id="@+id/linearLayout2"
-        android:layout_width="350dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:background="@drawable/bg_form_login"
-        android:elevation="1dp"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:background="@drawable/bg_form_login"
+        android:elevation="2dp"
+        android:padding="20dp"
+        app:layout_constraintTop_toBottomOf="@id/profile_image"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
+        <!-- Username -->
         <EditText
+            android:id="@+id/usernameLoginField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:background="@drawable/bg_data_edit_profile"
             android:hint="Username"
+            android:inputType="text"
             android:fontFamily="@font/inter"
             android:padding="15dp"
             android:textColor="@color/darker_grey"
-            android:textColorHint="@color/gray"
-            android:id="@+id/usernameLoginField"/>
+            android:textColorHint="@color/gray" />
 
-        <!-- Password dengan Toggle Visibility -->
+        <!-- Password -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/passwordLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:textColorHint="@color/gray"
             app:endIconMode="password_toggle"
             app:endIconTint="@color/darker_grey"
-            app:hintEnabled="false">>
+            app:hintEnabled="false">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/passwordLoginField"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/passwordLoginField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_data_edit_profile"
+                android:inputType="textPassword"
+                android:padding="15dp"
+                android:textColor="@color/darker_grey"
+                android:fontFamily="@font/inter"
+                android:textColorHint="@color/gray"
+                android:hint="Password" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Remember Me & Forgot Password -->
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_data_edit_profile"
-            android:inputType="textPassword"
-            android:padding="15dp"
-            android:textColor="@color/darker_grey"
-            android:fontFamily="@font/inter"
-            android:textColorHint="@color/gray"
-            android:hint="Password" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="15dp">
 
@@ -90,12 +96,10 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/inter"
                 android:text="Remember me"
-                android:textColor="@color/darker_grey"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"/>
+                android:textColor="@color/darker_grey"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
             <TextView
                 android:id="@+id/tvForgotPassword"
@@ -106,10 +110,13 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:fontFamily="@font/inter"
-                android:textColor="@color/darker_grey"/>
-        </LinearLayout>
+                android:textColor="@color/darker_grey"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-
+        <!-- Login Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLogin"
             android:layout_width="match_parent"
@@ -118,21 +125,24 @@
             android:textColor="@color/white"
             android:textStyle="bold"
             android:fontFamily="@font/inter"
-            app:backgroundTint="@color/green"
             android:textSize="18sp"
+            app:backgroundTint="@color/green"
             app:cornerRadius="25dp" />
-
     </LinearLayout>
 
-    <!-- Copyright Text at the bottom -->
+    <!-- Footer -->
     <TextView
-        android:layout_width="match_parent"
+        android:id="@+id/footer"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Copyright © 2024 Carade Inc. All right reserved"
         android:fontFamily="@font/inter"
         android:textColor="@color/gray"
         android:gravity="center"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="20dp"
-        android:textSize="13sp"/>
-</RelativeLayout>
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linearLayout2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="1" />
+</androidx.constraintlayout.widget.ConstraintLayout>
