@@ -17,6 +17,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -37,25 +38,30 @@ import java.time.format.DateTimeFormatter
 
 class PresensiDalamAlternatifFragment : Fragment() {
     private lateinit var cameraBtn: Button
-    private lateinit var saveBtn: Button
+    private lateinit var clockInBtn: Button
+    private lateinit var clockOutBtn: Button
+    private lateinit var loadingIndicator: ProgressBar
     private lateinit var photoPreview: ImageView
-    private lateinit var imageUri: String
     private lateinit var prefs: SharedPreferences
     private lateinit var accessToken: String
     private lateinit var userId: String
     private lateinit var validationStatus: TextView
     private lateinit var validationIcon: ImageView
     private lateinit var locationManager: LocationManager
+    private var imageUri: String? = null
     private var locationJSON = JSONObject()
     private val presenceViewModel: PresenceViewModel by viewModels()
     private var latitude = 0.0
     private var longitude = 0.0
+    private var hasClockInToday: Boolean = false
 
     private val locationListener = LocationListener { location ->
         if (location.isFromMockProvider) {
             Toast.makeText(requireContext(), "Anda menggunakan FakeGPS", Toast.LENGTH_SHORT).show()
-            saveBtn.isEnabled = false
-            saveBtn.isClickable = false
+            clockInBtn.isEnabled = false
+            clockInBtn.isClickable = false
+            clockOutBtn.isClickable = false
+            clockOutBtn.isEnabled = false
             cameraBtn.isEnabled = false
             cameraBtn.isClickable = false
         } else {
@@ -87,10 +93,14 @@ class PresensiDalamAlternatifFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         cameraBtn = view.findViewById(R.id.btnCamera)
-        saveBtn = view.findViewById(R.id.btnClockAlt)
+        clockInBtn = view.findViewById(R.id.btnClockInAlt)
+        clockOutBtn = view.findViewById(R.id.btnClockOutAlt)
+        loadingIndicator = view.findViewById(R.id.loadingIndicator)
         photoPreview = view.findViewById(R.id.selfiePreview)
         validationIcon = view.findViewById(R.id.presenceAltValidationIcon)
         validationStatus = view.findViewById(R.id.presenceAltValidationStatus)
+
+        loadingIndicator.visibility = View.GONE
 
         prefs = requireContext().getSharedPreferences("credential_pref", Context.MODE_PRIVATE)
         accessToken = prefs.getString("accessToken", null).toString()
@@ -104,32 +114,84 @@ class PresensiDalamAlternatifFragment : Fragment() {
         }
 
         getCurrentLocation()
-        getCurrentPresence()
+        getCurrentPresence(userId)
 
         cameraBtn.setOnClickListener {
             val intent = Intent(requireContext(), CameraActivity::class.java)
             cameraResultLaucher.launch(intent)
         }
 
-        saveBtn.setOnClickListener {
-            val date = getCurrentDate()
-            val photo = getFilePart(imageUri)
-            val clockIn = prefs.getString("waktu_masuk_alt", null)
-            val lokasi = locationJSON.toString()
-            if (clockIn == null) {
-                val time = "07:10:00"
-                clockInAlt(photo!!, userId, date, time, lokasi, view)
-            } else {
-                val time = "14:10:00"
-                clockOutAlt(photo!!, userId, date, time, lokasi, view)
-            }
-        }
+        setUpButtonListeners()
 
         val imgBack = view.findViewById<ImageView>(R.id.back)
         imgBack.setOnClickListener { parentFragmentManager.popBackStack() }
 
         val btnCancel = view.findViewById<Button>(R.id.btnCancel)
         btnCancel.setOnClickListener { parentFragmentManager.popBackStack() }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun setUpButtonListeners() {
+        clockInBtn.setOnClickListener(null)
+
+        clockOutBtn.setOnClickListener(null)
+
+        clockInBtn.setOnClickListener {
+            validateAndSubmit(true)
+        }
+
+        clockOutBtn.setOnClickListener {
+            validateAndSubmit(false)
+        }
+
+        clockInBtn.isClickable = true
+        clockOutBtn.isClickable = true
+    }
+
+    private fun showLoading() {
+        loadingIndicator.visibility = View.VISIBLE
+        clockInBtn.isEnabled = false
+        clockOutBtn.isEnabled = false
+        cameraBtn.isEnabled = false
+    }
+
+    private fun hideLoading() {
+        loadingIndicator.visibility = View.GONE
+        updateButtonsState()
+        cameraBtn.isEnabled = true
+    }
+
+    private fun updateButtonsState() {
+        if (hasClockInToday) {
+            clockInBtn.visibility = View.GONE
+            clockOutBtn.visibility = View.VISIBLE
+            clockOutBtn.isEnabled = true
+            clockOutBtn.isClickable = true
+        } else {
+            clockInBtn.visibility = View.VISIBLE
+            clockOutBtn.visibility = View.GONE
+            clockInBtn.isEnabled = true
+            clockInBtn.isClickable = true
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun validateAndSubmit(isClockIn: Boolean) {
+        if (imageUri == null) {
+            Toast.makeText(requireContext(), "Foto tidak boleh kosong", Toast.LENGTH_SHORT).show()
+            return
+        }
+        showLoading()
+        val date = getCurrentDate()
+        val photo = getFilePart(imageUri!!)
+        val lokasi = locationJSON.toString()
+        if (isClockIn) {
+            val time = "07:10:00"
+            clockInAlt(photo!!, userId, date, time, lokasi, requireView())
+        } else {
+            val time = "14:10:00"
+            clockOutAlt(photo!!, userId, date, time, lokasi, requireView())
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -141,20 +203,18 @@ class PresensiDalamAlternatifFragment : Fragment() {
         lokasi: String,
         view: View
     ) {
-        presenceViewModel.clockIn_Alternate(photo, id_user, date, time, lokasi) { success, message, presenceData ->
+        presenceViewModel.clockIn_Alternate(photo, id_user, date, time, lokasi) { success, message, _ ->
+            hideLoading()
             if (success) {
-                prefs.edit()
-                    .putString("waktu_masuk_alt", presenceData?.waktu_masuk)
-                    .putString("last_reset_day", LocalDate.now().toString())
-                    .apply()
                 showPresenceSuccessPopup(view, message)
-                getCurrentPresence()
+                getCurrentPresence(id_user)
             } else {
                 showPresenceFailedPopup(view, message, false)
             }
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun clockOutAlt(
         photo: MultipartBody.Part,
         id_user: String,
@@ -163,28 +223,31 @@ class PresensiDalamAlternatifFragment : Fragment() {
         lokasi: String,
         view: View
     ) {
-        presenceViewModel.clockOut_Alternate(photo, id_user, date, time, lokasi) { success, message, presenceData ->
+        presenceViewModel.clockOut_Alternate(photo, id_user, date, time, lokasi) { success, message, _ ->
+            hideLoading()
             if (success) {
-                prefs.edit().remove("waktu_masuk_alt").apply()
                 showPresenceSuccessPopup(view, message)
-                getCurrentPresence()
+                getCurrentPresence(id_user)
             } else {
                 showPresenceFailedPopup(view, message, false)
             }
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("SetTextI18n")
-    private fun getCurrentPresence() {
-        presenceViewModel.getCurrentPresence() { success, message, data ->
+    private fun getCurrentPresence(userId: String) {
+        presenceViewModel.getCurrentPresence(userId) { success, message, data ->
             if (success) {
-                if (data == null) {
-                    return@getCurrentPresence
-                }
-                if (data.validasi_masuk == "setuju" && data.validasi_keluar == "setuju") {
+                hasClockInToday = data?.waktu_masuk != null
+
+                setUpButtonListeners()
+                updateButtonsState()
+
+                if (data?.validasi_masuk == "setuju" && data.validasi_keluar == "setuju") {
                     validationStatus.text = "Status Validasi: " + data.validasi_masuk
                     validationIcon.setImageResource(R.drawable.icon_accept)
-                } else if (data.validasi_masuk == "ditolak" && data.validasi_keluar == "ditolak") {
+                } else if (data?.validasi_masuk == "ditolak" && data.validasi_keluar == "ditolak") {
                     validationStatus.text = "Status Validasi: " + data.validasi_masuk
                     validationIcon.setImageResource(R.drawable.icon_decline)
                 } else {

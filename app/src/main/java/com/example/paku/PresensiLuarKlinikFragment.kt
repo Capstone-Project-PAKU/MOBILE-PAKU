@@ -19,6 +19,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -40,7 +41,8 @@ import java.time.format.DateTimeFormatter
 
 class PresensiLuarKlinikFragment : Fragment() {
     private lateinit var cameraBtn: Button
-    private lateinit var saveBtn: Button
+    private lateinit var clockInBtn: Button
+    private lateinit var clockOutBtn: Button
     private lateinit var tvPdfName: TextView
     private lateinit var btnUploadPdf: LinearLayout
     private lateinit var photoPreview: ImageView
@@ -50,6 +52,7 @@ class PresensiLuarKlinikFragment : Fragment() {
     private lateinit var locationManager: LocationManager
     private lateinit var validationStatus: TextView
     private lateinit var validationIcon: ImageView
+    private lateinit var loadingIndicator: ProgressBar
     private var imageUri: String? = null
     private var pdfFile: String? = null
     private var pdfName: String? = null
@@ -57,12 +60,15 @@ class PresensiLuarKlinikFragment : Fragment() {
     private val presenceViewModel: PresenceViewModel by viewModels()
     private var latitude = 0.0
     private var longitude = 0.0
+    private var hasClockInToday: Boolean = false
 
     private val locationListener = LocationListener { location ->
         if (location.isFromMockProvider) {
             Toast.makeText(requireContext(), "Anda menggunakan FakeGPS", Toast.LENGTH_SHORT).show()
-            saveBtn.isEnabled = false
-            saveBtn.isClickable = false
+            clockInBtn.isEnabled = false
+            clockInBtn.isClickable = false
+            clockOutBtn.isEnabled = false
+            clockOutBtn.isClickable = false
             cameraBtn.isEnabled = false
             cameraBtn.isClickable = false
         } else {
@@ -101,9 +107,13 @@ class PresensiLuarKlinikFragment : Fragment() {
         btnUploadPdf = view.findViewById(R.id.uploadPdf)
         photoPreview = view.findViewById(R.id.selfiePreview)
         cameraBtn = view.findViewById(R.id.btnCamera)
-        saveBtn = view.findViewById(R.id.btnClockOutside)
+        clockInBtn = view.findViewById(R.id.btnClockInOutside)
+        clockOutBtn = view.findViewById(R.id.btnClockOutOutside)
         validationIcon = view.findViewById(R.id.presenceOutValidationIcon)
         validationStatus = view.findViewById(R.id.presenceOutValidationStatus)
+        loadingIndicator = view.findViewById(R.id.loadingIndicator)
+
+        loadingIndicator.visibility = View.GONE
 
         prefs = requireContext().getSharedPreferences("credential_pref", Context.MODE_PRIVATE)
         accessToken = prefs.getString("accessToken", null).toString()
@@ -115,31 +125,14 @@ class PresensiLuarKlinikFragment : Fragment() {
         }
 
         getCurrentLocation()
-        getCurrentPresence()
+        getCurrentPresence(userId)
 
         cameraBtn.setOnClickListener {
             val intent = Intent(requireContext(), CameraActivity::class.java)
             cameraResultLaucher.launch(intent)
         }
 
-        saveBtn.setOnClickListener {
-            if (imageUri == null || pdfFile == null) {
-                Toast.makeText(requireContext(), "Foto dan Surat Tugas tidak boleh kosong", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-            val date = getCurrentDate()
-            val photo = getPhotoPart(imageUri!!)
-            val document = getPdfPart(pdfFile!!)
-            val lokasi = locationJSON.toString()
-            val clockIn = prefs.getString("waktu_masuk_outside", null)
-            if (clockIn == null) {
-                val time = "07:10:00"
-                clockInOutside(photo!!, document!!, userId, date, time, lokasi, view)
-            } else {
-                val time = "14:10:00"
-                clockOutOutside(photo!!, document!!, userId, date, time, lokasi, view)
-            }
-        }
+        setUpButtonListeners()
 
         val imgBack = view.findViewById<ImageView>(R.id.back)
         imgBack.setOnClickListener {
@@ -169,6 +162,61 @@ class PresensiLuarKlinikFragment : Fragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun setUpButtonListeners() {
+        clockInBtn.setOnClickListener(null)
+
+        clockOutBtn.setOnClickListener(null)
+
+        clockInBtn.setOnClickListener {
+            validateAndSubmit(true)
+        }
+
+        clockOutBtn.setOnClickListener {
+            validateAndSubmit(false)
+        }
+
+        clockInBtn.isClickable = true
+        clockOutBtn.isClickable = true
+    }
+
+    private fun showLoading() {
+        loadingIndicator.visibility = View.VISIBLE
+        clockInBtn.isEnabled = false
+        clockOutBtn.isEnabled = false
+        cameraBtn.isEnabled = false
+        btnUploadPdf.isEnabled = false
+    }
+
+    private fun hideLoading() {
+        loadingIndicator.visibility = View.GONE
+        updateButtonsState()
+        cameraBtn.isEnabled = true
+        btnUploadPdf.isEnabled = true
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun validateAndSubmit(isClockIn: Boolean) {
+        if (imageUri == null || pdfFile == null) {
+            Toast.makeText(requireContext(), "Foto dan Surat Tugas tidak boleh kosong", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        showLoading()
+
+        val date = getCurrentDate()
+        val photo = getPhotoPart(imageUri!!)
+        val document = getPdfPart(pdfFile!!)
+        val lokasi = locationJSON.toString()
+        if (isClockIn) {
+            val time = "07:10:00"
+            clockInOutside(photo!!, document!!, userId, date, time, lokasi, requireView())
+        } else {
+            val time = "14:10:00"
+            clockOutOutside(photo!!, document!!, userId, date, time, lokasi, requireView())
+        }
+    }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -183,6 +231,7 @@ class PresensiLuarKlinikFragment : Fragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun clockInOutside(
         photo: MultipartBody.Part,
         document: MultipartBody.Part,
@@ -192,17 +241,18 @@ class PresensiLuarKlinikFragment : Fragment() {
         lokasi: String,
         view: View
     ) {
-        presenceViewModel.clockIn_Outside(photo, document, id_user, date, time, lokasi) { success, message, presenceData ->
+        presenceViewModel.clockIn_Outside(photo, document, id_user, date, time, lokasi) { success, message, _ ->
+            hideLoading()
             if (success) {
-                prefs.edit().putString("waktu_masuk_outside", presenceData?.waktu_masuk).apply()
                 showPresenceSuccessPopup(view, message)
-                getCurrentPresence()
+                getCurrentPresence(id_user)
             } else {
                 showPresenceFailedPopup(view, message, false)
             }
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun clockOutOutside(
         photo: MultipartBody.Part,
         document: MultipartBody.Part,
@@ -212,34 +262,51 @@ class PresensiLuarKlinikFragment : Fragment() {
         lokasi: String,
         view: View
     ) {
-        presenceViewModel.clockOut_Outside(photo, document, id_user, date, time, lokasi) { success, message, presenceData ->
+        presenceViewModel.clockOut_Outside(photo, document, id_user, date, time, lokasi) { success, message, _ ->
+            hideLoading()
             if (success) {
-                prefs.edit().remove("waktu_masuk_outside").apply()
                 showPresenceSuccessPopup(view, message)
-                getCurrentPresence()
+                getCurrentPresence(id_user)
             } else {
                 showPresenceFailedPopup(view, message, false)
             }
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("SetTextI18n")
-    private fun getCurrentPresence() {
-        presenceViewModel.getCurrentPresence() { success, message, data ->
+    private fun getCurrentPresence(userId: String) {
+        presenceViewModel.getCurrentPresence(userId) { success, _, data ->
             if (success) {
-                if (data == null) {
-                    return@getCurrentPresence
-                }
-                if (data.validasi_masuk == "setuju" && data.validasi_keluar == "setuju") {
+                hasClockInToday = data?.waktu_masuk != null
+
+                setUpButtonListeners()
+                updateButtonsState()
+
+                if (data?.validasi_masuk == "setuju" && data.validasi_keluar == "setuju") {
                     validationStatus.text = "Status Validasi: " + data.validasi_masuk
                     validationIcon.setImageResource(R.drawable.icon_accept)
-                } else if (data.validasi_masuk == "ditolak" && data.validasi_keluar == "ditolak") {
+                } else if (data?.validasi_masuk == "ditolak" && data.validasi_keluar == "ditolak") {
                     validationStatus.text = "Status Validasi: " + data.validasi_masuk
                     validationIcon.setImageResource(R.drawable.icon_decline)
                 } else {
                     validationIcon.setImageResource(R.drawable.icon_forbidden)
                 }
             }
+        }
+    }
+
+    private fun updateButtonsState() {
+        if (hasClockInToday) {
+            clockInBtn.visibility = View.GONE
+            clockOutBtn.visibility = View.VISIBLE
+            clockOutBtn.isEnabled = true
+            clockOutBtn.isClickable = true
+        } else {
+            clockInBtn.visibility = View.VISIBLE
+            clockOutBtn.visibility = View.GONE
+            clockInBtn.isEnabled = true
+            clockInBtn.isClickable = true
         }
     }
 

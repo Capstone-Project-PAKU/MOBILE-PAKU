@@ -84,15 +84,15 @@ class PresensiDalamKlinikFragment : Fragment() {
         clockInBtn.setOnClickListener {
             val bssid = getWifiBSSID()
             val date = getCurrentDate()
-            val time = getCurrentTime()
-            presenceIn(accessToken, userId, bssid, date, time, view)
+            val time = "07:10:00"
+            presenceIn(userId, bssid, date, time, view)
         }
 
         clockOutBtn.setOnClickListener {
             val bssid = getWifiBSSID()
             val date = getCurrentDate()
-            val time = getCurrentTime()
-            presenceOut(accessToken, userId, bssid, date, time, view)
+            val time = "14:10:00"
+            presenceOut(userId, bssid, date, time, view)
         }
 
         val imgBack = view.findViewById<ImageView>(R.id.back)
@@ -103,11 +103,10 @@ class PresensiDalamKlinikFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        getCurrentPresence()
+        getCurrentPresence(userId)
     }
 
     private fun presenceIn(
-        token: String,
         id_user: String,
         bssid: String,
         date: String,
@@ -127,7 +126,7 @@ class PresensiDalamKlinikFragment : Fragment() {
             if (success) {
                 prefs.edit().putString("presenceIn", data?.waktu_masuk).apply()
                 showPresenceSuccessPopup(view, message)
-                getCurrentPresence()
+                getCurrentPresence(id_user)
             } else {
                 showPresenceFailedPopup(view, message)
             }
@@ -135,7 +134,6 @@ class PresensiDalamKlinikFragment : Fragment() {
     }
 
     private fun presenceOut(
-        token: String,
         id_user: String,
         bssid: String,
         date: String,
@@ -151,10 +149,10 @@ class PresensiDalamKlinikFragment : Fragment() {
 //            showPresenceFailedPopup(view, "BSSID tidak sesuai, pastikan anda terhubung dengan Wifi yang benar!")
 //            return
 //        }
-        presenceViewModel.clockOut_Inside(id_user, date, time) { success, message, data ->
+        presenceViewModel.clockOut_Inside(id_user, date, time) { success, message, _ ->
             if (success){
                 showPresenceSuccessPopup(view, message)
-                getCurrentPresence()
+                getCurrentPresence(id_user)
             } else {
                 showPresenceFailedPopup(view, message)
             }
@@ -193,10 +191,10 @@ class PresensiDalamKlinikFragment : Fragment() {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun getCurrentPresence() {
-        presenceViewModel.getCurrentPresence() { success, message, data ->
+    private fun getCurrentPresence(userId: String) {
+        presenceViewModel.getCurrentPresence(userId) { success, _, data ->
             if (success) {
-                if (data != null) {
+                if (data != null && data.jenis_presensi == "dalam") {
                     prefs.edit().remove("presenceIn").apply()
                     clockOutTimeTv.text = data.waktu_keluar
                     clockInTimeTv.text = data.waktu_masuk
@@ -223,3 +221,5 @@ class PresensiDalamKlinikFragment : Fragment() {
     }
 
 }
+
+

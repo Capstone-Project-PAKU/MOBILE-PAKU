@@ -81,11 +81,12 @@ class PresenceViewModel: ViewModel() {
     }
 
     fun getCurrentPresence(
+        id_user: String,
         onResult: (Boolean, String?, CurrentPresenceData?) -> Unit
     ) {
         viewModelScope.launch {
             try {
-                val response = repository.getCurrentPresence()
+                val response = repository.getCurrentPresence(id_user)
 
                 if (response.isSuccessful){
                     val currentPresenceResponse = response.body()

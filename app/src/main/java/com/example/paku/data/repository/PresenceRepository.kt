@@ -119,8 +119,8 @@ class PresenceRepository {
         )
     }
 
-    suspend fun getCurrentPresence(): Response<GetCurrentPresenceResponse> {
-        return RetrofitClient.getInstance().getCurrentPresence()
+    suspend fun getCurrentPresence(userId: String): Response<GetCurrentPresenceResponse> {
+        return RetrofitClient.getInstance().getCurrentPresence(userId)
     }
 
     suspend fun getDetailInfo(): Response<GetDetailInfoResponse> {

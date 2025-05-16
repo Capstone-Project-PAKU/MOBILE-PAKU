@@ -128,8 +128,10 @@ interface ApiService {
         @Part("lokasi") lokasi: RequestBody
     ): Response<ClockIn_OutsideResponse>
 
-    @GET("api/presence/current")
-    suspend fun getCurrentPresence(): Response<GetCurrentPresenceResponse>
+    @GET("api/presence/current/{id}")
+    suspend fun getCurrentPresence(
+        @Path("id") userId: String
+    ): Response<GetCurrentPresenceResponse>
 
     @GET("api/presence/user/{id}")
     suspend fun getUserPresence(

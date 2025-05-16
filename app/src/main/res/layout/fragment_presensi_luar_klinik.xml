@@ -7,6 +7,18 @@
     android:fitsSystemWindows="true"
     android:background="@color/white">
 
+    <ProgressBar
+        android:id="@+id/loadingIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:translationZ="999dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
+        />
+
     <!-- Header -->
     <LinearLayout
         android:id="@+id/headerLayout"
@@ -190,15 +202,31 @@
                     app:cornerRadius="10dp"/>
 
                 <Button
-                    android:id="@+id/btnClockOutside"
+                    android:id="@+id/btnClockInOutside"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Save"
+                    android:text="Clock In"
                     android:backgroundTint="@color/dark_blue"
                     android:textColor="@color/white"
                     android:padding="10dp"
                     android:textSize="14sp"
+                    android:visibility="visible"
+                    android:fontFamily="@font/inter"
+                    android:layout_marginStart="10dp"
+                    app:cornerRadius="10dp"/>
+
+                <Button
+                    android:id="@+id/btnClockOutOutside"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Clock Out"
+                    android:backgroundTint="@color/dark_blue"
+                    android:textColor="@color/white"
+                    android:padding="10dp"
+                    android:textSize="14sp"
+                    android:visibility="gone"
                     android:fontFamily="@font/inter"
                     android:layout_marginStart="10dp"
                     app:cornerRadius="10dp"/>
