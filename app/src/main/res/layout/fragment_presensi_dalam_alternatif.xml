@@ -32,7 +32,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Presensi Dalam Klinik (Alternatif)"
+            android:text="Presensi Alternatif"
             android:fontFamily="@font/inter"
             android:textSize="18sp"
             android:textColor="@color/white"

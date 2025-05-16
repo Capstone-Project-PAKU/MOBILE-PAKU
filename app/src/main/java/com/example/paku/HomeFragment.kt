@@ -59,6 +59,7 @@ class HomeFragment : Fragment() {
         btnDropdownPresensi = view.findViewById(R.id.btnDropdownPresensi)
         val presensiDalam: LinearLayout = view.findViewById(R.id.presensiDalam)
         val presensiLuar: LinearLayout = view.findViewById(R.id.presensiLuar)
+        val riwayatPresensi: LinearLayout = view.findViewById(R.id.riwayatPresensi)
 
         // Inisialisasi View Pengajuan Cuti
         val menuCuti: LinearLayout = view.findViewById(R.id.menu_cuti)
@@ -81,6 +82,19 @@ class HomeFragment : Fragment() {
             )
         }
 
+        menuPresensi.setOnClickListener {
+            isDropdownPresensiVisible = !isDropdownPresensiVisible
+            toggleDropdown(dropdownPresensi, isDropdownPresensiVisible)
+            btnDropdownPresensi.setImageResource(
+                if (isDropdownPresensiVisible) R.drawable.ic_arrow_up else R.drawable.ic_arrow_down
+            )
+        }
+
+        btnDropdownPresensi.setOnClickListener {
+            menuPresensi.performClick() // agar klik tombol sama efeknya dengan klik seluruh layout
+        }
+
+
         // Aksi saat "Presensi Dalam Klinik" diklik
         presensiDalam.setOnClickListener {
             navigateToFragment(PresensiDalamKlinikFragment())
@@ -91,6 +105,10 @@ class HomeFragment : Fragment() {
             navigateToFragment(PresensiLuarKlinikFragment())
         }
 
+        riwayatPresensi.setOnClickListener {
+            navigateToFragment(RiwayatPresensiFragment())
+        }
+
         // Toggle dropdown saat tombol dropdown cuti diklik
         btnToggleDropdown.setOnClickListener {
             isDropdownCutiVisible = !isDropdownCutiVisible
@@ -98,6 +116,18 @@ class HomeFragment : Fragment() {
             btnToggleDropdown.setImageResource(
                 if (isDropdownCutiVisible) R.drawable.ic_arrow_up else R.drawable.ic_arrow_down
             )
+        }
+
+        menuCuti.setOnClickListener {
+            isDropdownCutiVisible = !isDropdownCutiVisible
+            toggleDropdown(dropdownCuti, isDropdownCutiVisible)
+            btnToggleDropdown.setImageResource(
+                if (isDropdownCutiVisible) R.drawable.ic_arrow_up else R.drawable.ic_arrow_down
+            )
+        }
+
+        btnToggleDropdown.setOnClickListener {
+            menuCuti.performClick()
         }
 
         // Aksi saat "Daftar Pengajuan Cuti" diklik
@@ -138,8 +168,6 @@ class HomeFragment : Fragment() {
             .addToBackStack(null)
             .commit()
     }
-
-
 
     private fun toggleDropdown(view: View, isVisible: Boolean) {
         // Pastikan ukuran view sudah diukur sebelum animasi

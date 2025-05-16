@@ -148,6 +148,25 @@
                 android:paddingHorizontal="5dp"
                 android:visibility="gone">
 
+                <!-- Riwayat Presensi -->
+                <LinearLayout
+                    android:id="@+id/riwayatPresensi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:padding="5dp"
+                    android:gravity="center_vertical"
+                    android:clickable="true"
+                    android:focusable="true">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Riwayat Presensi"
+                        android:padding="10dp"
+                        android:textSize="14sp"
+                        android:background="@drawable/bg_data_edit_profile" />
+                </LinearLayout>
+
                 <!-- Presensi Dalam -->
                 <LinearLayout
                     android:id="@+id/presensiDalam"

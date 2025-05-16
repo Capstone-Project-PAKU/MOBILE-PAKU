@@ -6,4 +6,6 @@
     <string name="note_Register"><b>Note:</b> Gunakan kata sandi yang kuat dan unik. Direkomendasikan menggunakan kombinasi huruf, angka, dan simbol.</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="note_riwayatPresensi"><b>Note:</b> Pastikan agar selalu mengecek riwayat presensi untuk mengetahui status pengajuan presensi anda.</string>
+    <string name="note_presensiDalam">Pastikan anda berada di dalam area klinik dan terhubung Wi-Fi saat melakukan presensi.</string>
 </resources>

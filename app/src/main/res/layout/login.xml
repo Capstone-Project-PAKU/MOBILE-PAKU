@@ -12,7 +12,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Welcome Back!"
-        android:textSize="40sp"
+        android:textSize="30sp"
         android:fontFamily="@font/ubuntu_bold"
         android:textColor="@color/white"
         android:textStyle="bold"

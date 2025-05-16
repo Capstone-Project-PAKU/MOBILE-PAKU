@@ -100,9 +100,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/layoutCalendarButton"
-        android:layout_marginHorizontal="15dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
+        android:layout_marginHorizontal="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/note_daftarPengajuanCuti">
@@ -111,9 +111,7 @@
             android:id="@+id/calendarSection"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
             android:background="@drawable/bg_list_menu"
-            android:gravity="left"
             android:padding="10dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/note_daftarPengajuanCuti">
@@ -154,7 +152,7 @@
 
         <Button
             android:id="@+id/getLeaveBtn"
-            android:layout_width="181dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:backgroundTint="@color/dark_blue"

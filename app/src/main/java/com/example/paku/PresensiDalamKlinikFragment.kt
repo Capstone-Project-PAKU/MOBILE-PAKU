@@ -22,17 +22,10 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.paku.data.api.RetrofitClient
-import com.example.paku.ui.adapter.PresenceItemAdapter
-import com.example.paku.ui.popup.MapPopupFragment
 import com.example.paku.ui.popup.showPhotoViewer
 import com.example.paku.ui.popup.showPresenceFailedPopup
 import com.example.paku.ui.popup.showPresenceSuccessPopup
 import com.example.paku.ui.viewmodel.PresenceViewModel
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -51,8 +44,6 @@ class PresensiDalamKlinikFragment : Fragment() {
     private lateinit var clinicBSSID: String
     private lateinit var validationStatus: TextView
     private lateinit var validationIcon: ImageView
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var presenceItemAdapter: PresenceItemAdapter
     private val presenceViewModel: PresenceViewModel by viewModels()
 
     override fun onCreateView(
@@ -72,7 +63,6 @@ class PresensiDalamKlinikFragment : Fragment() {
         clockOutTimeTv = view.findViewById(R.id.clockOutTimeTV)
         validationStatus = view.findViewById(R.id.presenceValidationStatus)
         validationIcon = view.findViewById(R.id.presenceValidationIcon)
-        recyclerView = view.findViewById(R.id.rvPresence)
 
         prefs = requireContext().getSharedPreferences("credential_pref", Context.MODE_PRIVATE)
         accessToken = prefs.getString("accessToken", null).toString()
@@ -94,21 +84,16 @@ class PresensiDalamKlinikFragment : Fragment() {
         clockInBtn.setOnClickListener {
             val bssid = getWifiBSSID()
             val date = getCurrentDate()
-            val time = "14:10:00"
+            val time = getCurrentTime()
             presenceIn(accessToken, userId, bssid, date, time, view)
         }
 
         clockOutBtn.setOnClickListener {
             val bssid = getWifiBSSID()
             val date = getCurrentDate()
-            val time = "21:10:00"
+            val time = getCurrentTime()
             presenceOut(accessToken, userId, bssid, date, time, view)
         }
-
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-
-
-        fetchPresence(userId, null, null, 31)
 
         val imgBack = view.findViewById<ImageView>(R.id.back)
         imgBack.setOnClickListener {
@@ -186,8 +171,7 @@ class PresensiDalamKlinikFragment : Fragment() {
     private fun getWifiBSSID(): String {
         val wifiManager = requireContext().applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
         val wifiInfo = wifiManager.connectionInfo
-        val bssid = wifiInfo.bssid
-
+        val bssid = wifiInfo.bssid ?: "-"
         return bssid
     }
 
@@ -226,42 +210,12 @@ class PresensiDalamKlinikFragment : Fragment() {
         }
     }
 
-    private fun fetchPresence(userId: String, month: String?, year: String?, limit: Int?){
-        lifecycleScope.launch {
-            try {
-                val response = RetrofitClient.getInstance().getUserPresence(userId, month, year, limit)
-                if (response.isSuccessful) {
-                    response.body()?.let { presenceResponse ->
-                        val presenceList = presenceResponse.data
-                        presenceItemAdapter = PresenceItemAdapter(
-                            presenceList,
-                            onShowClockInPhoto = { anchorView, urlPath -> showPhotoViewer(anchorView, "Foto Selfie Masuk", urlPath) },
-                            onShowClockOutPhoto = { anchorView, urlPath -> showPhotoViewer(anchorView, "Foto Selfie Keluar", urlPath) },
-                            onShowClockInLocation = { location ->
-                                val dialog = MapPopupFragment.newInstance(location)
-                                dialog.show(requireActivity().supportFragmentManager, "Map Popup")
-                            },
-                            onShowClockOutLocation = { location ->
-                                val dialog = MapPopupFragment.newInstance(location)
-                                dialog.show(requireActivity().supportFragmentManager, "Map Popup")
-                            }
-                        )
-                        recyclerView.adapter = presenceItemAdapter
-                    }
-                }
-            } catch (e: Exception) {
-                Log.e("UserViewModel", "Unexpected error: ${e.message}")
-                Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
     private fun getDetailInfo() {
         presenceViewModel.getDetailInfo() { success, data, error ->
             if (success) {
-               data?.let {
-                   clinicBSSID = data.bssid
-               }
+                data?.let {
+                    clinicBSSID = data.bssid
+                }
             } else {
                 Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
             }
@@ -269,5 +223,3 @@ class PresensiDalamKlinikFragment : Fragment() {
     }
 
 }
-
-

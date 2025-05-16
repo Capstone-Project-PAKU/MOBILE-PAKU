@@ -69,7 +69,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:fontFamily="@font/inter"
-            android:text="Dokter Umum"
+            android:text="Jabatan"
             android:textSize="14sp"
             android:id="@+id/userOccupationTv"/>
     </LinearLayout>
