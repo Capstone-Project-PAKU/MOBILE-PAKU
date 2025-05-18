@@ -10,7 +10,6 @@ import android.net.NetworkCapabilities
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +21,6 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.example.paku.ui.popup.showPhotoViewer
 import com.example.paku.ui.popup.showPresenceFailedPopup
 import com.example.paku.ui.popup.showPresenceSuccessPopup
 import com.example.paku.ui.viewmodel.PresenceViewModel
