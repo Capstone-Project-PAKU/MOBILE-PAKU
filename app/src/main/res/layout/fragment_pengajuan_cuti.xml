@@ -179,7 +179,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:fontFamily="@font/inter"
-                android:text="Keterangan Cuti"
+                android:text="Keterangan"
                 android:textColor="@color/darker_grey" />
 
             <EditText

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.Toast
@@ -17,6 +18,7 @@ import kotlinx.coroutines.launch
 class SplashScreen : AppCompatActivity() {
     private val userViewModel: UserViewModel by viewModels()
     private lateinit var tokenManager: TokenManager
+    private var hasNavigated = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
@@ -46,16 +48,22 @@ class SplashScreen : AppCompatActivity() {
             if (newAccessToken != null) {
                 userViewModel.validateToken { isValid ->
                     runOnUiThread {
-                        if (isValid) {
-                            startActivity(Intent(this@SplashScreen, MainActivity::class.java))
+                        if (isValid && !hasNavigated) {
+                            hasNavigated = true
+                            val intent = Intent(this@SplashScreen, MainActivity::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
                             finish()
                         }
                     }
                 }
             } else {
                 runOnUiThread {
+                    hasNavigated = true
                     Toast.makeText(this@SplashScreen, "Sesi sudah berakhir, silahkan login kembali", Toast.LENGTH_SHORT).show()
-                    startActivity(Intent(this@SplashScreen, WelcomeActivity::class.java))
+                    val intent = Intent(this@SplashScreen, WelcomeActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
                     finish()
                 }
             }

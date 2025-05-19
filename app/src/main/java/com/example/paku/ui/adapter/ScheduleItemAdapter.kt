@@ -35,7 +35,7 @@ class ScheduleItemAdapter(private var itemList: List<ScheduleDetailData>):
     }
 
     private fun convertJadwal(s: String): String? {
-        val jadwal = mapOf("P" to "Pagi", "S" to "Siang", "F" to "Full", "L" to "Libur")
+        val jadwal = mapOf("P" to "Pagi", "S" to "Sore", "F" to "Full", "L" to "Libur")
         return jadwal[s]
     }
 
