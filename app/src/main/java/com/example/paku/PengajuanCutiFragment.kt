@@ -15,8 +15,10 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -25,6 +27,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.paku.data.api.RetrofitClient
+import com.example.paku.ui.popup.showFailedPopup
 import com.example.paku.ui.popup.showPresenceFailedPopup
 import com.example.paku.ui.popup.showPresenceSuccessPopup
 import com.example.paku.ui.viewmodel.PermissionViewModel
@@ -52,6 +55,8 @@ class PengajuanCutiFragment : Fragment() {
     private lateinit var accessToken: String
     private lateinit var userId: String
     private lateinit var permissionHeader: TextView
+    private lateinit var loadingIndicator: ProgressBar
+    private lateinit var loadingOverlay: FrameLayout
 
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     private val calendarMulai = Calendar.getInstance()
@@ -82,6 +87,8 @@ class PengajuanCutiFragment : Fragment() {
         btnSave = view.findViewById(R.id.btnSave)
         permissionHeader = view.findViewById(R.id.permissionHeader)
         etketeranganCuti = view.findViewById(R.id.etketeranganCuti)
+        loadingOverlay = view.findViewById(R.id.loadingOverlay)
+        loadingIndicator = view.findViewById(R.id.loadingIndicator)
 
         prefs = requireContext().getSharedPreferences("credential_pref", Context.MODE_PRIVATE)
         accessToken = prefs.getString("accessToken", null).toString()
@@ -150,12 +157,29 @@ class PengajuanCutiFragment : Fragment() {
                 Toast.makeText(requireContext(), "Semua data wajib di isi", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
+
+            showLoading()
+
             addWorkLeave(document!!, userId, jenis_cuti, tgl_awal_cuti, tgl_akhir_cuti, keterangan_cuti, view)
         }
 
         fetchUserProfile()
         setupTanggalMulai()
         setupTanggalSelesai()
+    }
+
+    private fun showLoading() {
+        loadingIndicator.visibility = View.VISIBLE
+        loadingOverlay.visibility = View.VISIBLE
+        btnSave.isEnabled = false
+        btnUploadPdf.isEnabled = false
+    }
+
+    private fun hideLoading() {
+        loadingIndicator.visibility = View.GONE
+        loadingOverlay.visibility = View.GONE
+        btnSave.isEnabled = true
+        btnUploadPdf.isEnabled = true
     }
 
     private fun setupTanggalMulai() {
@@ -224,10 +248,12 @@ class PengajuanCutiFragment : Fragment() {
         view: View
     ) {
         permissionViewModel.AddWorkLeave(file_cuti, id_user, jenis_cuti, tgl_awal_cuti, tgl_akhir_cuti, keteranngan_cuti) { success, message, permissionData ->
+            hideLoading()  // sembunyikan progress bar saat selesai
+
             if (success) {
-                showPresenceSuccessPopup(view, message)
+                showPresenceSuccessPopup(view, message, this)
             } else {
-                showPresenceFailedPopup(view, message, false)
+                showFailedPopup(view, message, this)
             }
         }
     }
@@ -244,7 +270,7 @@ class PengajuanCutiFragment : Fragment() {
         val mimeType = when {
             filePath.endsWith(".pdf", true) -> "application/pdf"
             else -> {
-                println("Error: Invalid file type. Only JPEG, PNG, are allowed!")
+                println("Error: Invalid file type. Only PDF files are allowed!")
                 return null
             }
         }

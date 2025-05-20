@@ -17,6 +17,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -41,7 +42,6 @@ class PresensiDalamAlternatifFragment : Fragment() {
     private lateinit var cameraBtn: Button
     private lateinit var clockInBtn: Button
     private lateinit var clockOutBtn: Button
-    private lateinit var loadingIndicator: ProgressBar
     private lateinit var photoPreview: ImageView
     private lateinit var prefs: SharedPreferences
     private lateinit var accessToken: String
@@ -49,6 +49,9 @@ class PresensiDalamAlternatifFragment : Fragment() {
     private lateinit var validationStatus: TextView
     private lateinit var validationIcon: ImageView
     private lateinit var locationManager: LocationManager
+    private lateinit var loadingIndicator: ProgressBar
+    private lateinit var loadingOverlay: FrameLayout
+
     private var imageUri: String? = null
     private var locationJSON = JSONObject()
     private val presenceViewModel: PresenceViewModel by viewModels()
@@ -96,10 +99,11 @@ class PresensiDalamAlternatifFragment : Fragment() {
         cameraBtn = view.findViewById(R.id.btnCamera)
         clockInBtn = view.findViewById(R.id.btnClockInAlt)
         clockOutBtn = view.findViewById(R.id.btnClockOutAlt)
-        loadingIndicator = view.findViewById(R.id.loadingIndicator)
         photoPreview = view.findViewById(R.id.selfiePreview)
         validationIcon = view.findViewById(R.id.presenceAltValidationIcon)
         validationStatus = view.findViewById(R.id.presenceAltValidationStatus)
+        loadingOverlay = view.findViewById(R.id.loadingOverlay)
+        loadingIndicator = view.findViewById(R.id.loadingIndicator)
 
         loadingIndicator.visibility = View.GONE
 
@@ -151,6 +155,7 @@ class PresensiDalamAlternatifFragment : Fragment() {
 
     private fun showLoading() {
         loadingIndicator.visibility = View.VISIBLE
+        loadingOverlay.visibility = View.VISIBLE
         clockInBtn.isEnabled = false
         clockOutBtn.isEnabled = false
         cameraBtn.isEnabled = false
@@ -158,6 +163,7 @@ class PresensiDalamAlternatifFragment : Fragment() {
 
     private fun hideLoading() {
         loadingIndicator.visibility = View.GONE
+        loadingOverlay.visibility = View.GONE
         updateButtonsState()
         cameraBtn.isEnabled = true
     }
@@ -207,7 +213,7 @@ class PresensiDalamAlternatifFragment : Fragment() {
         presenceViewModel.clockIn_Alternate(photo, id_user, date, time, lokasi) { success, message, _ ->
             hideLoading()
             if (success) {
-                showPresenceSuccessPopup(view, message)
+                showPresenceSuccessPopup(view, message, this)
                 getCurrentPresence(id_user)
             } else {
                 showPresenceFailedPopup(view, message, false)
@@ -227,7 +233,7 @@ class PresensiDalamAlternatifFragment : Fragment() {
         presenceViewModel.clockOut_Alternate(photo, id_user, date, time, lokasi) { success, message, _ ->
             hideLoading()
             if (success) {
-                showPresenceSuccessPopup(view, message)
+                showPresenceSuccessPopup(view, message, this)
                 getCurrentPresence(id_user)
             } else {
                 showPresenceFailedPopup(view, message, false)

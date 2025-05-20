@@ -3,5 +3,6 @@
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">10.0.2.2</domain>
         <domain includeSubdomains="true">160.19.167.144</domain>
+        <domain includeSubdomains="true">server.pakunet.site</domain>
     </domain-config>
 </network-security-config>

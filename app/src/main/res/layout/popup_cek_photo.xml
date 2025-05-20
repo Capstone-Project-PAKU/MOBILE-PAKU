@@ -1,44 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:padding="15dp"
-    android:elevation="1dp"
-    android:background="@drawable/bg_popup"
-    android:layout_gravity="center">
+    android:layout_gravity="center"
+    android:fillViewport="true">
 
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Foto Selfie"
-        android:textAlignment="center"
-        android:fontFamily="@font/inter"
-        android:textSize="16sp"
-        android:textColor="@color/blue"
-        android:id="@+id/photoHeader"/>
+        android:background="@drawable/bg_popup"
+        android:elevation="1dp"
+        android:padding="15dp">
 
-    <ImageView
-        android:layout_width="350dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="10dp"
-        android:id="@+id/photoPreview"/>
+        <TextView
+            android:id="@+id/photoHeader"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Foto Selfie"
+            android:textAlignment="center"
+            android:fontFamily="@font/inter"
+            android:textSize="16sp"
+            android:textColor="@color/blue"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/backBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:text="Kembali"
-        android:fontFamily="@font/inter"
-        android:textStyle="bold"
-        android:layout_gravity="center"
-        app:cornerRadius="10dp"
-        app:backgroundTint="@color/superlight_gray"
-        android:textColor="@color/black" />
-</LinearLayout>
+        <ImageView
+            android:id="@+id/photoPreview"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            app:layout_constraintTop_toBottomOf="@id/photoHeader"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintWidth_max="350dp" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/backBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Kembali"
+            android:fontFamily="@font/inter"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            app:cornerRadius="10dp"
+            app:backgroundTint="@color/superlight_gray"
+            app:layout_constraintTop_toBottomOf="@id/photoPreview"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-
-
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

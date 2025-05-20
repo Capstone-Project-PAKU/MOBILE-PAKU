@@ -14,7 +14,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -42,6 +44,9 @@ class PresensiDalamKlinikFragment : Fragment() {
     private lateinit var clinicBSSID: String
     private lateinit var validationStatus: TextView
     private lateinit var validationIcon: ImageView
+    private lateinit var loadingIndicator: ProgressBar
+    private lateinit var loadingOverlay: FrameLayout
+
     private val presenceViewModel: PresenceViewModel by viewModels()
 
     override fun onCreateView(
@@ -61,6 +66,8 @@ class PresensiDalamKlinikFragment : Fragment() {
         clockOutTimeTv = view.findViewById(R.id.clockOutTimeTV)
         validationStatus = view.findViewById(R.id.presenceValidationStatus)
         validationIcon = view.findViewById(R.id.presenceValidationIcon)
+        loadingOverlay = view.findViewById(R.id.loadingOverlay)
+        loadingIndicator = view.findViewById(R.id.loadingIndicator)
 
         prefs = requireContext().getSharedPreferences("credential_pref", Context.MODE_PRIVATE)
         accessToken = prefs.getString("accessToken", null).toString()
@@ -99,6 +106,20 @@ class PresensiDalamKlinikFragment : Fragment() {
         }
     }
 
+    private fun showLoading() {
+        loadingIndicator.visibility = View.VISIBLE
+        loadingOverlay.visibility = View.VISIBLE
+        clockInBtn.isEnabled = false
+        clockOutBtn.isEnabled = false
+    }
+
+    private fun hideLoading() {
+        loadingIndicator.visibility = View.GONE
+        loadingOverlay.visibility = View.GONE
+        clockInBtn.isEnabled = true
+        clockOutBtn.isEnabled = true
+    }
+
     override fun onResume() {
         super.onResume()
         getCurrentPresence(userId)
@@ -116,14 +137,14 @@ class PresensiDalamKlinikFragment : Fragment() {
             return
         }
 
-//        if (bssid != clinicBSSID) {
-//            showPresenceFailedPopup(view, "BSSID tidak sesuai, pastikan anda terhubung dengan Wifi yang benar!")
-//            return
-//        }
+        if (bssid != clinicBSSID) {
+            showPresenceFailedPopup(view, "BSSID tidak sesuai, pastikan anda terhubung dengan Wifi yang benar!")
+            return
+        }
         presenceViewModel.clockIn_Inside(id_user, date, time) { success, message, data ->
             if (success) {
                 prefs.edit().putString("presenceIn", data?.waktu_masuk).apply()
-                showPresenceSuccessPopup(view, message)
+                showPresenceSuccessPopup(view, message, this)
                 getCurrentPresence(id_user)
             } else {
                 showPresenceFailedPopup(view, message)
@@ -143,13 +164,13 @@ class PresensiDalamKlinikFragment : Fragment() {
             return
         }
 
-//        if (bssid != clinicBSSID) {
-//            showPresenceFailedPopup(view, "BSSID tidak sesuai, pastikan anda terhubung dengan Wifi yang benar!")
-//            return
-//        }
+        if (bssid != clinicBSSID) {
+            showPresenceFailedPopup(view, "BSSID tidak sesuai, pastikan anda terhubung dengan Wifi yang benar!")
+            return
+        }
         presenceViewModel.clockOut_Inside(id_user, date, time) { success, message, _ ->
             if (success){
-                showPresenceSuccessPopup(view, message)
+                showPresenceSuccessPopup(view, message, this)
                 getCurrentPresence(id_user)
             } else {
                 showPresenceFailedPopup(view, message)
@@ -217,7 +238,6 @@ class PresensiDalamKlinikFragment : Fragment() {
             }
         }
     }
-
 }
 
 

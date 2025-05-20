@@ -7,6 +7,7 @@ import android.os.CountDownTimer
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -26,7 +27,12 @@ class VerificationOTPActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.verification_otp) // Sesuaikan dengan nama file XML OTP
+        setContentView(R.layout.verification_otp)
+
+        val ivBack = findViewById<ImageView>(R.id.ivBack)
+        ivBack.setOnClickListener {
+            finish()
+        }
 
         otp1EditText = findViewById(R.id.otp1)
         otp2EditText = findViewById(R.id.otp2)

@@ -4,20 +4,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="8dp">
+    android:layout_margin="10dp"
+    app:cardCornerRadius="5dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="12dp">
+        android:padding="18dp">
 
         <!-- Teks Pengajuan -->
         <TextView
             android:id="@+id/tvLeaveTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Pengajuan sakit (surat ada)"
+            android:text="Jenis Izin"
             android:textSize="14sp"
             android:textStyle="bold"
             android:fontFamily="@font/inter"
@@ -31,7 +31,7 @@
             android:id="@+id/tvLeaveDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="11/20/2024 - 11/25/2024"
+            android:text="Tanggal mulai - Tanggal selesai"
             android:textColor="@color/darker_grey"
             android:textSize="12sp"
             android:fontFamily="@font/inter"
@@ -58,10 +58,10 @@
                 android:id="@+id/tvLeaveStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Approved"
+                android:text="Status"
                 android:fontFamily="@font/inter"
                 android:textSize="14sp"
-                android:textColor="#2E7D32"
+                android:textColor="@color/black"
                 android:textStyle="bold"/>
         </LinearLayout>
 

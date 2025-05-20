@@ -5,9 +5,10 @@ import android.view.View
 import android.widget.Button
 import android.widget.PopupWindow
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import com.example.paku.R
 
-fun showPresenceSuccessPopup(view: View, message: String) {
+fun showPresenceSuccessPopup(view: View, message: String, fragment: Fragment) {
     val inflater = LayoutInflater.from(view.context)
     val popupView = inflater.inflate(R.layout.popup_presensi_berhasil, null)
 
@@ -33,6 +34,7 @@ fun showPresenceSuccessPopup(view: View, message: String) {
         params?.alpha = 1.0f
         window?.window?.attributes = params
         popupWindow.dismiss()
+        fragment.parentFragmentManager.popBackStack()
     }
 
     popupWindow.showAtLocation(view, android.view.Gravity.CENTER, 0, 0)

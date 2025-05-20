@@ -17,6 +17,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
@@ -53,6 +54,7 @@ class PresensiLuarKlinikFragment : Fragment() {
     private lateinit var validationStatus: TextView
     private lateinit var validationIcon: ImageView
     private lateinit var loadingIndicator: ProgressBar
+    private lateinit var loadingOverlay: FrameLayout
     private var imageUri: String? = null
     private var pdfFile: String? = null
     private var pdfName: String? = null
@@ -112,8 +114,7 @@ class PresensiLuarKlinikFragment : Fragment() {
         validationIcon = view.findViewById(R.id.presenceOutValidationIcon)
         validationStatus = view.findViewById(R.id.presenceOutValidationStatus)
         loadingIndicator = view.findViewById(R.id.loadingIndicator)
-
-        loadingIndicator.visibility = View.GONE
+        loadingOverlay = view.findViewById(R.id.loadingOverlay)
 
         prefs = requireContext().getSharedPreferences("credential_pref", Context.MODE_PRIVATE)
         accessToken = prefs.getString("accessToken", null).toString()
@@ -162,6 +163,8 @@ class PresensiLuarKlinikFragment : Fragment() {
         }
     }
 
+
+
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setUpButtonListeners() {
         clockInBtn.setOnClickListener(null)
@@ -182,6 +185,7 @@ class PresensiLuarKlinikFragment : Fragment() {
 
     private fun showLoading() {
         loadingIndicator.visibility = View.VISIBLE
+        loadingOverlay.visibility = View.VISIBLE
         clockInBtn.isEnabled = false
         clockOutBtn.isEnabled = false
         cameraBtn.isEnabled = false
@@ -190,10 +194,12 @@ class PresensiLuarKlinikFragment : Fragment() {
 
     private fun hideLoading() {
         loadingIndicator.visibility = View.GONE
+        loadingOverlay.visibility = View.GONE
         updateButtonsState()
         cameraBtn.isEnabled = true
         btnUploadPdf.isEnabled = true
     }
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun validateAndSubmit(isClockIn: Boolean) {
@@ -244,7 +250,7 @@ class PresensiLuarKlinikFragment : Fragment() {
         presenceViewModel.clockIn_Outside(photo, document, id_user, date, time, lokasi) { success, message, _ ->
             hideLoading()
             if (success) {
-                showPresenceSuccessPopup(view, message)
+                showPresenceSuccessPopup(view, message, this)
                 getCurrentPresence(id_user)
             } else {
                 showPresenceFailedPopup(view, message, false)
@@ -265,7 +271,7 @@ class PresensiLuarKlinikFragment : Fragment() {
         presenceViewModel.clockOut_Outside(photo, document, id_user, date, time, lokasi) { success, message, _ ->
             hideLoading()
             if (success) {
-                showPresenceSuccessPopup(view, message)
+                showPresenceSuccessPopup(view, message, this)
                 getCurrentPresence(id_user)
             } else {
                 showPresenceFailedPopup(view, message, false)
