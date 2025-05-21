@@ -70,9 +70,10 @@ class UserRepository {
     }
 
     suspend fun sendOTP(
-        email: String
+        email: String,
+        id_android: String
     ): Response<SendResponse> {
-        return RetrofitClient.getInstance().sendOTP(SendRequest(email))
+        return RetrofitClient.getInstance().sendOTP(SendRequest(email, id_android))
     }
 
     suspend fun verifyOTP(

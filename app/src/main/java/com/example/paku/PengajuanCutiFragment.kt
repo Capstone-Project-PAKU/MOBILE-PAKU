@@ -26,9 +26,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.example.paku.data.api.RetrofitClient
 import com.example.paku.ui.popup.showFailedPopup
-import com.example.paku.ui.popup.showPresenceFailedPopup
 import com.example.paku.ui.popup.showPresenceSuccessPopup
 import com.example.paku.ui.viewmodel.PermissionViewModel
 import com.example.paku.ui.viewmodel.UserViewModel
@@ -253,7 +251,7 @@ class PengajuanCutiFragment : Fragment() {
             if (success) {
                 showPresenceSuccessPopup(view, message, this)
             } else {
-                showFailedPopup(view, message, this)
+                showFailedPopup(view, message)
             }
         }
     }

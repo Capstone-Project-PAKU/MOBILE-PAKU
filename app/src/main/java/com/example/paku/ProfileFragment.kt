@@ -16,6 +16,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -33,6 +34,7 @@ class ProfileFragment : Fragment() {
     private lateinit var phoneEditText: EditText
     private lateinit var pref: SharedPreferences
     private lateinit var logoutTv: TextView
+    private lateinit var userProfilePicture: ImageView
     private val userViewModel: UserViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,6 +52,7 @@ class ProfileFragment : Fragment() {
         occupationEditText = view.findViewById(R.id.occupationProfileField)
         phoneEditText = view.findViewById(R.id.phoneProfileField)
         logoutTv = view.findViewById(R.id.logoutTv)
+        userProfilePicture = view.findViewById(R.id.profile_image)
 
         pref = requireContext().getSharedPreferences("credential_pref", Context.MODE_PRIVATE)
         val accessToken = pref.getString("accessToken", null)
@@ -131,6 +134,10 @@ class ProfileFragment : Fragment() {
                 genderEditText.setText(userData?.j_kelamin)
                 occupationEditText.setText(userData?.jabatan)
                 phoneEditText.setText(userData?.telp)
+
+                if (userData?.j_kelamin == "Wanita") {
+                    userProfilePicture.setImageResource(R.drawable.icon_profile_picture_woman)
+                }
             }
         }
     }

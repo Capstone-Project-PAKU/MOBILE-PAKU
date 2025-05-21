@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.viewModels
 import com.example.paku.ui.viewmodel.UserViewModel
+import com.example.paku.utils.DeviceUtils
 
 class ForgotPasswordActivity : AppCompatActivity() {
     private lateinit var emailEditText: EditText
@@ -31,13 +32,14 @@ class ForgotPasswordActivity : AppCompatActivity() {
         val btnContinue = findViewById<Button>(R.id.btnContinue)
         btnContinue.setOnClickListener {
             val email = emailEditText.text.toString()
+            val androidId = DeviceUtils.getAndroidID(this)
 
             if (email.isEmpty()) {
                 Toast.makeText(this, "Email harus diisi", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            userViewModel.sendOTP(email) { success, message ->
+            userViewModel.sendOTP(email, androidId) { success, message ->
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
                 if (success) {
                     prefs.edit().putString("email", email).apply()

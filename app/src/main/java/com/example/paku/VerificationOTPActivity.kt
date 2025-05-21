@@ -12,6 +12,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import com.example.paku.ui.viewmodel.UserViewModel
+import com.example.paku.utils.DeviceUtils
 
 class VerificationOTPActivity : AppCompatActivity() {
     private lateinit var prefs: SharedPreferences
@@ -43,10 +44,11 @@ class VerificationOTPActivity : AppCompatActivity() {
 
         prefs = getSharedPreferences("credential_pref", MODE_PRIVATE)
         val email = prefs.getString("email", "").toString()
+        val androidId = DeviceUtils.getAndroidID(this)
 
         startCountDown()
         resendTv.setOnClickListener {
-            userViewModel.sendOTP(email) { success, message ->
+            userViewModel.sendOTP(email, androidId) { success, message ->
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
                 if (success) {
                     resetCountdown()

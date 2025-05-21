@@ -12,7 +12,6 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,7 +26,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.example.paku.ui.popup.showPresenceFailedPopup
+import com.example.paku.ui.popup.showFailedPopup
 import com.example.paku.ui.popup.showPresenceSuccessPopup
 import com.example.paku.ui.viewmodel.PresenceViewModel
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -61,7 +60,7 @@ class PresensiDalamAlternatifFragment : Fragment() {
 
     private val locationListener = LocationListener { location ->
         if (location.isFromMockProvider) {
-            Toast.makeText(requireContext(), "Anda menggunakan FakeGPS", Toast.LENGTH_SHORT).show()
+            showFailedPopup(requireView(), "Anda menggunakan FakeGPS")
             clockInBtn.isEnabled = false
             clockInBtn.isClickable = false
             clockOutBtn.isClickable = false
@@ -185,10 +184,17 @@ class PresensiDalamAlternatifFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun validateAndSubmit(isClockIn: Boolean) {
         if (imageUri == null) {
-            Toast.makeText(requireContext(), "Foto tidak boleh kosong", Toast.LENGTH_SHORT).show()
+            showFailedPopup(requireView(), "Foto tidak boleh kosong")
             return
         }
+
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            showFailedPopup(requireView(), "Pastikan fitur GPS pada perangkat anda dihidupkan")
+            return
+        }
+
         showLoading()
+
         val date = getCurrentDate()
         val photo = getFilePart(imageUri!!)
         val lokasi = locationJSON.toString()
@@ -216,7 +222,7 @@ class PresensiDalamAlternatifFragment : Fragment() {
                 showPresenceSuccessPopup(view, message, this)
                 getCurrentPresence(id_user)
             } else {
-                showPresenceFailedPopup(view, message, false)
+                showFailedPopup(view, message)
             }
         }
     }
@@ -236,7 +242,7 @@ class PresensiDalamAlternatifFragment : Fragment() {
                 showPresenceSuccessPopup(view, message, this)
                 getCurrentPresence(id_user)
             } else {
-                showPresenceFailedPopup(view, message, false)
+                showFailedPopup(view, message)
             }
         }
     }
@@ -254,12 +260,12 @@ class PresensiDalamAlternatifFragment : Fragment() {
                 if (data?.validasi_masuk == "setuju" && data.validasi_keluar == "setuju") {
                     validationStatus.text = "Status Validasi: " + data.validasi_masuk
                     validationIcon.setImageResource(R.drawable.icon_accept)
-                } else if (data?.validasi_masuk == "ditolak" && data.validasi_keluar == "ditolak") {
-                    validationStatus.text = "Status Validasi: " + data.validasi_masuk
+                } else if (data?.validasi_masuk == "tolak" || data?.validasi_keluar == "tolak") {
+                    validationStatus.text = "Status Validasi: tolak"
                     validationIcon.setImageResource(R.drawable.icon_decline)
-                } else {
+                } else if (data?.validasi_masuk == "pending" || data?.validasi_keluar == "pending") {
                     validationStatus.text = "Status Validasi: pending"
-                    validationIcon.setImageResource(R.drawable.icon_forbidden)
+                    validationIcon.setImageResource(R.drawable.icon_pending)
                 }
             }
         }
@@ -275,7 +281,7 @@ class PresensiDalamAlternatifFragment : Fragment() {
             && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             getCurrentLocation()
         } else {
-            Toast.makeText(requireContext(), "Location permission is required", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Akses lokasi dibutuhkan", Toast.LENGTH_SHORT).show()
         }
     }
 

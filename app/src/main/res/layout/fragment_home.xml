@@ -27,7 +27,8 @@
             android:src="@drawable/icon_profile_picture"
             android:contentDescription="Profile Picture"
             android:elevation="3dp"
-            android:layout_marginEnd="10dp" />
+            android:layout_marginEnd="10dp"
+            android:id="@+id/profilePicture"/>
 
         <TextView
             android:layout_width="wrap_content"

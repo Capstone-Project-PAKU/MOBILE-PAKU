@@ -82,9 +82,6 @@ class PresensiDalamKlinikFragment : Fragment() {
             )
         }
 
-        if (!isConnectedToWiFi()) {
-            showPresenceFailedPopup(view, null)
-        }
 
         clockInBtn.setOnClickListener {
             val bssid = getWifiBSSID()
@@ -217,11 +214,20 @@ class PresensiDalamKlinikFragment : Fragment() {
                     prefs.edit().remove("presenceIn").apply()
                     clockOutTimeTv.text = data.waktu_keluar
                     clockInTimeTv.text = data.waktu_masuk
-                    validationStatus.text = "Status Validasi: " + data.validasi_masuk
-                    validationIcon.setImageResource(R.drawable.icon_accept)
                 } else {
                     presenceIn = prefs.getString("presenceIn", "-").toString()
                     clockInTimeTv.text = presenceIn
+                }
+
+                if (data?.validasi_masuk == "setuju" && data.validasi_keluar == "setuju") {
+                    validationStatus.text = "Status Validasi: setuju"
+                    validationIcon.setImageResource(R.drawable.icon_accept)
+                } else if (data?.validasi_masuk == "tolak" || data?.validasi_keluar == "tolak") {
+                    validationStatus.text = "Status Validasi: tolak"
+                    validationIcon.setImageResource(R.drawable.icon_decline)
+                } else if (data?.validasi_masuk == "pending" || data?.validasi_keluar == "pending") {
+                    validationStatus.text = "Status Validasi: " + "pending"
+                    validationIcon.setImageResource(R.drawable.icon_pending)
                 }
             }
         }

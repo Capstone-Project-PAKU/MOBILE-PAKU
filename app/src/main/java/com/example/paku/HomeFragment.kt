@@ -11,6 +11,7 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.content.SharedPreferences
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.viewModels
@@ -28,6 +29,7 @@ class HomeFragment : Fragment() {
 
     private lateinit var userHeaderTv: TextView
     private lateinit var userOccupationTv: TextView
+    private lateinit var userPhotoProfile: ImageView
     private lateinit var pref: SharedPreferences
     private val userViewModel: UserViewModel by viewModels()
 
@@ -43,6 +45,7 @@ class HomeFragment : Fragment() {
 
         userHeaderTv = view.findViewById(R.id.userHeaderTv)
         userOccupationTv = view.findViewById(R.id.userOccupationTv)
+        userPhotoProfile = view.findViewById(R.id.profilePicture)
 
         pref = requireContext().getSharedPreferences("credential_pref", Context.MODE_PRIVATE)
         val accessToken = pref.getString("accessToken", null)
@@ -208,6 +211,10 @@ class HomeFragment : Fragment() {
                 val userOccupation = userData?.jabatan?.let { capitalizeWords(it) }
                 userHeaderTv.text = userHeader
                 userOccupationTv.text = userOccupation
+
+                if (userData?.j_kelamin == "Wanita"){
+                    userPhotoProfile.setImageResource(R.drawable.icon_profile_picture_woman)
+                }
             }
         }
     }

@@ -227,11 +227,12 @@ class UserViewModel: ViewModel() {
 
     fun sendOTP(
         email: String,
+        id_android: String,
         onResult: (Boolean, String) -> Unit
     ) {
         viewModelScope.launch {
             try {
-                val response = respository.sendOTP(email)
+                val response = respository.sendOTP(email, id_android)
                 if (response.isSuccessful) {
                     onResult(true, response.body()?.message ?: "kode sudah terkirim")
                 } else {
