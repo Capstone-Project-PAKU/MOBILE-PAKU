@@ -47,11 +47,10 @@ class MakeNewPasswordActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // Tampilkan progress bar dan disable tombol Save supaya tidak bisa diklik berulang
+
             showLoading()
 
             userViewModel.changePasswordWithOTP(email, newPassword, confirmPassword) { success, message ->
-                // Proses selesai, sembunyikan progress bar dan enable tombol
                 hideLoading()
 
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()

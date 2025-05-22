@@ -101,10 +101,11 @@ class PresensiDalamAlternatifFragment : Fragment() {
         photoPreview = view.findViewById(R.id.selfiePreview)
         validationIcon = view.findViewById(R.id.presenceAltValidationIcon)
         validationStatus = view.findViewById(R.id.presenceAltValidationStatus)
-        loadingOverlay = view.findViewById(R.id.loadingOverlay)
-        loadingIndicator = view.findViewById(R.id.loadingIndicator)
+        loadingIndicator = requireActivity().findViewById(R.id.loadingIndicator)
+        loadingOverlay = requireActivity().findViewById(R.id.loadingOverlay)
 
-        loadingIndicator.visibility = View.GONE
+        (activity as? MainActivity)?.showGlobalLoading(true) // saat loading mulai
+        (activity as? MainActivity)?.showGlobalLoading(false) // saat loading selesai
 
         prefs = requireContext().getSharedPreferences("credential_pref", Context.MODE_PRIVATE)
         accessToken = prefs.getString("accessToken", null).toString()

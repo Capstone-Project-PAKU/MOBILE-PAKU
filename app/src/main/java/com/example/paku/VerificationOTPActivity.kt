@@ -4,15 +4,19 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.Button
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import com.example.paku.ui.viewmodel.UserViewModel
 import com.example.paku.utils.DeviceUtils
+import com.google.android.material.button.MaterialButton
 
 class VerificationOTPActivity : AppCompatActivity() {
     private lateinit var prefs: SharedPreferences
@@ -23,6 +27,8 @@ class VerificationOTPActivity : AppCompatActivity() {
     private lateinit var resendTv: TextView
     private lateinit var timerTv: TextView
     private lateinit var countDownTimer: CountDownTimer
+    private lateinit var loadingIndicator: ProgressBar
+    private lateinit var loadingOverlay: FrameLayout
     private val userViewModel: UserViewModel by viewModels()
     private var timeLeftInMillis: Long = 5 * 60 * 1000
 
@@ -41,6 +47,8 @@ class VerificationOTPActivity : AppCompatActivity() {
         otp4EditText = findViewById(R.id.otp4)
         resendTv = findViewById(R.id.tvResendCode)
         timerTv = findViewById(R.id.tvTimer)
+        loadingIndicator = findViewById(R.id.loadingIndicator)
+        loadingOverlay = findViewById(R.id.loadingOverlay)
 
         prefs = getSharedPreferences("credential_pref", MODE_PRIVATE)
         val email = prefs.getString("email", "").toString()
@@ -70,7 +78,10 @@ class VerificationOTPActivity : AppCompatActivity() {
 
             val otp = "$otp1$otp2$otp3$otp4"
 
+            showLoading()
+
             userViewModel.verifyOTP(email, otp) { success, message ->
+                hideLoading()
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
                 if (success){
                     val intent = Intent(this, MakeNewPasswordActivity::class.java)
@@ -78,6 +89,18 @@ class VerificationOTPActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun showLoading() {
+        loadingIndicator.visibility = View.VISIBLE
+        loadingOverlay.visibility = View.VISIBLE
+        findViewById<MaterialButton>(R.id.btnConfirm).isEnabled = false
+    }
+
+    private fun hideLoading() {
+        loadingIndicator.visibility = View.GONE
+        loadingOverlay.visibility = View.GONE
+        findViewById<MaterialButton>(R.id.btnConfirm).isEnabled = true
     }
 
     private fun startCountDown() {

@@ -5,7 +5,10 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
+import android.widget.FrameLayout
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -17,13 +20,16 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.android.material.button.MaterialButton
 import java.io.File
 
 class CameraActivity : AppCompatActivity() {
     private lateinit var previewView: PreviewView
     private lateinit var captureBtn: Button
-    private var imageCapture: ImageCapture? = null
     private lateinit var outputDirectory: File
+    private lateinit var loadingIndicator: ProgressBar
+    private lateinit var loadingOverlay: FrameLayout
+    private var imageCapture: ImageCapture? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -31,6 +37,8 @@ class CameraActivity : AppCompatActivity() {
 
         previewView = findViewById(R.id.viewFinder)
         captureBtn = findViewById(R.id.btnCapture)
+        loadingIndicator = findViewById(R.id.loadingIndicator)
+        loadingOverlay = findViewById(R.id.loadingOverlay)
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             startCamera()
@@ -46,6 +54,18 @@ class CameraActivity : AppCompatActivity() {
             takePhoto()
         }
 
+    }
+
+    private fun showLoading() {
+        loadingIndicator.visibility = View.VISIBLE
+        loadingOverlay.visibility = View.VISIBLE
+        findViewById<MaterialButton>(R.id.btnCapture).isEnabled = false
+    }
+
+    private fun hideLoading() {
+        loadingIndicator.visibility = View.GONE
+        loadingOverlay.visibility = View.GONE
+        findViewById<MaterialButton>(R.id.btnCapture).isEnabled = true
     }
 
     private fun requestPermission() {
@@ -95,20 +115,29 @@ class CameraActivity : AppCompatActivity() {
     private fun takePhoto() {
         val imageCapture = imageCapture ?: return
         val photoFile = File(outputDirectory, "${System.currentTimeMillis()}.jpg")
-
         val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
 
-        imageCapture.takePicture(outputOptions, ContextCompat.getMainExecutor(this),
-            object : ImageCapture.OnImageSavedCallback{
+        showLoading()
+
+        imageCapture.takePicture(
+            outputOptions,
+            ContextCompat.getMainExecutor(this),
+            object : ImageCapture.OnImageSavedCallback {
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
                     val intent = Intent()
                     intent.putExtra("imagePath", photoFile.absolutePath)
                     setResult(Activity.RESULT_OK, intent)
+                    previewView.postDelayed({
+                        hideLoading()
+                        finish()
+                    }, 100)
                     finish()
                 }
 
                 override fun onError(exception: ImageCaptureException) {
+                    hideLoading()
                     exception.printStackTrace()
+                    Toast.makeText(this@CameraActivity, "Gagal mengambil gambar", Toast.LENGTH_SHORT).show()
                 }
             }
         )

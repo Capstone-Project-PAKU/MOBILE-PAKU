@@ -113,8 +113,12 @@ class PresensiLuarKlinikFragment : Fragment() {
         clockOutBtn = view.findViewById(R.id.btnClockOutOutside)
         validationIcon = view.findViewById(R.id.presenceOutValidationIcon)
         validationStatus = view.findViewById(R.id.presenceOutValidationStatus)
-        loadingIndicator = view.findViewById(R.id.loadingIndicator)
-        loadingOverlay = view.findViewById(R.id.loadingOverlay)
+        loadingIndicator = requireActivity().findViewById(R.id.loadingIndicator)
+        loadingOverlay = requireActivity().findViewById(R.id.loadingOverlay)
+
+        (activity as? MainActivity)?.showGlobalLoading(true) // saat loading mulai
+        (activity as? MainActivity)?.showGlobalLoading(false) // saat loading selesai
+
 
         prefs = requireContext().getSharedPreferences("credential_pref", Context.MODE_PRIVATE)
         accessToken = prefs.getString("accessToken", null).toString()

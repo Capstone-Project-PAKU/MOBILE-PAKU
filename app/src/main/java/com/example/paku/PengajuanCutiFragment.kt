@@ -85,8 +85,11 @@ class PengajuanCutiFragment : Fragment() {
         btnSave = view.findViewById(R.id.btnSave)
         permissionHeader = view.findViewById(R.id.permissionHeader)
         etketeranganCuti = view.findViewById(R.id.etketeranganCuti)
-        loadingOverlay = view.findViewById(R.id.loadingOverlay)
-        loadingIndicator = view.findViewById(R.id.loadingIndicator)
+        loadingIndicator = requireActivity().findViewById(R.id.loadingIndicator)
+        loadingOverlay = requireActivity().findViewById(R.id.loadingOverlay)
+
+        (activity as? MainActivity)?.showGlobalLoading(true) // saat loading mulai
+        (activity as? MainActivity)?.showGlobalLoading(false) // saat loading selesai
 
         prefs = requireContext().getSharedPreferences("credential_pref", Context.MODE_PRIVATE)
         accessToken = prefs.getString("accessToken", null).toString()

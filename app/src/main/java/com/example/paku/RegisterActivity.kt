@@ -3,14 +3,18 @@ package com.example.paku
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.paku.ui.viewmodel.UserViewModel
 import com.example.paku.utils.DeviceUtils
+import com.google.android.material.button.MaterialButton
 
 class RegisterActivity : AppCompatActivity() {
     private lateinit var employeeIdEditText: EditText
@@ -19,6 +23,8 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var emailEditText: EditText
     private lateinit var registerBtn: Button
     private lateinit var prefs: SharedPreferences
+    private lateinit var loadingIndicator: ProgressBar
+    private lateinit var loadingOverlay: FrameLayout
     private val userViewModel: UserViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +35,8 @@ class RegisterActivity : AppCompatActivity() {
         passwordEditText = findViewById(R.id.passwordField)
         emailEditText = findViewById(R.id.emailField)
         registerBtn = findViewById(R.id.btnRegister)
+        loadingIndicator = findViewById(R.id.loadingIndicator)
+        loadingOverlay = findViewById(R.id.loadingOverlay)
 
         prefs = getSharedPreferences("credential_pref", MODE_PRIVATE)
         registerBtn.setOnClickListener {
@@ -65,5 +73,16 @@ class RegisterActivity : AppCompatActivity() {
         btnCancel.setOnClickListener {
             finish()
         }
+    }
+    private fun showLoading() {
+        loadingIndicator.visibility = View.VISIBLE
+        loadingOverlay.visibility = View.VISIBLE
+        findViewById<MaterialButton>(R.id.btnRegister).isEnabled = false
+    }
+
+    private fun hideLoading() {
+        loadingIndicator.visibility = View.GONE
+        loadingOverlay.visibility = View.GONE
+        findViewById<MaterialButton>(R.id.btnRegister).isEnabled = true
     }
 }

@@ -1,6 +1,8 @@
 package com.example.paku
 
 import android.os.Bundle
+import android.view.View
+import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -33,6 +35,12 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+
+    fun showGlobalLoading(show: Boolean) {
+        val overlay = findViewById<FrameLayout>(R.id.loadingOverlay)
+        overlay.visibility = if (show) View.VISIBLE else View.GONE
+    }
+
     private fun replaceFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.frame_layout, fragment)

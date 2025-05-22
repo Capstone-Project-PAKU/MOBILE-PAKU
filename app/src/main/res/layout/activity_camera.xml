@@ -3,11 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- Camera Preview -->
     <androidx.camera.view.PreviewView
         android:id="@+id/viewFinder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <!-- Tombol Capture -->
     <Button
         android:id="@+id/btnCapture"
         android:layout_width="wrap_content"
@@ -15,4 +17,22 @@
         android:text="Capture"
         android:layout_gravity="bottom|center"
         android:layout_marginBottom="70dp"/>
+
+    <!-- Loading Overlay (di atas semua) -->
+    <FrameLayout
+        android:id="@+id/loadingOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#60000000"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/loadingIndicator"
+            style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Large"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_gravity="center"
+            android:indeterminate="true" />
+    </FrameLayout>
+
 </FrameLayout>
