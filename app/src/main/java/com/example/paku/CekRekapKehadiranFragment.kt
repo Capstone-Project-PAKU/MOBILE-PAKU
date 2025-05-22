@@ -88,7 +88,7 @@ class CekRekapKehadiranFragment : Fragment() {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
 
-        tvSelectMonth.addTextChangedListener(object : TextWatcher {
+        val textWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
@@ -99,12 +99,16 @@ class CekRekapKehadiranFragment : Fragment() {
                 val year = res?.second
                 fetchUserRecap(userId, month, year)
             }
-        })
+        }
+
+        tvSelectMonth.addTextChangedListener(textWatcher)
 
         recapBtn.setOnClickListener {
             resetRecyclerView()
             fetchUserRecap(userId, null, null)
+            tvSelectMonth.removeTextChangedListener(textWatcher)
             tvSelectMonth.text = "Select a month"
+            tvSelectMonth.addTextChangedListener(textWatcher)
         }
     }
 

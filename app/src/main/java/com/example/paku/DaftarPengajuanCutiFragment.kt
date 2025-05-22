@@ -69,6 +69,7 @@ class DaftarPengajuanCutiFragment : Fragment() {
         userId = prefs.getString("userId", null).toString()
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        fetchUserProfile()
         fetchLeavePermission(userId)
 
         // Set action ketika LinearLayout diklik
@@ -86,7 +87,7 @@ class DaftarPengajuanCutiFragment : Fragment() {
             parentFragmentManager.popBackStack()
         }
 
-        tvSelectMonth.addTextChangedListener(object : TextWatcher {
+        val textWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
@@ -95,15 +96,18 @@ class DaftarPengajuanCutiFragment : Fragment() {
                 val tanggal = tvSelectMonth.text.toString()
                 fetchLeavePermissionByDate(userId, tanggal)
             }
-        })
+        }
+
+        tvSelectMonth.addTextChangedListener(textWatcher)
 
         leaveBtn.setOnClickListener {
             resetRecyclerView()
             fetchLeavePermission(userId)
+            tvSelectMonth.removeTextChangedListener(textWatcher)
             tvSelectMonth.text = "Select a date"
+            tvSelectMonth.addTextChangedListener(textWatcher)
         }
 
-        fetchUserProfile()
     }
 
     private fun showDatePickerDialog() {
