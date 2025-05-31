@@ -270,7 +270,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Daftar Pengajuan Cuti"
+                        android:text="Riwayat Pengajuan Cuti"
                         android:padding="10dp"
                         android:textSize="14sp"
                         android:background="@drawable/bg_data_edit_profile" />
