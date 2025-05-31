@@ -32,6 +32,7 @@ import androidx.fragment.app.viewModels
 import com.example.paku.ui.popup.showFailedPopup
 import com.example.paku.ui.popup.showPresenceSuccessPopup
 import com.example.paku.ui.viewmodel.PresenceViewModel
+import com.example.paku.utils.DeviceUtils
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -65,7 +66,7 @@ class PresensiLuarKlinikFragment : Fragment() {
     private var hasClockInToday: Boolean = false
 
     private val locationListener = LocationListener { location ->
-        if (location.isFromMockProvider) {
+        if (location.isFromMockProvider || DeviceUtils.isMockLocationEnabled(requireContext())) {
             showFailedPopup(requireView(), "Anda menggunakan FakeGPS")
             clockInBtn.isEnabled = false
             clockInBtn.isClickable = false
