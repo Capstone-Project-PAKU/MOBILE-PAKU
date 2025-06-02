@@ -29,7 +29,10 @@ import androidx.fragment.app.viewModels
 import com.example.paku.ui.popup.showFailedPopup
 import com.example.paku.ui.popup.showPresenceSuccessPopup
 import com.example.paku.ui.viewmodel.PresenceViewModel
+import com.example.paku.utils.ComprehensiveMockLocationDetector
 import com.example.paku.utils.DeviceUtils
+import com.example.paku.utils.MockLocationResult
+import com.example.paku.utils.RiskLevel
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -51,6 +54,7 @@ class PresensiDalamAlternatifFragment : Fragment() {
     private lateinit var locationManager: LocationManager
     private lateinit var loadingIndicator: ProgressBar
     private lateinit var loadingOverlay: FrameLayout
+    private lateinit var mockDetector: ComprehensiveMockLocationDetector
 
     private var imageUri: String? = null
     private var locationJSON = JSONObject()
@@ -60,8 +64,10 @@ class PresensiDalamAlternatifFragment : Fragment() {
     private var hasClockInToday: Boolean = false
 
     private val locationListener = LocationListener { location ->
-        if (location.isFromMockProvider || DeviceUtils.isMockLocationEnabled(requireContext())) {
-            showFailedPopup(requireView(), "Anda menggunakan FakeGPS")
+        val locationValidation = mockDetector.validateLocation(location)
+
+        if (location.isFromMockProvider || DeviceUtils.isMockLocationEnabled(requireContext()) ||
+            !locationValidation.isValid || locationValidation.confidenceScore < 70) {
             clockInBtn.isEnabled = false
             clockInBtn.isClickable = false
             clockOutBtn.isClickable = false
@@ -104,6 +110,7 @@ class PresensiDalamAlternatifFragment : Fragment() {
         validationStatus = view.findViewById(R.id.presenceAltValidationStatus)
         loadingIndicator = requireActivity().findViewById(R.id.loadingIndicator)
         loadingOverlay = requireActivity().findViewById(R.id.loadingOverlay)
+        mockDetector = ComprehensiveMockLocationDetector(requireContext())
 
         (activity as? MainActivity)?.showGlobalLoading(true) // saat loading mulai
         (activity as? MainActivity)?.showGlobalLoading(false) // saat loading selesai
@@ -129,6 +136,9 @@ class PresensiDalamAlternatifFragment : Fragment() {
 
         setUpButtonListeners()
 
+        val mockResult = mockDetector.isMockLocationEnabled()
+        handleMockLocationResult(mockResult)
+
         val imgBack = view.findViewById<ImageView>(R.id.back)
         imgBack.setOnClickListener { parentFragmentManager.popBackStack() }
 
@@ -152,6 +162,23 @@ class PresensiDalamAlternatifFragment : Fragment() {
 
         clockInBtn.isClickable = true
         clockOutBtn.isClickable = true
+    }
+
+    private fun handleMockLocationResult(result: MockLocationResult) {
+        when (result.riskLevel) {
+            RiskLevel.HIGH -> {
+                showFailedPopup(requireView(),
+                    "Terdeteksi aplikasi fake GPS atau modifikasi sistem")
+            }
+            RiskLevel.MEDIUM -> {
+                showFailedPopup(requireView(),
+                    "Sistem mendeteksi potensi manipulasi lokasi. " +
+                            "Pastikan tidak ada aplikasi fake GPS yang aktif."
+                )
+            }
+            RiskLevel.LOW -> {}
+            RiskLevel.NONE -> {}
+        }
     }
 
     private fun showLoading() {
