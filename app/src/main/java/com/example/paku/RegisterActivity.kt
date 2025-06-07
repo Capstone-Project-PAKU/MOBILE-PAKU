@@ -12,6 +12,7 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import com.example.paku.ui.viewmodel.UserViewModel
 import com.example.paku.utils.DeviceUtils
 import com.google.android.material.button.MaterialButton
@@ -27,6 +28,7 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var loadingOverlay: FrameLayout
     private val userViewModel: UserViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.register)
 

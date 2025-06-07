@@ -16,4 +16,6 @@
     <color name="dark_blue">#1E8AFF</color>
     <color name="pending">#8B8000</color>
     <color name="approve">#3F7D58</color>
+    <color name="my_primary">#FFFFFF</color> <!-- putih -->
+    <color name="my_primary_variant">#F5F5F5</color> <!-- abu terang -->
 </resources>

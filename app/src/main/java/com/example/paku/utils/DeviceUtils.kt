@@ -16,7 +16,7 @@ object DeviceUtils {
     @RequiresApi(Build.VERSION_CODES.S)
     fun isFakeGpsCurrentlyUsed(context: Context, location: Location): Boolean {
         if (location.isFromMockProvider) return true
-        if (location.isMock) return true
+
 
         val mockLocationEnabled = try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

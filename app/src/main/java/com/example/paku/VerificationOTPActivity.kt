@@ -14,6 +14,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatDelegate
 import com.example.paku.ui.viewmodel.UserViewModel
 import com.example.paku.utils.DeviceUtils
 import com.google.android.material.button.MaterialButton
@@ -33,6 +34,7 @@ class VerificationOTPActivity : AppCompatActivity() {
     private var timeLeftInMillis: Long = 5 * 60 * 1000
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.verification_otp)
 
