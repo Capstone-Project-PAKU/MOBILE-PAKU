@@ -49,10 +49,10 @@ class PayrollItemAdapter(
     override fun onBindViewHolder(holder: PayrollViewHolder, position: Int) {
         val item = itemList[position]
         holder.waktuText.text = item.tanggal
-        holder.gajiPokokText.text = "Rp.${rupiah(item.gaji_pokok)}"
+        holder.gajiPokokText.text = "Rp. ${rupiah(item.gaji_pokok)}"
         holder.jumlahLemburText.text = "${item.jam_lembur} Jam"
-        holder.tunjanganText.text = "Rp.${rupiah(item.tunjangan)}"
-        holder.totalGajiText.text = "RP.${rupiah(item.total_gaji)}"
+        holder.tunjanganText.text = "Rp. ${rupiah(item.tunjangan)}"
+        holder.totalGajiText.text = "RP. ${rupiah(item.total_gaji)}"
         holder.metodePembayaranText.text = item.metode_pembayaran ?: "-"
         holder.dendaText.text = "Rp.${rupiah((item.jumlah_ketidakhadiran * 100000).toDouble())}"
         holder.ShowInvoicePhoto(item.bukti_pembayaran)

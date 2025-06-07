@@ -29,10 +29,7 @@ import androidx.fragment.app.viewModels
 import com.example.paku.ui.popup.showFailedPopup
 import com.example.paku.ui.popup.showPresenceSuccessPopup
 import com.example.paku.ui.viewmodel.PresenceViewModel
-import com.example.paku.utils.ComprehensiveMockLocationDetector
 import com.example.paku.utils.DeviceUtils
-import com.example.paku.utils.MockLocationResult
-import com.example.paku.utils.RiskLevel
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -54,7 +51,6 @@ class PresensiDalamAlternatifFragment : Fragment() {
     private lateinit var locationManager: LocationManager
     private lateinit var loadingIndicator: ProgressBar
     private lateinit var loadingOverlay: FrameLayout
-    private lateinit var mockDetector: ComprehensiveMockLocationDetector
 
     private var imageUri: String? = null
     private var locationJSON = JSONObject()
@@ -63,18 +59,15 @@ class PresensiDalamAlternatifFragment : Fragment() {
     private var longitude = 0.0
     private var hasClockInToday: Boolean = false
 
+    @RequiresApi(Build.VERSION_CODES.S)
     private val locationListener = LocationListener { location ->
-        val locationValidation = mockDetector.validateLocation(location)
-
-        if (location.isFromMockProvider || DeviceUtils.isMockLocationEnabled(requireContext()) ||
-            !locationValidation.isValid || locationValidation.confidenceScore < 70) {
-            clockInBtn.isEnabled = false
-            clockInBtn.isClickable = false
-            clockOutBtn.isClickable = false
-            clockOutBtn.isEnabled = false
-            cameraBtn.isEnabled = false
-            cameraBtn.isClickable = false
-        } else {
+        val checkFakeGpsIsOn = DeviceUtils.isFakeGpsCurrentlyUsed(requireContext(), location)
+        val checkInstalledFakeGPS = DeviceUtils.checkInstalledMockApps(requireContext())
+        if (checkInstalledFakeGPS || checkFakeGpsIsOn) {
+            disableLocationBasedFeatures()
+            showFailedPopup(requireView(),
+                "Terdeteksi aplikasi fake GPS aktif atau aplikasi fake GPS terinstall di perangkat anda")
+        }  else {
             latitude = location.latitude
             longitude = location.longitude
             locationJSON.put("latitude", latitude)
@@ -98,7 +91,8 @@ class PresensiDalamAlternatifFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_presensi_dalam_alternatif, container, false)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
+
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -110,7 +104,6 @@ class PresensiDalamAlternatifFragment : Fragment() {
         validationStatus = view.findViewById(R.id.presenceAltValidationStatus)
         loadingIndicator = requireActivity().findViewById(R.id.loadingIndicator)
         loadingOverlay = requireActivity().findViewById(R.id.loadingOverlay)
-        mockDetector = ComprehensiveMockLocationDetector(requireContext())
 
         (activity as? MainActivity)?.showGlobalLoading(true) // saat loading mulai
         (activity as? MainActivity)?.showGlobalLoading(false) // saat loading selesai
@@ -135,9 +128,6 @@ class PresensiDalamAlternatifFragment : Fragment() {
         }
 
         setUpButtonListeners()
-
-        val mockResult = mockDetector.isMockLocationEnabled()
-        handleMockLocationResult(mockResult)
 
         val imgBack = view.findViewById<ImageView>(R.id.back)
         imgBack.setOnClickListener { parentFragmentManager.popBackStack() }
@@ -164,21 +154,13 @@ class PresensiDalamAlternatifFragment : Fragment() {
         clockOutBtn.isClickable = true
     }
 
-    private fun handleMockLocationResult(result: MockLocationResult) {
-        when (result.riskLevel) {
-            RiskLevel.HIGH -> {
-                showFailedPopup(requireView(),
-                    "Terdeteksi aplikasi fake GPS atau modifikasi sistem")
-            }
-            RiskLevel.MEDIUM -> {
-                showFailedPopup(requireView(),
-                    "Sistem mendeteksi potensi manipulasi lokasi. " +
-                            "Pastikan tidak ada aplikasi fake GPS yang aktif."
-                )
-            }
-            RiskLevel.LOW -> {}
-            RiskLevel.NONE -> {}
-        }
+    private fun disableLocationBasedFeatures() {
+        clockInBtn.isEnabled = false
+        clockInBtn.isClickable = false
+        clockOutBtn.isClickable = false
+        clockOutBtn.isEnabled = false
+        cameraBtn.isEnabled = false
+        cameraBtn.isClickable = false
     }
 
     private fun showLoading() {
@@ -300,6 +282,7 @@ class PresensiDalamAlternatifFragment : Fragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -314,6 +297,7 @@ class PresensiDalamAlternatifFragment : Fragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.S)
     private fun getCurrentLocation() {
         locationManager = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
