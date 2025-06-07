@@ -99,7 +99,7 @@
                 android:fontFamily="@font/inter"
                 android:textColor="@color/darker_grey"
                 android:text="@string/note_Register"
-                android:textSize="10sp" />
+                android:textSize="12sp" />
 
             <!-- Data Profil -->
             <TextView

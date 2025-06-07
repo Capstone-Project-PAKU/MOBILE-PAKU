@@ -134,7 +134,7 @@
                 android:layout_height="wrap_content"
                 android:text="Unggah Surat Tugas"
                 android:fontFamily="@font/inter"
-                android:textColor="@color/blue"
+                android:textColor="@color/darker_grey"
                 android:layout_marginStart="20dp"/>
 
             <LinearLayout
