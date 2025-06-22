@@ -65,13 +65,13 @@ class PresensiLuarKlinikFragment : Fragment() {
     private var longitude = 0.0
     private var hasClockInToday: Boolean = false
 
-    @RequiresApi(Build.VERSION_CODES.S)
-    private val locationListener = LocationListener { location ->
 
-        if (location.isFromMockProvider || DeviceUtils.isFakeGpsCurrentlyUsed(requireContext(),location)) {
+    private val locationListener = LocationListener { location ->
+        val isMockLocationUsed = DeviceUtils.isFakeGpsCurrentlyUsed(location)
+        if (isMockLocationUsed) {
             disableLocationBasedFeatures()
             showFailedPopup(requireView(),
-                "Terdeteksi aplikasi fake GPS atau modifikasi sistem")
+                "Terdeteksi aplikasi fake GPS aktif di perangkat anda")
         } else {
             latitude = location.latitude
             longitude = location.longitude
@@ -86,6 +86,8 @@ class PresensiLuarKlinikFragment : Fragment() {
         if (result.resultCode == Activity.RESULT_OK) {
             imageUri = result.data?.getStringExtra("imagePath")
             photoPreview.setImageURI(Uri.parse(imageUri))
+        } else {
+            Toast.makeText(requireContext(), "Gagal memuat gambar", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -132,8 +134,12 @@ class PresensiLuarKlinikFragment : Fragment() {
         getCurrentPresence(userId)
 
         cameraBtn.setOnClickListener {
-            val intent = Intent(requireContext(), CameraActivity::class.java)
-            cameraResultLaucher.launch(intent)
+            try {
+                val intent = Intent(requireContext(), CameraActivity::class.java)
+                cameraResultLaucher.launch(intent)
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), "Gagal membuka kamera", Toast.LENGTH_SHORT).show()
+            }
         }
 
         setUpButtonListeners()

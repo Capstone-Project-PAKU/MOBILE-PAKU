@@ -1,7 +1,0 @@
-package com.example.paku.data.model.presence
-
-data class ClockIn_InsideRequest(
-    val id_user: String,
-    val tanggal_presensi: String,
-    val waktu_masuk: String
-)

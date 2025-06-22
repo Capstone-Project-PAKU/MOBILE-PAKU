@@ -2,10 +2,8 @@ package com.example.paku.data.repository
 
 import com.example.paku.data.api.RetrofitClient
 import com.example.paku.data.model.detail.GetDetailInfoResponse
-import com.example.paku.data.model.presence.ClockIn_InsideRequest
 import com.example.paku.data.model.presence.ClockIn_InsideResponse
 import com.example.paku.data.model.presence.ClockIn_OutsideResponse
-import com.example.paku.data.model.presence.ClockOut_InsideRequest
 import com.example.paku.data.model.presence.ClockOut_InsideResponse
 import com.example.paku.data.model.presence.Clock_AlternateResponse
 import com.example.paku.data.model.presence.GetCurrentPresenceResponse
@@ -16,19 +14,39 @@ import retrofit2.Response
 
 class PresenceRepository {
     suspend fun clockIn_Inside(
+        file_selfie: Part,
         id_user: String,
         tanggal_presensi: String,
         waktu_masuk: String
     ): Response<ClockIn_InsideResponse> {
-        return RetrofitClient.getInstance().clockIn_Inside(ClockIn_InsideRequest(id_user, tanggal_presensi, waktu_masuk))
+        val idUserPart = id_user.toRequestBody("text/plain".toMediaType())
+        val tanggalPresensiPart = tanggal_presensi.toRequestBody("text/plain".toMediaType())
+        val waktuMasukPart = waktu_masuk.toRequestBody("text/plain".toMediaType())
+
+        return RetrofitClient.getInstance().clockIn_Inside(
+            file_selfie,
+            idUserPart,
+            tanggalPresensiPart,
+            waktuMasukPart,
+        )
     }
 
     suspend fun clockOut_Inside(
+        file_selfie: Part,
         id_user: String,
         tanggal_presensi: String,
         waktu_keluar: String
     ): Response<ClockOut_InsideResponse> {
-        return RetrofitClient.getInstance().clockOut_Inside(ClockOut_InsideRequest(id_user, tanggal_presensi, waktu_keluar))
+        val idUserPart = id_user.toRequestBody("text/plain".toMediaType())
+        val tanggalPresensiPart = tanggal_presensi.toRequestBody("text/plain".toMediaType())
+        val waktuKeluarPart = waktu_keluar.toRequestBody("text/plain".toMediaType())
+
+        return RetrofitClient.getInstance().clockOut_Inside(
+            file_selfie,
+            idUserPart,
+            tanggalPresensiPart,
+            waktuKeluarPart
+        )
     }
 
     suspend fun clockIn_Alternate(

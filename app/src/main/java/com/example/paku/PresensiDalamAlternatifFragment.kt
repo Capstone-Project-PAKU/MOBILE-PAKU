@@ -61,12 +61,11 @@ class PresensiDalamAlternatifFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.S)
     private val locationListener = LocationListener { location ->
-        val checkFakeGpsIsOn = DeviceUtils.isFakeGpsCurrentlyUsed(requireContext(), location)
-        val checkInstalledFakeGPS = DeviceUtils.checkInstalledMockApps(requireContext())
-        if (checkInstalledFakeGPS || checkFakeGpsIsOn) {
+        val isMockLocationUsed = DeviceUtils.isFakeGpsCurrentlyUsed(location)
+        if (isMockLocationUsed) {
             disableLocationBasedFeatures()
             showFailedPopup(requireView(),
-                "Terdeteksi aplikasi fake GPS aktif atau aplikasi fake GPS terinstall di perangkat anda")
+                "Terdeteksi aplikasi fake GPS aktif di perangkat anda")
         }  else {
             latitude = location.latitude
             longitude = location.longitude
@@ -81,6 +80,8 @@ class PresensiDalamAlternatifFragment : Fragment() {
         if (result.resultCode == Activity.RESULT_OK) {
             imageUri = result.data?.getStringExtra("imagePath") ?: return@registerForActivityResult
             photoPreview.setImageURI(Uri.parse(imageUri))
+        } else {
+            Toast.makeText(requireContext(), "Gagal memuat gambar", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -123,8 +124,12 @@ class PresensiDalamAlternatifFragment : Fragment() {
         getCurrentPresence(userId)
 
         cameraBtn.setOnClickListener {
-            val intent = Intent(requireContext(), CameraActivity::class.java)
-            cameraResultLaucher.launch(intent)
+            try {
+                val intent = Intent(requireContext(), CameraActivity::class.java)
+                cameraResultLaucher.launch(intent)
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), "Gagal membuka kamera", Toast.LENGTH_SHORT).show()
+            }
         }
 
         setUpButtonListeners()

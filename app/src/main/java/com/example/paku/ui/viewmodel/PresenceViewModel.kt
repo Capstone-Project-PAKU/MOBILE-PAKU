@@ -21,6 +21,7 @@ class PresenceViewModel: ViewModel() {
     private val repository = PresenceRepository()
 
     fun clockIn_Inside(
+        file_selfie: MultipartBody.Part,
         id_user: String,
         tanggal_presensi: String,
         waktu_masuk: String,
@@ -28,7 +29,7 @@ class PresenceViewModel: ViewModel() {
     ) {
         viewModelScope.launch {
             try {
-                val response = repository.clockIn_Inside(id_user, tanggal_presensi, waktu_masuk)
+                val response = repository.clockIn_Inside(file_selfie, id_user, tanggal_presensi, waktu_masuk)
 
                 if (response.isSuccessful) {
                     val clockInInsideResponse = response.body()
@@ -51,6 +52,7 @@ class PresenceViewModel: ViewModel() {
     }
 
     fun clockOut_Inside(
+        file_selfie: MultipartBody.Part,
         id_user: String,
         tanggal_presensi: String,
         waktu_keluar: String,
@@ -58,7 +60,7 @@ class PresenceViewModel: ViewModel() {
     ) {
         viewModelScope.launch {
             try {
-                val response = repository.clockOut_Inside(id_user, tanggal_presensi, waktu_keluar)
+                val response = repository.clockOut_Inside(file_selfie, id_user, tanggal_presensi, waktu_keluar)
 
                 if (response.isSuccessful){
                     val clockOutInsideResponse = response.body()

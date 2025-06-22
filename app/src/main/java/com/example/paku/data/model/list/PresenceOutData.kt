@@ -6,5 +6,6 @@ data class PresenceOutData(
     val tanggal_presensi: String,
     val waktu_keluar: String,
     val jenis_presensi: String,
-    val status_validasi: String
+    val status_validasi: String,
+    val foto_selfie: String
 )

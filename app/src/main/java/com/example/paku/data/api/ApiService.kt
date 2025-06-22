@@ -8,10 +8,8 @@ import com.example.paku.data.model.otp.VerifyResponse
 import com.example.paku.data.model.permission.GetUserLeaveResponse
 import com.example.paku.data.model.permission.LeaveResponse
 import com.example.paku.data.model.presence.Clock_AlternateResponse
-import com.example.paku.data.model.presence.ClockIn_InsideRequest
 import com.example.paku.data.model.presence.ClockIn_InsideResponse
 import com.example.paku.data.model.presence.ClockIn_OutsideResponse
-import com.example.paku.data.model.presence.ClockOut_InsideRequest
 import com.example.paku.data.model.presence.ClockOut_InsideResponse
 import com.example.paku.data.model.presence.GetCurrentPresenceResponse
 import com.example.paku.data.model.presence.GetUserPresenceResponse
@@ -76,14 +74,22 @@ interface ApiService {
     suspend fun refresh(@Body request: RefreshRequest): Response<RefreshResponse>
 
     // presence
+    @Multipart
     @POST("api/presence/clockin-inside")
     suspend fun clockIn_Inside(
-        @Body request: ClockIn_InsideRequest
+        @Part foto_selfie: MultipartBody.Part,
+        @Part("id_user") idUser: RequestBody,
+        @Part("tanggal_presensi") tanggalPresensi: RequestBody,
+        @Part("waktu_masuk") waktuMasuk: RequestBody
     ): Response<ClockIn_InsideResponse>
 
+    @Multipart
     @POST("api/presence/clockout-inside")
     suspend fun clockOut_Inside(
-        @Body request: ClockOut_InsideRequest
+        @Part foto_selfie: MultipartBody.Part,
+        @Part("id_user") idUser: RequestBody,
+        @Part("tanggal_presensi") tanggalPresensi: RequestBody,
+        @Part("waktu_keluar") waktuMasuk: RequestBody
     ): Response<ClockOut_InsideResponse>
 
     @Multipart
