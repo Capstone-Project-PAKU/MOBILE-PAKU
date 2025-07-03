@@ -3,6 +3,7 @@ package com.example.paku
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -12,6 +13,7 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -58,19 +60,23 @@ class PresensiDalamAlternatifFragment : Fragment() {
     private var latitude = 0.0
     private var longitude = 0.0
     private var hasClockInToday: Boolean = false
+    private var isLocationReady: Boolean = false
 
-    @RequiresApi(Build.VERSION_CODES.S)
+
     private val locationListener = LocationListener { location ->
         val isMockLocationUsed = DeviceUtils.isFakeGpsCurrentlyUsed(location)
         if (isMockLocationUsed) {
             disableLocationBasedFeatures()
             showFailedPopup(requireView(),
                 "Terdeteksi aplikasi fake GPS aktif di perangkat anda")
+            isLocationReady = false
+            return@LocationListener
         }  else {
             latitude = location.latitude
             longitude = location.longitude
             locationJSON.put("latitude", latitude)
             locationJSON.put("longitude", longitude)
+            isLocationReady = true
         }
     }
 
@@ -209,6 +215,12 @@ class PresensiDalamAlternatifFragment : Fragment() {
             return
         }
 
+        if (!isLocationReady || (latitude == 0.0 && longitude == 0.0 && !locationJSON.has("latitude"))) {
+            showFailedPopup(requireView(), "Mencari lokasi akurat. Mohon tunggu sebentar dan coba lagi.")
+            getCurrentLocation()
+            return
+        }
+
         showLoading()
 
         val date = getCurrentDate()
@@ -266,7 +278,7 @@ class PresensiDalamAlternatifFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("SetTextI18n")
     private fun getCurrentPresence(userId: String) {
-        presenceViewModel.getCurrentPresence(userId) { success, message, data ->
+        presenceViewModel.getCurrentPresence(userId) { success, _, data ->
             if (success) {
                 hasClockInToday = data?.waktu_masuk != null
 
@@ -302,9 +314,32 @@ class PresensiDalamAlternatifFragment : Fragment() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.S)
+    private fun showLocationServiceOffDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Aktifkan Layanan Lokasi")
+            .setMessage("Layanan lokasi perangkat Anda tidak aktif. Mohon aktifkan untuk menggunakan fitur presensi.")
+            .setPositiveButton("Buka Pengaturan") { dialog, _ ->
+                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                startActivity(intent)
+                dialog.dismiss()
+            }
+            .setNegativeButton("Batal") { dialog, _ ->
+                dialog.dismiss()
+                Toast.makeText(requireContext(), "Presensi memerlukan lokasi. Fitur dibatasi.", Toast.LENGTH_LONG).show()
+                disableLocationBasedFeatures()
+            }
+            .show()
+    }
+
     private fun getCurrentLocation() {
         locationManager = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
+        val isLocationServiceEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+        if (!isLocationServiceEnabled) {
+            showLocationServiceOffDialog()
+            return
+        }
 
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
             == PackageManager.PERMISSION_GRANTED) {
@@ -342,7 +377,7 @@ class PresensiDalamAlternatifFragment : Fragment() {
         }
     }
 
-    fun getFilePart(filePath: String): MultipartBody.Part? {
+    private fun getFilePart(filePath: String): MultipartBody.Part? {
         val file = File(filePath)
 
         if (!file.exists()) {

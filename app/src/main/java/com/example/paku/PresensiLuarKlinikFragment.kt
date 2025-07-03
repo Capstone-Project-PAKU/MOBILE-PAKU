@@ -3,6 +3,7 @@ package com.example.paku
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -13,6 +14,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.OpenableColumns
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -64,7 +66,7 @@ class PresensiLuarKlinikFragment : Fragment() {
     private var latitude = 0.0
     private var longitude = 0.0
     private var hasClockInToday: Boolean = false
-
+    private var isLocationReady: Boolean = false
 
     private val locationListener = LocationListener { location ->
         val isMockLocationUsed = DeviceUtils.isFakeGpsCurrentlyUsed(location)
@@ -72,11 +74,14 @@ class PresensiLuarKlinikFragment : Fragment() {
             disableLocationBasedFeatures()
             showFailedPopup(requireView(),
                 "Terdeteksi aplikasi fake GPS aktif di perangkat anda")
+            isLocationReady = false
+            return@LocationListener
         } else {
             latitude = location.latitude
             longitude = location.longitude
             locationJSON.put("latitude", latitude)
             locationJSON.put("longitude", longitude)
+            isLocationReady = true
         }
     }
 
@@ -172,6 +177,23 @@ class PresensiLuarKlinikFragment : Fragment() {
         }
     }
 
+    private fun showLocationServiceOffDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Aktifkan Layanan Lokasi")
+            .setMessage("Layanan lokasi perangkat Anda tidak aktif. Mohon aktifkan untuk menggunakan fitur presensi.")
+            .setPositiveButton("Buka Pengaturan") { dialog, _ ->
+                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                startActivity(intent)
+                dialog.dismiss()
+            }
+            .setNegativeButton("Batal") { dialog, _ ->
+                dialog.dismiss()
+                Toast.makeText(requireContext(), "Presensi memerlukan lokasi. Fitur dibatasi.", Toast.LENGTH_LONG).show()
+                disableLocationBasedFeatures()
+            }
+            .show()
+    }
+
     private fun disableLocationBasedFeatures() {
         clockInBtn.isEnabled = false
         clockInBtn.isClickable = false
@@ -228,6 +250,12 @@ class PresensiLuarKlinikFragment : Fragment() {
 
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             showFailedPopup(requireView(), "Pastikan fitur GPS pada perangkat anda dihidupkan")
+            return
+        }
+
+        if (!isLocationReady || (latitude == 0.0 && longitude == 0.0 && !locationJSON.has("latitude"))) {
+            showFailedPopup(requireView(), "Mencari lokasi akurat. Mohon tunggu sebentar dan coba lagi.")
+            getCurrentLocation()
             return
         }
 
@@ -342,6 +370,13 @@ class PresensiLuarKlinikFragment : Fragment() {
 
     private fun getCurrentLocation() {
         locationManager = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
+        val isLocationServiceEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+        if (!isLocationServiceEnabled) {
+            showLocationServiceOffDialog()
+            return
+        }
 
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
             == PackageManager.PERMISSION_GRANTED) {

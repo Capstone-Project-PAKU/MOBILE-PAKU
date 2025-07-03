@@ -9,8 +9,6 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import com.example.paku.HomeFragment
-import com.example.paku.PresensiDalamAlternatifFragment
 import com.example.paku.R
 
 fun showFailedPopup(view: View, message: String?, fragment: Fragment) {

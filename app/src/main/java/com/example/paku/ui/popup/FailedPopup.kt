@@ -8,7 +8,6 @@ import android.widget.Button
 import android.widget.PopupWindow
 import android.widget.TextView
 import com.example.paku.R
-
 fun showFailedPopup(view: View, message: String?) {
     val inflater = LayoutInflater.from(view.context)
     val popupView = inflater.inflate(R.layout.popup_gagal, null)
